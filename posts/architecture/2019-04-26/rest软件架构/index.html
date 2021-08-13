@@ -15,13 +15,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"www.apomelo.cc","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"apomelo.cc","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Web技术发展World Wide Web（万维网），简称Web，是一种基于超文本和HTTP的、全球性的、动态交互的、跨平台的分布式图形信息系统。 web形式发展先后经历了web 1.0 —&gt; web 2.0 —&gt; web 3.0 web 1.0开始于1994年，主要是静态的HTML页面发布信息，其特点是：信息杂乱无序，只满足了人们对信息的搜索、传递需求。 web 2.0开始于2004">
 <meta property="og:type" content="article">
 <meta property="og:title" content="REST软件架构">
-<meta property="og:url" content="http://www.apomelo.cc/posts/architecture/2019-04-26/rest%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/index.html">
+<meta property="og:url" content="https://apomelo.cc/posts/architecture/2019-04-26/rest%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/index.html">
 <meta property="og:site_name" content="Apomelo - 追逐">
 <meta property="og:description" content="Web技术发展World Wide Web（万维网），简称Web，是一种基于超文本和HTTP的、全球性的、动态交互的、跨平台的分布式图形信息系统。 web形式发展先后经历了web 1.0 —&gt; web 2.0 —&gt; web 3.0 web 1.0开始于1994年，主要是静态的HTML页面发布信息，其特点是：信息杂乱无序，只满足了人们对信息的搜索、传递需求。 web 2.0开始于2004">
 <meta property="og:locale" content="zh_CN">
@@ -31,7 +31,7 @@
 <meta property="article:tag" content="rest">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://www.apomelo.cc/posts/architecture/2019-04-26/rest%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/">
+<link rel="canonical" href="https://apomelo.cc/posts/architecture/2019-04-26/rest%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/">
 
 
 <script id="page-configurations">
@@ -48,12 +48,12 @@
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
     <script>
-      // if (CONFIG.hostname === location.hostname) {
+      if (CONFIG.hostname === location.hostname) {
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-2KQDESYMZF');
-      // }
+      }
     </script>
 
 
@@ -202,7 +202,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.apomelo.cc/posts/architecture/2019-04-26/rest%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/architecture/2019-04-26/rest%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">

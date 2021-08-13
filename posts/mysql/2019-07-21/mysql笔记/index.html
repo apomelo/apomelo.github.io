@@ -15,13 +15,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"www.apomelo.cc","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"apomelo.cc","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="事务特性事务具有 ACID 特性，A: 原子性（atomicity，或称不可分割性）、C: 一致性（consistency）、I: 隔离性（isolation，又称独立性）、D: 持久性（durability） 原子性一个事务必须被视为一个不可分割的最小工作单元 一致性数据库总是从一个一致性的状态转换到另一个一致性的状态 隔离性通常来说，一个事务所做的修改在最终提交之前，对其他事务是不可见的 持久">
 <meta property="og:type" content="article">
 <meta property="og:title" content="MySQL笔记">
-<meta property="og:url" content="http://www.apomelo.cc/posts/mysql/2019-07-21/mysql%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:url" content="https://apomelo.cc/posts/mysql/2019-07-21/mysql%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Apomelo - 追逐">
 <meta property="og:description" content="事务特性事务具有 ACID 特性，A: 原子性（atomicity，或称不可分割性）、C: 一致性（consistency）、I: 隔离性（isolation，又称独立性）、D: 持久性（durability） 原子性一个事务必须被视为一个不可分割的最小工作单元 一致性数据库总是从一个一致性的状态转换到另一个一致性的状态 隔离性通常来说，一个事务所做的修改在最终提交之前，对其他事务是不可见的 持久">
 <meta property="og:locale" content="zh_CN">
@@ -32,7 +32,7 @@
 <meta property="article:tag" content="build">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://www.apomelo.cc/posts/mysql/2019-07-21/mysql%E7%AC%94%E8%AE%B0/">
+<link rel="canonical" href="https://apomelo.cc/posts/mysql/2019-07-21/mysql%E7%AC%94%E8%AE%B0/">
 
 
 <script id="page-configurations">
@@ -49,12 +49,12 @@
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
     <script>
-      // if (CONFIG.hostname === location.hostname) {
+      if (CONFIG.hostname === location.hostname) {
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-2KQDESYMZF');
-      // }
+      }
     </script>
 
 
@@ -203,7 +203,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.apomelo.cc/posts/mysql/2019-07-21/mysql%E7%AC%94%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/mysql/2019-07-21/mysql%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">

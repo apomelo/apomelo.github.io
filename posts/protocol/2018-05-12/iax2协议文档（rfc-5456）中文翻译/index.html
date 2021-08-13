@@ -15,13 +15,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"www.apomelo.cc","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"apomelo.cc","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="欢迎来到我的博客，这是我第一篇自己写的博客，也是第一次用markdown语法来写，怀着有些激动的心写下这篇博客。 在工作中接触到了IAX2协议，找遍了网上只找到了一些中文的论文。没有协议文档的具体翻译，最后只能自己看英文文档：《RFC 5456》。后因需要整理IAX2文档，就开始整理一个简短的文档，但发现还有所不足，后就开始着手进行翻译，也是为之后需要中文文档的人提供一些帮助，完整的文档地址：IA">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IAX2协议文档（RFC 5456）中文翻译">
-<meta property="og:url" content="http://www.apomelo.cc/posts/protocol/2018-05-12/iax2%E5%8D%8F%E8%AE%AE%E6%96%87%E6%A1%A3%EF%BC%88rfc-5456%EF%BC%89%E4%B8%AD%E6%96%87%E7%BF%BB%E8%AF%91/index.html">
+<meta property="og:url" content="https://apomelo.cc/posts/protocol/2018-05-12/iax2%E5%8D%8F%E8%AE%AE%E6%96%87%E6%A1%A3%EF%BC%88rfc-5456%EF%BC%89%E4%B8%AD%E6%96%87%E7%BF%BB%E8%AF%91/index.html">
 <meta property="og:site_name" content="Apomelo - 追逐">
 <meta property="og:description" content="欢迎来到我的博客，这是我第一篇自己写的博客，也是第一次用markdown语法来写，怀着有些激动的心写下这篇博客。 在工作中接触到了IAX2协议，找遍了网上只找到了一些中文的论文。没有协议文档的具体翻译，最后只能自己看英文文档：《RFC 5456》。后因需要整理IAX2文档，就开始整理一个简短的文档，但发现还有所不足，后就开始着手进行翻译，也是为之后需要中文文档的人提供一些帮助，完整的文档地址：IA">
 <meta property="og:locale" content="zh_CN">
@@ -33,7 +33,7 @@
 <meta property="article:tag" content="中文翻译">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://www.apomelo.cc/posts/protocol/2018-05-12/iax2%E5%8D%8F%E8%AE%AE%E6%96%87%E6%A1%A3%EF%BC%88rfc-5456%EF%BC%89%E4%B8%AD%E6%96%87%E7%BF%BB%E8%AF%91/">
+<link rel="canonical" href="https://apomelo.cc/posts/protocol/2018-05-12/iax2%E5%8D%8F%E8%AE%AE%E6%96%87%E6%A1%A3%EF%BC%88rfc-5456%EF%BC%89%E4%B8%AD%E6%96%87%E7%BF%BB%E8%AF%91/">
 
 
 <script id="page-configurations">
@@ -50,12 +50,12 @@
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
     <script>
-      // if (CONFIG.hostname === location.hostname) {
+      if (CONFIG.hostname === location.hostname) {
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
         gtag('config', 'G-2KQDESYMZF');
-      // }
+      }
     </script>
 
 
@@ -204,7 +204,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://www.apomelo.cc/posts/protocol/2018-05-12/iax2%E5%8D%8F%E8%AE%AE%E6%96%87%E6%A1%A3%EF%BC%88rfc-5456%EF%BC%89%E4%B8%AD%E6%96%87%E7%BF%BB%E8%AF%91/">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/protocol/2018-05-12/iax2%E5%8D%8F%E8%AE%AE%E6%96%87%E6%A1%A3%EF%BC%88rfc-5456%EF%BC%89%E4%B8%AD%E6%96%87%E7%BF%BB%E8%AF%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
