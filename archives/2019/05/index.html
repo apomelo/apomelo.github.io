@@ -18,21 +18,17 @@
     var CONFIG = {"hostname":"apomelo.cc","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="事务特性事务具有 ACID 特性，A: 原子性（atomicity，或称不可分割性）、C: 一致性（consistency）、I: 隔离性（isolation，又称独立性）、D: 持久性（durability） 原子性一个事务必须被视为一个不可分割的最小工作单元 一致性数据库总是从一个一致性的状态转换到另一个一致性的状态 隔离性通常来说，一个事务所做的修改在最终提交之前，对其他事务是不可见的 持久">
-<meta property="og:type" content="article">
-<meta property="og:title" content="MySQL笔记">
-<meta property="og:url" content="https://apomelo.cc/posts/mysql/2019-07-21/mysql%E7%AC%94%E8%AE%B0/index.html">
+  <meta name="description" content="我有一壶酒，足以慰风尘。尽倾江海里，赠饮天下人。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Apomelo - 追逐">
+<meta property="og:url" content="https://apomelo.cc/archives/2019/05/index.html">
 <meta property="og:site_name" content="Apomelo - 追逐">
-<meta property="og:description" content="事务特性事务具有 ACID 特性，A: 原子性（atomicity，或称不可分割性）、C: 一致性（consistency）、I: 隔离性（isolation，又称独立性）、D: 持久性（durability） 原子性一个事务必须被视为一个不可分割的最小工作单元 一致性数据库总是从一个一致性的状态转换到另一个一致性的状态 隔离性通常来说，一个事务所做的修改在最终提交之前，对其他事务是不可见的 持久">
+<meta property="og:description" content="我有一壶酒，足以慰风尘。尽倾江海里，赠饮天下人。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2019-07-20T16:00:00.000Z">
-<meta property="article:modified_time" content="2021-06-30T16:00:00.000Z">
 <meta property="article:author" content="Apomelo">
-<meta property="article:tag" content="protobuf">
-<meta property="article:tag" content="build">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://apomelo.cc/posts/mysql/2019-07-21/mysql%E7%AC%94%E8%AE%B0/">
+<link rel="canonical" href="https://apomelo.cc/archives/2019/05/">
 
 
 <script id="page-configurations">
@@ -40,12 +36,12 @@
   CONFIG.page = {
     sidebar: "",
     isHome : false,
-    isPost : true,
+    isPost : false,
     lang   : 'zh-CN'
   };
 </script>
 
-  <title>MySQL笔记 | Apomelo - 追逐</title>
+  <title>归档 | Apomelo - 追逐</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
     <script>
@@ -196,127 +192,50 @@
         <div class="content-wrap">
           
 
-          <div class="content post posts-expand">
+          <div class="content archive">
             
 
-    
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/mysql/2019-07-21/mysql%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Apomelo">
-      <meta itemprop="description" content="我有一壶酒，足以慰风尘。尽倾江海里，赠饮天下人。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Apomelo - 追逐">
-    </span>
-      <header class="post-header">
-        <h1 class="post-title" itemprop="name headline">
-          MySQL笔记
-        </h1>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-07-21 00:00:00" itemprop="dateCreated datePublished" datetime="2019-07-21T00:00:00+08:00">2019-07-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2021-07-01 00:00:00" itemprop="dateModified" datetime="2021-07-01T00:00:00+08:00">2021-07-01</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/mysql/" itemprop="url" rel="index"><span itemprop="name">mysql</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/posts/mysql/2019-07-21/mysql%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="MySQL笔记" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
+  
+  <div class="post-block">
+    <div class="posts-collapse">
+      <div class="collection-title">
+        <span class="collection-header">嗯..! 目前共计 15 篇日志。 继续努力。</span>
+      </div>
 
       
-        <h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><h4 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h4><p>事务具有 ACID 特性，A: 原子性（atomicity，或称不可分割性）、C: 一致性（consistency）、I: 隔离性（isolation，又称独立性）、D: 持久性（durability）</p>
-<h5 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h5><p>一个事务必须被视为一个不可分割的最小工作单元</p>
-<h5 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h5><p>数据库总是从一个一致性的状态转换到另一个一致性的状态</p>
-<h5 id="隔离性"><a href="#隔离性" class="headerlink" title="隔离性"></a>隔离性</h5><p>通常来说，一个事务所做的修改在最终提交之前，对其他事务是不可见的</p>
-<h5 id="持久性"><a href="#持久性" class="headerlink" title="持久性"></a>持久性</h5><p>一旦事务提交，其所做的修改就会永久保存到数据库中</p>
-<h4 id="数据读取问题"><a href="#数据读取问题" class="headerlink" title="数据读取问题"></a>数据读取问题</h4><h5 id="脏读"><a href="#脏读" class="headerlink" title="脏读"></a>脏读</h5><p>读取未提交数据</p>
-<h5 id="不可重复读"><a href="#不可重复读" class="headerlink" title="不可重复读"></a>不可重复读</h5><p>前后多次读取，数据内容不一致</p>
-<h5 id="幻读"><a href="#幻读" class="headerlink" title="幻读"></a>幻读</h5><p>前后多次读取，数据总量不一致</p>
-<p>当某个事务在读取某个范围内的记录时，另外一个事务又在该范围内插入新的记录，当之前的事务再次读取该范围的记录时，会产生幻行</p>
-<h5 id="不可重复读和幻读的区别"><a href="#不可重复读和幻读的区别" class="headerlink" title="不可重复读和幻读的区别"></a>不可重复读和幻读的区别</h5><ol>
-<li>不可重复读是读取了其他事务更改的数据，针对update操作</li>
-<li>幻读是读取了其他事务新增的数据，针对insert和delete操作</li>
-</ol>
-<h4 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h4><p>数据库事务的隔离级别有 4 种，由低到高分别为 Read uncommitted 、Read committed 、Repeatable read 、Serializable</p>
-<h5 id="Read-uncommitted"><a href="#Read-uncommitted" class="headerlink" title="Read uncommitted"></a>Read uncommitted</h5><p>读未提交，顾名思义，就是一个事务可以读取另一个未提交事务的数据</p>
-<p>从性能上来说，该级别不会比其他的级别好太多，但是缺乏其他级别的很多好处，所以除非真的有非常必要的理由，在实际应用中一般很少使用</p>
-<h5 id="Read-committed"><a href="#Read-committed" class="headerlink" title="Read committed"></a>Read committed</h5><p>读提交，顾名思义，就是一个事务要等另一个事务提交后才能读取数据</p>
-<p>大多数数据库系统的默认隔离级别都是 Read committed（但MySQL不是）</p>
-<h5 id="Repeatable-read"><a href="#Repeatable-read" class="headerlink" title="Repeatable read"></a>Repeatable read</h5><p>重复读，就是在开始读取数据（事务开启）时，不再允许修改操作，保证了在同一个事务中多次读取同样记录的结果是一致的</p>
-<p>Repeatable read是MySQL的默认事务隔离级别</p>
-<p>InnoDB通过多版本并发控制（MVCC, Multiversion Concurrency Control）<strong>基本</strong>解决了幻读的问题，MVCC以乐观锁为理论基础，MVCC的实现没有固定的规范，每个数据库都会有不同的实现方式</p>
-<h5 id="Serializable"><a href="#Serializable" class="headerlink" title="Serializable"></a>Serializable</h5><p>Serializable 是最高的事务隔离级别，在该级别下，事务串行化顺序执行，可以避免脏读、不可重复读与幻读。</p>
-
+    <div class="collection-year">
+      <span class="collection-header">2019</span>
     </div>
 
-    
-    
-    
+  <article itemscope itemtype="http://schema.org/Article">
+    <header class="post-header">
 
-      <footer class="post-footer">
-          <div class="post-tags">
-              <a href="/tags/protobuf/" rel="tag"># protobuf</a>
-              <a href="/tags/build/" rel="tag"># build</a>
-          </div>
+      <div class="post-meta">
+        <time itemprop="dateCreated"
+              datetime="2019-05-28T00:00:00+08:00"
+              content="2019-05-28">
+          05-28
+        </time>
+      </div>
 
-        
+      <div class="post-title">
+          <a class="post-title-link" href="/posts/protocol/2019-05-28/protobuf%E7%AC%94%E8%AE%B0/" itemprop="url">
+            <span itemprop="name">protobuf使用详解</span>
+          </a>
+      </div>
 
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/posts/protocol/2019-06-28/protobuf%E7%AC%94%E8%AE%B0/" rel="prev" title="protobuf使用详解">
-      <i class="fa fa-chevron-left"></i> protobuf使用详解
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/posts/blog/2021-08-13/githubpage%E9%83%A8%E7%BD%B2/" rel="next" title="Github Page 部署">
-      Github Page 部署 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
+    </header>
   </article>
+
+
+    </div>
+  </div>
   
   
+  
+
   
 
 
@@ -369,7 +288,6 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%8B%E5%8A%A1"><span class="nav-number">1.</span> <span class="nav-text">事务</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%B9%E6%80%A7"><span class="nav-number">1.0.1.</span> <span class="nav-text">特性</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8E%9F%E5%AD%90%E6%80%A7"><span class="nav-number">1.0.1.1.</span> <span class="nav-text">原子性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">1.0.1.2.</span> <span class="nav-text">一致性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%9A%94%E7%A6%BB%E6%80%A7"><span class="nav-number">1.0.1.3.</span> <span class="nav-text">隔离性</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8C%81%E4%B9%85%E6%80%A7"><span class="nav-number">1.0.1.4.</span> <span class="nav-text">持久性</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E8%AF%BB%E5%8F%96%E9%97%AE%E9%A2%98"><span class="nav-number">1.0.2.</span> <span class="nav-text">数据读取问题</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%84%8F%E8%AF%BB"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">脏读</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB"><span class="nav-number">1.0.2.2.</span> <span class="nav-text">不可重复读</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%B9%BB%E8%AF%BB"><span class="nav-number">1.0.2.3.</span> <span class="nav-text">幻读</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%B8%8D%E5%8F%AF%E9%87%8D%E5%A4%8D%E8%AF%BB%E5%92%8C%E5%B9%BB%E8%AF%BB%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.0.2.4.</span> <span class="nav-text">不可重复读和幻读的区别</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-number">1.0.3.</span> <span class="nav-text">隔离级别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Read-uncommitted"><span class="nav-number">1.0.3.1.</span> <span class="nav-text">Read uncommitted</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Read-committed"><span class="nav-number">1.0.3.2.</span> <span class="nav-text">Read committed</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Repeatable-read"><span class="nav-number">1.0.3.3.</span> <span class="nav-text">Repeatable read</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Serializable"><span class="nav-number">1.0.3.4.</span> <span class="nav-text">Serializable</span></a></li></ol></li></ol></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -383,7 +301,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -396,7 +314,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-count">29</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>

@@ -398,7 +398,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/mysql/2019-07-21/mysql%E7%AC%94%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/mysql/2019-11-21/mysql%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -412,7 +412,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/mysql/2019-07-21/mysql%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">MySQL笔记</a>
+            <a href="/posts/mysql/2019-11-21/mysql%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">MySQL笔记</a>
         </h2>
 
         <div class="post-meta">
@@ -422,7 +422,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-07-21 00:00:00" itemprop="dateCreated datePublished" datetime="2019-07-21T00:00:00+08:00">2019-07-21</time>
+              <time title="创建时间：2019-11-21 00:00:00" itemprop="dateCreated datePublished" datetime="2019-11-21T00:00:00+08:00">2019-11-21</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -442,7 +442,7 @@
             </span>
 
           
-            <span id="/posts/mysql/2019-07-21/mysql%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="MySQL笔记" title="阅读次数">
+            <span id="/posts/mysql/2019-11-21/mysql%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="MySQL笔记" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -459,28 +459,86 @@
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><h4 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h4><p>事务具有 ACID 特性，A: 原子性（atomicity，或称不可分割性）、C: 一致性（consistency）、I: 隔离性（isolation，又称独立性）、D: 持久性（durability）</p>
-<h5 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h5><p>一个事务必须被视为一个不可分割的最小工作单元</p>
-<h5 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h5><p>数据库总是从一个一致性的状态转换到另一个一致性的状态</p>
-<h5 id="隔离性"><a href="#隔离性" class="headerlink" title="隔离性"></a>隔离性</h5><p>通常来说，一个事务所做的修改在最终提交之前，对其他事务是不可见的</p>
-<h5 id="持久性"><a href="#持久性" class="headerlink" title="持久性"></a>持久性</h5><p>一旦事务提交，其所做的修改就会永久保存到数据库中</p>
-<h4 id="数据读取问题"><a href="#数据读取问题" class="headerlink" title="数据读取问题"></a>数据读取问题</h4><h5 id="脏读"><a href="#脏读" class="headerlink" title="脏读"></a>脏读</h5><p>读取未提交数据</p>
-<h5 id="不可重复读"><a href="#不可重复读" class="headerlink" title="不可重复读"></a>不可重复读</h5><p>前后多次读取，数据内容不一致</p>
-<h5 id="幻读"><a href="#幻读" class="headerlink" title="幻读"></a>幻读</h5><p>前后多次读取，数据总量不一致</p>
-<p>当某个事务在读取某个范围内的记录时，另外一个事务又在该范围内插入新的记录，当之前的事务再次读取该范围的记录时，会产生幻行</p>
-<h5 id="不可重复读和幻读的区别"><a href="#不可重复读和幻读的区别" class="headerlink" title="不可重复读和幻读的区别"></a>不可重复读和幻读的区别</h5><ol>
-<li>不可重复读是读取了其他事务更改的数据，针对update操作</li>
-<li>幻读是读取了其他事务新增的数据，针对insert和delete操作</li>
+          <h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>ubuntu 或者 centos, 更新过仓库之后, 直接用 apt 或者 yum 进行安装即可</p>
+<p>安装<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/linux-installation.html">官方文档</a></p>
+<h3 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h3><ol>
+<li><p>数据库备份, 备份所有数据库配置、系统数据库、自建数据库</p>
+</li>
+<li><p>确保更新路径是正确的</p>
+</li>
+<li><p>只能在 GA 版本之间升级</p>
+</li>
+<li><p>不能夸版本升级, 如: 5.5 —&gt; 5.7 是不支持的, 5.6 —&gt; 5.7 是可以的</p>
+</li>
+<li><p>跨版本升级最好先把当前版本升级到最新版本, 如 5.6 —&gt; 5.7, 需要先升级到最新的 5.6 版本, 然后再升级到 5.7</p>
+</li>
+<li><p>同一个大版本可以跨小版本升级, 如 5.7.x —&gt; 5.7.y</p>
+</li>
+<li><p>升级之前需要对比要升级的版本和当前版本之间的差异, 配置、系统表、server、innodb、sql</p>
+</li>
+<li><p>其他详细的信息参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/upgrading.html">MySQL 官网</a></p>
+</li>
 </ol>
-<h4 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h4><p>数据库事务的隔离级别有 4 种，由低到高分别为 Read uncommitted 、Read committed 、Repeatable read 、Serializable</p>
-<h5 id="Read-uncommitted"><a href="#Read-uncommitted" class="headerlink" title="Read uncommitted"></a>Read uncommitted</h5><p>读未提交，顾名思义，就是一个事务可以读取另一个未提交事务的数据</p>
-<p>从性能上来说，该级别不会比其他的级别好太多，但是缺乏其他级别的很多好处，所以除非真的有非常必要的理由，在实际应用中一般很少使用</p>
-<h5 id="Read-committed"><a href="#Read-committed" class="headerlink" title="Read committed"></a>Read committed</h5><p>读提交，顾名思义，就是一个事务要等另一个事务提交后才能读取数据</p>
-<p>大多数数据库系统的默认隔离级别都是 Read committed（但MySQL不是）</p>
-<h5 id="Repeatable-read"><a href="#Repeatable-read" class="headerlink" title="Repeatable read"></a>Repeatable read</h5><p>重复读，就是在开始读取数据（事务开启）时，不再允许修改操作，保证了在同一个事务中多次读取同样记录的结果是一致的</p>
-<p>Repeatable read是MySQL的默认事务隔离级别</p>
-<p>InnoDB通过多版本并发控制（MVCC, Multiversion Concurrency Control）<strong>基本</strong>解决了幻读的问题，MVCC以乐观锁为理论基础，MVCC的实现没有固定的规范，每个数据库都会有不同的实现方式</p>
-<h5 id="Serializable"><a href="#Serializable" class="headerlink" title="Serializable"></a>Serializable</h5><p>Serializable 是最高的事务隔离级别，在该级别下，事务串行化顺序执行，可以避免脏读、不可重复读与幻读。</p>
+<h3 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h3><p>问题: 安装完之后怎么更改 root 用户密码都可以直接登录</p>
+<p>版本: 5.7.26</p>
+<p>原因:</p>
+<ol>
+<li><p>root 用户的认证插件默认是: auth_socket, 不是 mysql_native_password,</p>
+</li>
+<li><p>而 auth_socket 插件不关心, 也不需要密码, 它只检查用户是否使用 UNIX 套接字进行连接, 然后比较用户名</p>
+</li>
+<li><p><strong>如果要配置密码, 需要在同一命令中同时更改插件并设置密码</strong>, 首先更改插件然后设置密码将不起作用, 它将再次回退到 auth_socket</p>
+</li>
+</ol>
+<p>修改密码命令:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> DATABASES;</span><br><span class="line">USE mysql;</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span> IDENTIFIED <span class="keyword">WITH</span> mysql_native_password <span class="keyword">BY</span> <span class="string">&#x27;test&#x27;</span>;</span><br><span class="line">FLUSH PRIVILEGES;</span><br><span class="line">quit;</span><br><span class="line"></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 修改密码还可以用下面两条, 推荐第一个, 第二个会有 warning, 但是认证插件是 auth_socket 的时候必须用上面那个指定认证插件的修改语句</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> <span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;密码&#x27;</span>;</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> UPDATE <span class="keyword">USER</span> <span class="keyword">SET</span> authentication_string<span class="operator">=</span>PASSWORD(<span class="string">&#x27;密码&#x27;</span>) <span class="keyword">WHERE</span> <span class="keyword">USER</span><span class="operator">=</span><span class="string">&#x27;root&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 还可以修改 <span class="operator">/</span>etc<span class="operator">/</span>my.cnf 文件, 添加 <span class="keyword">skip</span><span class="operator">-</span><span class="keyword">grant</span><span class="operator">-</span>tables 或 <span class="keyword">skip</span><span class="operator">-</span><span class="keyword">grant</span><span class="operator">-</span>tables<span class="operator">=</span><span class="number">1</span>,</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 或者直接以 mysqld  <span class="comment">--skip-grant-tables &amp; 方式启动</span></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 当时没有以这样忽略密码验证的方式启动, 仍然能修改成功</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 该参数一般的使用情况是当 root 用户密码丢失时以此参数作为启动项</span><br></pre></td></tr></table></figure>
+
+<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h3 id="SHOW-DATABASES"><a href="#SHOW-DATABASES" class="headerlink" title="SHOW DATABASES"></a>SHOW DATABASES</h3><p>查看所有的数据库, 等同于 SELECT schema_name FROM information_schema.schemata\G 用 \G 替换 “;” 以纵向报表的形式输出结果, 有利于阅读</p>
+<h3 id="STATUS"><a href="#STATUS" class="headerlink" title="STATUS"></a>STATUS</h3><p>查看 mysql 数据库的运行状态</p>
+<h3 id="USE"><a href="#USE" class="headerlink" title="USE"></a>USE</h3><p>命令选择数据库 例如 USE information_schema, 当使用此命令后<br>SELECT schema_name FROM information_schema.schemata\G, 可以更改为<br>SELECT schema_name FROM schemata\G</p>
+<h3 id="SHOW-TABLES"><a href="#SHOW-TABLES" class="headerlink" title="SHOW TABLES"></a>SHOW TABLES</h3><p>查看数据库中的表<br>同样也可以在 information_schema 中查看, SHOW 命令是方便使用的简短模式<br>SELECT table_name FROM tables WHERE table_schema=’jblog’;</p>
+<h3 id="DESC-table-name"><a href="#DESC-table-name" class="headerlink" title="DESC table_name"></a>DESC table_name</h3><p>查看表结构</p>
+<h3 id="查看表状态"><a href="#查看表状态" class="headerlink" title="查看表状态"></a>查看表状态</h3><p>SHOW 条件 或</p>
+<p>SHOW STATUS like ‘%条件%’ 或</p>
+<p>SHOW VARIABLES LIKE “%条件%” 等</p>
+<p>可以查看 engine 数据库引擎, version, row, index 等信息</p>
+<p>查询数据库连接:</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> <span class="keyword">FULL</span> PROCESSLIST;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;%Max_used_connections%&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;%Threads_connected%&#x27;</span>; #当前连接数</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;%table_lock%&#x27;</span>; #表锁定</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;innodb_row_lock%&#x27;</span>; #行锁定</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;%qcache%&#x27;</span>; #查询缓存情况</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;Qcache%&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;Aborted_clients&#x27;</span>; #由于客户没有正确关闭连接已经死掉, 已经放弃的连接数量</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> &quot;%query_cache%&quot;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> &quot;%binlog%&quot;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;%max_connections%&#x27;</span>; <span class="operator">/</span><span class="operator">/</span>查看最大连接数量</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;%timeout%&#x27;</span>; #查看超时时间</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;log_%&#x27;</span>; #查看日志是否启动</span><br></pre></td></tr></table></figure>
+
+<h3 id="小技巧"><a href="#小技巧" class="headerlink" title="小技巧"></a>小技巧</h3><p>当多行命令输入, 发现错误后, 用\c 结束</p>
+<h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><p>事务具有 ACID 特性, A: 原子性（atomicity, 或称不可分割性）、C: 一致性（consistency）、I: 隔离性（isolation, 又称独立性）、D: 持久性（durability）</p>
+<h4 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h4><p>一个事务必须被视为一个不可分割的最小工作单元</p>
+<h4 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h4><p>数据库总是从一个一致性的状态转换到另一个一致性的状态</p>
+<h4 id="隔离性"><a href="#隔离性" class="headerlink" title="隔离性"></a>隔离性</h4><p>通常来说, 一个事务所做的修改在最终提交之前, 对其他事务是不可见的</p>
+<h4 id="持久性"><a href="#持久性" class="headerlink" title="持久性"></a>持久性</h4><p>一旦事务提交, 其所做的修改就会永久保存到数据库中</p>
+<h3 id="数据读取问题"><a href="#数据读取问题" class="headerlink" title="数据读取问题"></a>数据读取问题</h3><h4 id="脏读"><a href="#脏读" class="headerlink" title="脏读"></a>脏读</h4><p>读取未提交数据</p>
+<h4 id="不可重复读"><a href="#不可重复读" class="headerlink" title="不可重复读"></a>不可重复读</h4><p>前后多次读取, 数据内容不一致</p>
+<h4 id="幻读"><a href="#幻读" class="headerlink" title="幻读"></a>幻读</h4><p>前后多次读取, 数据总量不一致</p>
+<p>当某个事务在读取某个范围内的记录时, 另外一个事务又在该范围内插入新的记录, 当之前的事务再次读取该范围的记录时, 会产生幻行</p>
+<h4 id="不可重复读和幻读的区别"><a href="#不可重复读和幻读的区别" class="headerlink" title="不可重复读和幻读的区别"></a>不可重复读和幻读的区别</h4><ol>
+<li>不可重复读是读取了其他事务更改的数据, 针对 update 操作</li>
+<li>幻读是读取了其他事务新增的数据, 针对 insert 和 delete 操作</li>
+</ol>
+<h3 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h3><p>数据库事务的隔离级别有 4 种, 由低到高分别为 Read uncommitted 、Read committed 、Repeatable read 、Serializable</p>
+<h4 id="Read-uncommitted"><a href="#Read-uncommitted" class="headerlink" title="Read uncommitted"></a>Read uncommitted</h4><p>读未提交, 顾名思义, 就是一个事务可以读取另一个未提交事务的数据</p>
+<p>从性能上来说, 该级别不会比其他的级别好太多, 但是缺乏其他级别的很多好处, 所以除非真的有非常必要的理由, 在实际应用中一般很少使用</p>
+<h4 id="Read-committed"><a href="#Read-committed" class="headerlink" title="Read committed"></a>Read committed</h4><p>读提交, 顾名思义, 就是一个事务要等另一个事务提交后才能读取数据</p>
+<p>大多数数据库系统的默认隔离级别都是 Read committed（但 MySQL 不是）</p>
+<h4 id="Repeatable-read"><a href="#Repeatable-read" class="headerlink" title="Repeatable read"></a>Repeatable read</h4><p>重复读, 就是在开始读取数据（事务开启）时, 不再允许修改操作, 保证了在同一个事务中多次读取同样记录的结果是一致的</p>
+<p>Repeatable read 是 MySQL 的默认事务隔离级别</p>
+<p>InnoDB 通过多版本并发控制（MVCC, Multiversion Concurrency Control）<strong>基本</strong>解决了幻读的问题, MVCC 以乐观锁为理论基础, MVCC 的实现没有固定的规范, 每个数据库都会有不同的实现方式</p>
+<h4 id="Serializable"><a href="#Serializable" class="headerlink" title="Serializable"></a>Serializable</h4><p>Serializable 是最高的事务隔离级别, 在该级别下, 事务串行化顺序执行, 可以避免脏读、不可重复读与幻读</p>
+<h2 id="数据库构架设计中-Shared-Everything-和-share-nothing-区别"><a href="#数据库构架设计中-Shared-Everything-和-share-nothing-区别" class="headerlink" title="数据库构架设计中 Shared Everything 和 share-nothing 区别"></a>数据库构架设计中 Shared Everything 和 share-nothing 区别</h2><h3 id="Shared-Everthting"><a href="#Shared-Everthting" class="headerlink" title="Shared Everthting"></a>Shared Everthting</h3><p>一般是针对单个主机, 完全透明共享 CPU/MEMORY/IO, 并行处理能力是最差的, 典型的代表 SQLServer</p>
+<h3 id="Shared-Disk"><a href="#Shared-Disk" class="headerlink" title="Shared Disk"></a>Shared Disk</h3><p>各个处理单元使用自己的私有 CPU 和 Memory, 共享磁盘系统</p>
+<p>典型的代表 Oracle Rac, 它是数据共享, 可通过增加节点来提高并行处理的能力, 扩展能力较好</p>
+<p>其类似于 SMP（对称多处理）模式, 但是当存储器接口达到饱和的时候, 增加节点并不能获得更高的性能</p>
+<h3 id="Shared-Nothing"><a href="#Shared-Nothing" class="headerlink" title="Shared Nothing"></a>Shared Nothing</h3><p>各个处理单元都有自己私有的 CPU/内存/硬盘等, 不存在共享资源, 类似于 MPP（大规模并行处理）模式, 各处理单元之间通过协议通信, 并行处理和扩展能力更好</p>
+<p>典型代表 DB2 DPF 和 hadoop, 各节点相互独立, 各自处理自己的数据, 处理后的结果可能向上层汇总或在节点间流转</p>
+<p>我们常说的 Sharding 其实就是 Share Nothing 架构, 它是把某个表从物理存储上被水平分割, 并分配给多台服务器（或多个实例）, 每台服务器可以独立工作, 具备共同的 schema, 比如 MySQL Proxy 和 Google 的各种架构, 只需增加服务器数就可以增加处理能力和容量</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li>mysql 查看数据库、表的基本命令 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/onsuccessway/p/3552524.html">https://www.cnblogs.com/onsuccessway/p/3552524.html</a></li>
+<li>使用“plugin: auth_socket”更改 MySQL 5.7 中的用户密码 <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41918841/article/details/82997651">https://blog.csdn.net/weixin_41918841/article/details/82997651</a></li>
+</ol>
 
       
     </div>
@@ -500,7 +558,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/protocol/2019-06-28/protobuf%E7%AC%94%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/java/2020-03-28/maven%E7%AC%94%E8%AE%B0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -514,7 +572,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/protocol/2019-06-28/protobuf%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">protobuf使用详解</a>
+            <a href="/posts/java/2020-03-28/maven%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">maven笔记</a>
         </h2>
 
         <div class="post-meta">
@@ -524,8 +582,531 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-06-28 00:00:00" itemprop="dateCreated datePublished" datetime="2019-06-28T00:00:00+08:00">2019-06-28</time>
+              <time title="创建时间：2020-03-28 00:00:00" itemprop="dateCreated datePublished" datetime="2020-03-28T00:00:00+08:00">2020-03-28</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-01 00:00:00" itemprop="dateModified" datetime="2021-04-01T00:00:00+08:00">2021-04-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/posts/java/2020-03-28/maven%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="maven笔记" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="maven-打包"><a href="#maven-打包" class="headerlink" title="maven 打包"></a>maven 打包</h2><h3 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h3><ol>
+<li><p>想要把本程序和所有的依赖包打进一个 jar 包, 里面是 class 文件</p>
+</li>
+<li><p>jar 包里面根目录是 “/“, 不是 “/程序名”</p>
+</li>
+<li><p>把不需要的资源文件排除出去</p>
+</li>
+<li><p>为了方便部署, 把编译好的 jar 包, 再打包成 tar.gz 格式, 并且把启动脚本、配置文件、jar 包打包到各自目录</p>
+</li>
+</ol>
+<p>用的是 maven-assembly-plugin 3.0.0 插件</p>
+<h3 id="实现目标-1-和-2"><a href="#实现目标-1-和-2" class="headerlink" title="实现目标 1 和 2"></a>实现目标 1 和 2</h3><p>用自带的模式: jar-with-dependencies 可以实现上面的 1、3, 如下:</p>
+<p>pom 文件配置:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-assembly-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">archive</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">manifest</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">mainClass</span>&gt;</span>cc.apomelo.test.Main<span class="tag">&lt;/<span class="name">mainClass</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">archive</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">descriptorRefs</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">descriptorRef</span>&gt;</span>jar-with-dependencies<span class="tag">&lt;/<span class="name">descriptorRef</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">descriptorRefs</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">finalName</span>&gt;</span>$&#123;name&#125;<span class="tag">&lt;/<span class="name">finalName</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>make-assembly<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">goal</span>&gt;</span>single<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="同时实现目标-3"><a href="#同时实现目标-3" class="headerlink" title="同时实现目标 3"></a>同时实现目标 3</h3><p>有两种方式可以同时实现目标 2</p>
+<h4 id="第一种方法"><a href="#第一种方法" class="headerlink" title="第一种方法"></a>第一种方法</h4><ol>
+<li><p>需要自己定义 Descriptor Format,</p>
+</li>
+<li><p>需要在 dependencySet/unpackOptions/excludes/exclude 中定义</p>
+</li>
+<li><p>不是在 dependencySet/excludes/exclude 中定义</p>
+</li>
+<li><p>dependencySet/unpackOptions/excludes/exclude 中定义的是<strong>在打包好之后的目录结构中</strong>需要排除内容</p>
+</li>
+<li><p>dependencySet/excludes/exclude 中定义的是需要排除的包, 如: <a target="_blank" rel="noopener" href="http://maven.apache.org/plugins/maven-assembly-plugin/examples/single/including-and-excluding-artifacts.html">http://maven.apache.org/plugins/maven-assembly-plugin/examples/single/including-and-excluding-artifacts.html</a></p>
+</li>
+</ol>
+<p>例子: 排除 netty</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>io.netty:netty-all<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>例子如下:</p>
+<p>pom 文件配置:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-assembly-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">archive</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">manifest</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">mainClass</span>&gt;</span>cc.apomelo.test.Main<span class="tag">&lt;/<span class="name">mainClass</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">archive</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">descriptors</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">descriptor</span>&gt;</span>src/main/resources/assembly.xml<span class="tag">&lt;/<span class="name">descriptor</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">descriptors</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">finalName</span>&gt;</span>$&#123;name&#125;<span class="tag">&lt;/<span class="name">finalName</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span>&gt;</span>make-assembly<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">goal</span>&gt;</span>single<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>assembly.xml 文件配置:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&#x27;1.0&#x27; encoding=&#x27;UTF-8&#x27;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">assembly</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/ASSEMBLY/2.0.0&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>deploy<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">formats</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">format</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">format</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">formats</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">        表示unpack出的class文件是根目录, 而不是pom文件中定义的工程名</span></span><br><span class="line"><span class="comment">        官方定义:</span></span><br><span class="line"><span class="comment">        Sets the base directory of the resulting assembly archive.</span></span><br><span class="line"><span class="comment">        If this is not set and includeBaseDirectory == true,</span></span><br><span class="line"><span class="comment">        $&#123;project.build.finalName&#125; will be used instead.</span></span><br><span class="line"><span class="comment">        (Since 2.2-beta-1)</span></span><br><span class="line"><span class="comment">    --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">baseDirectory</span>&gt;</span>/<span class="tag">&lt;/<span class="name">baseDirectory</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencySets</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependencySet</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">unpack</span>&gt;</span>true<span class="tag">&lt;/<span class="name">unpack</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">useProjectArtifact</span>&gt;</span>true<span class="tag">&lt;/<span class="name">useProjectArtifact</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>/<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">unpackOptions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">                        排除src/main/resources/proto 目录及目录下所有内容,</span></span><br><span class="line"><span class="comment">                        最终exclude中如何写,</span></span><br><span class="line"><span class="comment">                        需要看打包里面基于baseDirectory的相对目录。</span></span><br><span class="line"><span class="comment">                    --&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>proto/**<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">unpackOptions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependencySet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencySets</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 用以下方式不能排除jar包中的proto文件 --&gt;</span></span><br><span class="line"><span class="comment">&lt;!--    &lt;fileSets&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--        &lt;fileSet&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--            &lt;directory&gt;src/main/resources&lt;/directory&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--            &lt;outputDirectory&gt;/&lt;/outputDirectory&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--            &lt;excludes&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--                &lt;exclude&gt;proto/**&lt;/exclude&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--            &lt;/excludes&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--        &lt;/fileSet&gt;--&gt;</span></span><br><span class="line"><span class="comment">&lt;!--    &lt;/fileSets&gt;--&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">assembly</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="第二种方法"><a href="#第二种方法" class="headerlink" title="第二种方法"></a>第二种方法</h4><p>pom 文件配置:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources/$&#123;profiles.active&#125;<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 把不想要打包进jar包的内容过滤 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>test/*<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>online/*<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>proto/*<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-assembly-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">archive</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">manifest</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">mainClass</span>&gt;</span>cc.apomelo.test.Main<span class="tag">&lt;/<span class="name">mainClass</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">archive</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">descriptors</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">descriptor</span>&gt;</span>src/main/resources/assembly.xml<span class="tag">&lt;/<span class="name">descriptor</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">descriptors</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">finalName</span>&gt;</span>$&#123;name&#125;<span class="tag">&lt;/<span class="name">finalName</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">id</span>&gt;</span>make-assembly<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">goal</span>&gt;</span>single<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>assembly.xml 文件如下:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&#x27;1.0&#x27; encoding=&#x27;UTF-8&#x27;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">assembly</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/ASSEMBLY/2.0.0&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>deploy<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">formats</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">format</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">format</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">formats</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">baseDirectory</span>&gt;</span>/<span class="tag">&lt;/<span class="name">baseDirectory</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencySets</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependencySet</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">unpack</span>&gt;</span>true<span class="tag">&lt;/<span class="name">unpack</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">useProjectArtifact</span>&gt;</span>true<span class="tag">&lt;/<span class="name">useProjectArtifact</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>/<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">unpackOptions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>proto/**<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">unpackOptions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependencySet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencySets</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">assembly</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="同时实现目标-4"><a href="#同时实现目标-4" class="headerlink" title="同时实现目标 4"></a>同时实现目标 4</h3><p>pom 文件配置:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">resources</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources/$&#123;profiles.active&#125;<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 把不想要打包进jar包的内容过滤 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>test/*<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>online/*<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>proto/*<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resource</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">resources</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">plugins</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-assembly-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">archive</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">manifest</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">mainClass</span>&gt;</span>cc.apomelo.test.Main<span class="tag">&lt;/<span class="name">mainClass</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">manifest</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">archive</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">descriptors</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">descriptor</span>&gt;</span>src/main/resources/assembly.xml<span class="tag">&lt;/<span class="name">descriptor</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">descriptor</span>&gt;</span>src/main/resources/assembly-gz.xml<span class="tag">&lt;/<span class="name">descriptor</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">descriptors</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">finalName</span>&gt;</span>$&#123;name&#125;<span class="tag">&lt;/<span class="name">finalName</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">executions</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">execution</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">id</span>&gt;</span>make-assembly<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">phase</span>&gt;</span>package<span class="tag">&lt;/<span class="name">phase</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">goals</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">goal</span>&gt;</span>single<span class="tag">&lt;/<span class="name">goal</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">goals</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">execution</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">executions</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugins</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>assembly.xml 文件如下:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&#x27;1.0&#x27; encoding=&#x27;UTF-8&#x27;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">assembly</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/ASSEMBLY/2.0.0&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>deploy<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">formats</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">format</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">format</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">formats</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">baseDirectory</span>&gt;</span>/<span class="tag">&lt;/<span class="name">baseDirectory</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencySets</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependencySet</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">unpack</span>&gt;</span>true<span class="tag">&lt;/<span class="name">unpack</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">useProjectArtifact</span>&gt;</span>true<span class="tag">&lt;/<span class="name">useProjectArtifact</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>/<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">unpackOptions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>proto/**<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">unpackOptions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependencySet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencySets</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">assembly</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>assembly-gz.xml 文件如下:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">assembly</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/ASSEMBLY/2.0.0&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>deploy<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">formats</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">format</span>&gt;</span>tar.gz<span class="tag">&lt;/<span class="name">format</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">formats</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">baseDirectory</span>&gt;</span>/$&#123;name&#125;<span class="tag">&lt;/<span class="name">baseDirectory</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">fileSets</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">fileSet</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources/bin<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>bin<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileMode</span>&gt;</span>0755<span class="tag">&lt;/<span class="name">fileMode</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">fileSet</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">fileSet</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">directory</span>&gt;</span>src/main/resources/$&#123;profiles.active&#125;<span class="tag">&lt;/<span class="name">directory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>conf<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileMode</span>&gt;</span>0755<span class="tag">&lt;/<span class="name">fileMode</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">fileSet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">fileSets</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">files</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">file</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">source</span>&gt;</span>target/$&#123;name&#125;-deploy.jar<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>lib<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">destName</span>&gt;</span>$&#123;name&#125;.jar<span class="tag">&lt;/<span class="name">destName</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">fileMode</span>&gt;</span>0755<span class="tag">&lt;/<span class="name">fileMode</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">file</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">files</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">assembly</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="打入本地包"><a href="#打入本地包" class="headerlink" title="打入本地包"></a>打入本地包</h3><p>可能遇到的问题: Maven 项目中引用了本地的 jar 包, 打包发现打包不进去（已经可以编译通过）</p>
+<p>解决方案: pom 文件中加入本地包依赖</p>
+<p>pom 文件中增加:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>cc.apomelo.test<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>   <span class="comment">&lt;!-- 随便写, 但是尽量有规律 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>test-proto<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>   <span class="comment">&lt;!-- 随便写, 但是尽量有规律 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.0.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span>   <span class="comment">&lt;!-- 随便写, 但是尽量有规律 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">scope</span>&gt;</span>system<span class="tag">&lt;/<span class="name">scope</span>&gt;</span>   <span class="comment">&lt;!-- 一定是system --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">systemPath</span>&gt;</span>$&#123;basedir&#125;/lib/battle.jar<span class="tag">&lt;/<span class="name">systemPath</span>&gt;</span>   <span class="comment">&lt;!-- 包所在目录 --&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>assembly.xml 文件增加 scope 为 system 的依赖包:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">assembly</span> <span class="attr">xmlns</span>=<span class="string">&quot;http://maven.apache.org/ASSEMBLY/2.0.0&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag">          <span class="attr">xsi:schemaLocation</span>=<span class="string">&quot;http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">id</span>&gt;</span>deploy<span class="tag">&lt;/<span class="name">id</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">formats</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">format</span>&gt;</span>jar<span class="tag">&lt;/<span class="name">format</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">formats</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">baseDirectory</span>&gt;</span>/<span class="tag">&lt;/<span class="name">baseDirectory</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">dependencySets</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependencySet</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 增加scope为system的依赖包 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>system<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">unpack</span>&gt;</span>true<span class="tag">&lt;/<span class="name">unpack</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">useProjectArtifact</span>&gt;</span>true<span class="tag">&lt;/<span class="name">useProjectArtifact</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>/<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">unpackOptions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>proto/**<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">unpackOptions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependencySet</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">dependencySet</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">scope</span>&gt;</span>runtime<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">unpack</span>&gt;</span>true<span class="tag">&lt;/<span class="name">unpack</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">useProjectArtifact</span>&gt;</span>true<span class="tag">&lt;/<span class="name">useProjectArtifact</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">outputDirectory</span>&gt;</span>/<span class="tag">&lt;/<span class="name">outputDirectory</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">unpackOptions</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>proto/**<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">unpackOptions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependencySet</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependencySets</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">assembly</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="maven-编译"><a href="#maven-编译" class="headerlink" title="maven 编译"></a>maven 编译</h2><h3 id="引用本地包后编译报错"><a href="#引用本地包后编译报错" class="headerlink" title="引用本地包后编译报错"></a>引用本地包后编译报错</h3><p>问题: Maven 项目中引用了本地的 jar 包, 编译时报错: compile (default-compile) on project xxx: Compilation failure: Compilation failure: 程序包*.*.*不存在</p>
+<p>插件: maven-compiler-plugin</p>
+<p>解决方案:</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">source</span>&gt;</span>$&#123;java.version&#125;<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">target</span>&gt;</span>$&#123;java.version&#125;<span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>**/old/**<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 引入外部包所在的目录 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">compilerArguments</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">extdirs</span>&gt;</span>lib<span class="tag">&lt;/<span class="name">extdirs</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">compilerArguments</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br><span class="line"></span><br><span class="line">// 3.1版本之后用下面</span><br><span class="line"><span class="tag">&lt;<span class="name">plugin</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.maven.plugins<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>maven-compiler-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">configuration</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">source</span>&gt;</span>$&#123;java.version&#125;<span class="tag">&lt;/<span class="name">source</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">target</span>&gt;</span>$&#123;java.version&#125;<span class="tag">&lt;/<span class="name">target</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">excludes</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">exclude</span>&gt;</span>**/old/**<span class="tag">&lt;/<span class="name">exclude</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">excludes</span>&gt;</span></span><br><span class="line">        <span class="comment">&lt;!-- 引入外部包所在的目录 --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">compilerArgs</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">arg</span>&gt;</span>-extdirs<span class="tag">&lt;/<span class="name">arg</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">arg</span>&gt;</span>lib<span class="tag">&lt;/<span class="name">arg</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">compilerArgs</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">configuration</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">plugin</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>参考资料:</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html">http://maven.apache.org/plugins/maven-assembly-plugin/assembly.html</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/zqs305082800/article/details/80695675">https://blog.csdn.net/zqs305082800/article/details/80695675</a></li>
+<li><a target="_blank" rel="noopener" href="http://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html">http://maven.apache.org/plugins/maven-compiler-plugin/compile-mojo.html</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.doc88.com/p-5174925783108.html">http://www.doc88.com/p-5174925783108.html</a></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/tool/2019-09-05/jenkins%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/tool/2019-09-05/jenkins%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">jenkins部署及使用</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-09-05 00:00:00" itemprop="dateCreated datePublished" datetime="2019-09-05T00:00:00+08:00">2019-09-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/tool/" itemprop="url" rel="index"><span itemprop="name">tool</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/posts/tool/2019-09-05/jenkins%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="jenkins部署及使用" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h2 id="jdk版本"><a href="#jdk版本" class="headerlink" title="jdk版本"></a>jdk版本</h2><h4 id="版本"><a href="#版本" class="headerlink" title="版本"></a>版本</h4><p>V1.8</p>
+<p>也可用新版本</p>
+<p><a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/javase-downloads.html">Java jdk 下载地址</a></p>
+<h2 id="jenkins"><a href="#jenkins" class="headerlink" title="jenkins"></a>jenkins</h2><h4 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h4><p>Ubuntu 18.04.2 LTS</p>
+<h4 id="安装方式"><a href="#安装方式" class="headerlink" title="安装方式"></a>安装方式</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -</span><br><span class="line">sudo sh -c <span class="string">&#x27;echo deb http://pkg.jenkins.io/debian-stable binary/ &gt; /etc/apt/sources.list.d/jenkins.list&#x27;</span></span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install jenkins</span><br></pre></td></tr></table></figure>
+
+<p>更改<code>/etc/init.d/jenkins</code>中配置: </p>
+<ol>
+<li>$HTTP_PORT后面端口为想要的端口, 如: 8800</li>
+<li>PATH中加上本机java所在目录, 如: /usr/local/java/jdk1.8.0_212/bin</li>
+</ol>
+<p>更改<code>/etc/default/jenkins</code>中设置: </p>
+<ol>
+<li>JAVA_ARGS=”-Djava.awt.headless=true -Xmx512m”, 作用是限制jenkins内存, 只是本机构建, 512m就够用了</li>
+<li>HTTP_PORT=8800 修改http端口</li>
+</ol>
+<p>其他默认即可</p>
+<p>首次启动选择默认jenkins插件即可, 其他跟着一步一步操作即可</p>
+<p>用到maven或者其他构建工具，需要在<em>全局工具配置</em>中进行配置</p>
+<h4 id="构建项目"><a href="#构建项目" class="headerlink" title="构建项目"></a>构建项目</h4><p>一般来说选择<em>构建一个自由风格的软件项目</em>这一条就好，其他后需要的请在官网查看</p>
+<ol>
+<li>General, 根据需要选择构建信息，如果选择参数化构建过程，参数的名称在下面能够用到</li>
+<li>源码管理，根据需要选择对应的代码管理，git或者svn</li>
+<li>构建触发器，自行选择</li>
+<li>构建环境，一般情况用不到，可以根据项目需求选用</li>
+<li>构建，可以进行maven构建、shell执行等等</li>
+</ol>
+<p><strong>注意事项</strong></p>
+<ol>
+<li>部署应用之后如果应用刚起来就被jenkins杀掉，则需要在启动前加 <code>BUILD_ID=project</code> 这一行, project替换为自己的项目名<br> 如：构建好java应用，然后在<em>构建</em>那一栏增加执行shell，把构建好的Java应用部署到指定目录，然后用命令启动该程序，在启动该程序前需要加入该语句<br>代码示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;pwd: &quot;</span>`<span class="built_in">pwd</span>`</span><br><span class="line"><span class="built_in">cd</span> ./target</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;pwd: &quot;</span>`<span class="built_in">pwd</span>`</span><br><span class="line">tar -xzvf project-deploy.tar.gz</span><br><span class="line"></span><br><span class="line">BUILD_ID=project</span><br><span class="line">bash ./project/bin/deploy.sh <span class="variable">$&#123;deploy_path&#125;</span> <span class="variable">$&#123;run_mode&#125;</span></span><br></pre></td></tr></table></figure>
+上面的<code>deploy.sh</code>脚本自己根据需要自行编写，<em>deploy_path</em>和<em>run_mode</em>是<em>General</em>步骤中的参数名称</li>
+</ol>
+<p>除了BUILD_ID还有其他的可用的环境变量，<em>构建</em>步骤中的<em>执行shell</em>下面可以查看比较全的变量，也可以在官网看可以使用的<a target="_blank" rel="noopener" href="https://www.jenkins.io/zh/doc/book/pipeline/jenkinsfile/#%E4%BD%BF%E7%94%A8%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">环境变量</a></p>
+<p><a target="_blank" rel="noopener" href="https://jenkins.io/zh/doc/book/installing/">官方参考文档</a></p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/architecture/2019-07-26/rest%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/architecture/2019-07-26/rest%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">REST软件架构</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-07-26 00:00:00" itemprop="dateCreated datePublished" datetime="2019-07-26T00:00:00+08:00">2019-07-26</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-07-30 00:00:00" itemprop="dateModified" datetime="2019-07-30T00:00:00+08:00">2019-07-30</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/architecture/" itemprop="url" rel="index"><span itemprop="name">architecture</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/posts/architecture/2019-07-26/rest%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/" class="post-meta-item leancloud_visitors" data-flag-title="REST软件架构" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h4 id="Web技术发展"><a href="#Web技术发展" class="headerlink" title="Web技术发展"></a>Web技术发展</h4><p>World Wide Web（万维网），简称Web，是一种基于超文本和HTTP的、全球性的、动态交互的、跨平台的分布式图形信息系统。</p>
+<h5 id="web形式发展"><a href="#web形式发展" class="headerlink" title="web形式发展"></a>web形式发展</h5><p>先后经历了web 1.0 —&gt; web 2.0 —&gt; web 3.0</p>
+<p><strong>web 1.0</strong><br>开始于1994年，主要是静态的HTML页面发布信息，其特点是：信息杂乱无序，只满足了人们对信息的搜索、传递需求。</p>
+<p><strong>web 2.0</strong><br>开始于2004年，在web 2.0中，软件被当成一种服务，Internet从一系列网站演化成一个成熟的为最终用户提供网络应用的服务平台，强调用户的参与、在线的网络协作、数据储存的网络化、社会关系网络、RSS应用以及文件的共享等成为了web 2.0发展的主要支撑和表现。web 2.0模式大大激发了创造和创新的积极性，使Internet重新变得生机勃勃。web 2.0的典型应用包括Blog、Wiki、RSS、Tag、SNS、P2P、IM等。其特点是：更加注重交互性；核心是指导思想；与1.0没有绝对的界限。</p>
+<p><strong>web 3.0</strong><br>正在步入3.0，其特点是：智能化及个性化搜索引擎；数据的自由整合与有效聚合；适合多种终端平台，实现信息服务的普适性。</p>
+<h6 id="web开发技术几个阶段"><a href="#web开发技术几个阶段" class="headerlink" title="web开发技术几个阶段"></a>web开发技术几个阶段</h6><ol>
+<li><p>静态内容阶段<br>这个阶段web服务器作为共享文件服务器，存的大多是静态的HTML文档。</p>
+</li>
+<li><p>CGI程序阶段<br>这个阶段web服务器增加了一些编程API，通过API可以向客户端提供一些动态变化的内容。通信使用CGI（Common Gateway Interface）协议。</p>
+</li>
+<li><p>脚本语言阶段<br>这个阶段服务端出现ASP、PHP、JSP等，浏览器端出现Java Applet、Js等，提供了更加丰富的内容。</p>
+</li>
+<li><p>瘦客户端应用阶段<br>这个阶段出现了MVC模式，服务器端生成全部的动态内容。</p>
+</li>
+<li><p>RIA应用阶段<br>这个阶段出现了大量的RIA（Rich Internet Applications）技术，极大的完善了Web的用户体验，比如Ajax。</p>
+</li>
+<li><p>移动Web应用阶段<br>这个阶段出现了大量面向移动设备的Web应用技术，除了IOS、Android等操作系统平台原声的开发技术外，基于H5的开发技术越来越流行。</p>
+</li>
+</ol>
+<h5 id="web技术结构基石"><a href="#web技术结构基石" class="headerlink" title="web技术结构基石"></a>web技术结构基石</h5><ol>
+<li><p>URI</p>
+</li>
+<li><p>HTTP</p>
+</li>
+<li><p>HTML</p>
+</li>
+<li><p>MIME</p>
+</li>
+</ol>
+<h4 id="REST介绍"><a href="#REST介绍" class="headerlink" title="REST介绍"></a>REST介绍</h4><p>REST（Representational State Transfer, 表现层状态转换）软件架构是由Roy Thomas Fielding博士在2000年首次提出的。他为我们描绘了开发基于互联网的网络软件的蓝图。REST软件架构是一个抽象的概念，是一种为了实现这一互联网的超媒体分布式系统的行动指南。</p>
+<p>REST是目前世界上最成功的分布式应用架构风格（Web），<br>REST是所有Web应用都应该遵守的架构指导原则，违反了REST<br>的指导原则，网站应用功能仍能实现，但会付出很多代价，特别是<br>大流量的网站。</p>
+<p>在不同阶段，REST给我们不同的印象：</p>
+<ul>
+<li>没接触REST时，会认为REST是一个技术</li>
+<li>没有深入理解REST，日常使用仅限于修改REST风格的URI、增加PUT、DELETE操作等，会认为REST是一种具体的规范</li>
+<li>深入理解之后，会发现REST是一种内含丰富的架构风格</li>
+</ul>
+<h4 id="REST的五个关键词"><a href="#REST的五个关键词" class="headerlink" title="REST的五个关键词"></a>REST的五个关键词</h4><h5 id="1-资源（Resource）"><a href="#1-资源（Resource）" class="headerlink" title="1. 资源（Resource）"></a>1. 资源（Resource）</h5><p>资源是一种看待服务器的方式，服务器就是由很多离散的资源组成。资源是以名词为核心来组织的，首先关注的应该是名词。一个资源由一个或多个URI来标识，URI也即是资源的名称，客户端对某个资源感兴趣即通过URI来交互。</p>
+<h5 id="2-资源的表述（Representation）"><a href="#2-资源的表述（Representation）" class="headerlink" title="2. 资源的表述（Representation）"></a>2. 资源的表述（Representation）</h5><p>资源表述是指某一个资源某个时刻的状态描述，用于在客户端和服务端转移。例如：HTML/XML/JSON/图片/音频都是资源表述的格式。在通常的REST开发下，一般使用JSON作为HTTP请求响应的资源表述。</p>
+<h5 id="3-状态转移（State-Transfer）"><a href="#3-状态转移（State-Transfer）" class="headerlink" title="3. 状态转移（State Transfer）"></a>3. 状态转移（State Transfer）</h5><p>状态转移是指通过转移和操作资源的表述，来实现操作资源的目的。在REST开发下，通常使用HTTP的GET/POST/PUT/DELETE方法操作。</p>
+<h5 id="4-统一接口（Uniform-Interface）"><a href="#4-统一接口（Uniform-Interface）" class="headerlink" title="4. 统一接口（Uniform Interface）"></a>4. 统一接口（Uniform Interface）</h5><p><span id="统一接口"></span>REST要求必须使用统一的接口来对资源进行操作。</p>
+<p>REST要求对资源执行的操作，操作语义必须在HTPP消息体之前的部分完全表达，不能将操作语义封装到消息体内部。这样做为了提高交互可见性，便于通信的中间件实现缓存和安全审核。</p>
+<p>REST是不依赖于任何协议的，但目前几乎所有的REST都是基于HTTP协议的。接口应该使用标准的HTTP方法如GET，PUT和POST，并遵循这些方法的语义。</p>
+<p>非REST的接口，1000个人能写出1000个接口，例如对机器人的操作：<br>（1）/api/findRobots<br>（2）/api/robots/select<br>REST API：<br>&emsp;GET    /rest/robots/{id} 查询一个机器人<br>&emsp;POST   /rest/robots      新建一个机器人<br>&emsp;PUT    /rest/robots/{id} 更新一个机器人<br>&emsp;DELETE /rest/robots/{id} 删除一个机器人</p>
+<p><strong>统一接口主要包括：</strong><br>（1）7个HTTP方法：GET/POST/PUT/DELETE/PATCH/HEAD/OPTIONS<br>（2）HTTP头信息（可自定义）<br>（3）HTTP响应状态代码（可自定义）<br>（4）一套标准的内容协商机制<br>（5）一套标准的缓存机制<br>（6）一套标准的客户端身份认证机制</p>
+<p><strong>HTTP方法幂等性</strong><br>幂等是指一次或多次请求一个资源的时候，应该具有相同的副作用。<br><strong>HTTP方法安全性</strong><br>安全是指对原有资源没有任何影响，安全性不代表请求一定不产生副作用。比如GET请求增加计数器，这种产生的副作用是服务端自作主张，服务端在设计的时候应该不让副作用太大，客户端可以这些请求不会产生副作用。</p>
+<p>GET: 安全且幂等，用来获取资源表示<br>POST: 不安全且不幂等，用来创建资源或用于部分更新资源<br>PUT: 不安全且幂等，用替换的方式更新资源<br>DELETE: 不安全且幂等，用于删除一个资源</p>
+<p>PUT和POST的区别：<br>PUT和POST最大的区别是PUT是幂等的，此外PUT需要完成的URI。<br>PUT    /rest/robots/        是不会成功的，URI不能定位到具体的资源<br>PUT    /rest/robots/{1234}  是会成功的，如果存在，则更新这个robots</p>
+<h5 id="5-超文本驱动（Hypertext-Driven）"><a href="#5-超文本驱动（Hypertext-Driven）" class="headerlink" title="5. 超文本驱动（Hypertext Driven）"></a>5. 超文本驱动（Hypertext Driven）</h5><p>2008.10.28Fielding博士针对REST的滥用，发表了《REST API 必须是超文本驱动的》。他指出除非应用状态引擎是超文本驱动的，否则它就不是RESTFUL。</p>
+<p>超文本驱动是客户端不再需要将某些接口的 URI 硬编码在代码中，唯一需要存储的只是 API 的 HOST 地址，能够非常有效的降低客户端与服务端之间的耦合，服务端对 URI 的任何改动都不会影响到客户端的稳定。</p>
+<h4 id="REST架构约束"><a href="#REST架构约束" class="headerlink" title="REST架构约束"></a>REST架构约束</h4><h5 id="1-客户-服务器（Client-Server）"><a href="#1-客户-服务器（Client-Server）" class="headerlink" title="1. 客户-服务器（Client-Server）"></a>1. 客户-服务器（Client-Server）</h5><p>这个约束是基于客户端-服务器架构背后的原则—–关注点分离。通过分离用户界面和数据存储这两个关注点，提高了用户界面跨平台的可能性，通过简化服务器组件提高了其伸缩性。</p>
+<h5 id="2-无状态（Stateless）"><a href="#2-无状态（Stateless）" class="headerlink" title="2. 无状态（Stateless）"></a>2. 无状态（Stateless）</h5><p>服务器不保存除单次请求外的通信状态，REST要求状态要么被放入资源状态中，要么保存在客户端，从客户端发出的每个请求都包含了服务端所必须的信息。</p>
+<p>无状态约束使服务器的变化对客户端不可见，因而在连续的请求中，客户端并不依赖于同一台服务器，一台服务器坏掉了，客户端感知不到。</p>
+<h5 id="3-可缓存（Cachable）"><a href="#3-可缓存（Cachable）" class="headerlink" title="3. 可缓存（Cachable）"></a>3. 可缓存（Cachable）</h5><p>互联网中的客户端和中间层服务器可以缓存响应。</p>
+<p>因此响应必须直接或间接定义自身是否可被缓存，以免客户端使用过期的响应数据来发送其它请求。</p>
+<p>良好的缓存策略可以有效减少客户端-服务器之间的交互，从而进一步提高系统的可伸缩性和性能。</p>
+<h5 id="4-分层系统-（Layered-system）"><a href="#4-分层系统-（Layered-system）" class="headerlink" title="4. 分层系统 （Layered system）"></a>4. 分层系统 （Layered system）</h5><p>通过限制组件的行为（即，每个组件只能“看到”与其交互的紧邻层），将架构分解为若干等级的层。</p>
+<p>客户端通常无法判断它是否是直接连接到后端服务器，还是中间服务器。</p>
+<p>中间服务器可通过启用负载平衡，并通过提供共享高速缓存来提高系统的可扩展性。</p>
+<p>当然也可以强制执行安全政策。</p>
+<h5 id="5-统一接口-（Unitform-interface）"><a href="#5-统一接口-（Unitform-interface）" class="headerlink" title="5. 统一接口 （Unitform interface）"></a>5. 统一接口 （Unitform interface）</h5><p><a href="#%E7%BB%9F%E4%B8%80%E6%8E%A5%E5%8F%A3">如上</a><br>(1) 资源标志的唯一性<br>(2) 资源的自描述性<br>(3) 超媒体驱动型<br>(4) 消息的自描述性</p>
+<h5 id="6-按需代码（可选）"><a href="#6-按需代码（可选）" class="headerlink" title="6. 按需代码（可选）"></a>6. 按需代码（可选）</h5><p>支持通过下载并执行一些代码（例如Java Applet、Flash或JavaScript），对客户端的功能进行扩展。</p>
+<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ol>
+<li><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Web/150564">https://baike.baidu.com/item/Web/150564</a></li>
+<li><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/REST%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/2018579?fr=aladdin">https://baike.baidu.com/item/REST%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/2018579?fr=aladdin</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm">Roy Thomas Fielding博士论文地址</a></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/other/2019-06-29/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/other/2019-06-29/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">杂七杂八笔记</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-06-29 00:00:00" itemprop="dateCreated datePublished" datetime="2019-06-29T00:00:00+08:00">2019-06-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/posts/other/2019-06-29/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="杂七杂八笔记" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>平日积累的一些小笔记，因比较杂且短，先放到本文中。</p>
+<h3 id="正则"><a href="#正则" class="headerlink" title="正则"></a>正则</h3><p>$0——$9</p>
+<p>$0代表完整的模式匹配文本（想index.css的话它全部都变成的斜体）,$1代表第一个x小括号的字串</p>
+<p>比如 /gai([\w]+?)over([\d]+)/ 匹配 gainover123 $1= 括号里的 n $2= 第2个括号里的 123</p>
+<h3 id="jdb命令"><a href="#jdb命令" class="headerlink" title="jdb命令"></a>jdb命令</h3><p>jdb -connect sun.jvm.hotspot.jdi.SAPIDAttachingConnector:pid=<br>jdb -attach 127.0.0.1:<br>stop in org.zoolu.iax.protocol.peer.Peer.handleRecvFrame(byte[])<br>clear org.zoolu.iax.protocol.peer.Peer.handleRecvFrame(byte[])</p>
+<h3 id="Component和Repository注入两次解决方案"><a href="#Component和Repository注入两次解决方案" class="headerlink" title="Component和Repository注入两次解决方案"></a>Component和Repository注入两次解决方案</h3><p>因为一些需要，所以需要加个定时器，并且在InitializingBean中的afterPropertiesSet中启动。完成后，加了一些log，看一下是否成功。</p>
+<p>最初的时候是在加了@Repository注解的类里面实现的，当时日志就重复打印了一次，一共打印了两次，但是当时在调试主要功能，也没太注意。后来，为了Dao类的纯粹性，就把定时器移到了加了@Service的类里面。这时候，日志打印次数正常。</p>
+<p>后来，功能调试OK后，觉得放在Service中也不太合适，就新建了一个类，把定时器移到了Component中，然后运行，如果无误，就准备提交代码了。这时候，日志又重新打印了两次。</p>
+<p>然后首先想到的是去网上搜索，搜到的都是 加上@Scope(“singleton”)改为单例、把类上的@Component改为只加载一次的注解等等。</p>
+<p>后来，我就用debug模式，自己去跟踪，后来发现，我的代码中@Component和@Repository被加载了两次，@Controller和@Service被加载了一次。试了很多种方案，都没有用，想加个全局变量类控制一下定时任务，但是第二次注入相当于是重新注入，所以也没有用。后来发现是配置中自动扫描注解的配置有交集。</p>
+<p>在很多配置中一般都会把Spring-common.xml和Spring-MVC.xml进行分开配置，这种配置就行各施其职一样，显得特别清晰。</p>
+<p>在Spring-MVC.xml中只对@Controller进行扫描就可，作为一个控制器，其他的事情不做。</p>
+<p>在Spring-common.xml中只对一些事务逻辑的注解扫描。</p>
+<p>现在给定一个项目包的机构:<br>com.fq.controlller<br>com.fq.service</p>
+<p>正确的是：</p>
+<!-- 扫描@Controller注解 -->
+<p>&lt;context:component-scan base-package=”com.fq.controller”&gt;<br>    &lt;context:include-filter type=”annotation” expression=”org.springframework.stereotype.Controller” /&gt;<br></context:component-scan></p>
+<p>我的配置里面Spring-MVC.xml并没有具体到controller，而是com.fq.*</p>
+<p>所以我在Spring-MVC.xml中加入了exclude-filter</p>
+<!-- 扫描@Controller注解 -->
+<p>&lt;context:component-scan base-package=”com.fq.controller”&gt;<br>    &lt;context:include-filter type=”annotation” expression=”org.springframework.stereotype.Controller” /&gt;<br>    &lt;context:exclude-filter type=”annotation” expression=”org.springframework.stereotype.Service” /&gt;<br>    &lt;context:exclude-filter type=”annotation” expression=”org.springframework.stereotype.Repository” /&gt;<br>    &lt;context:exclude-filter type=”annotation” expression=”org.springframework.stereotype.Component” /&gt;<br></context:component-scan></p>
+<p>这样，确实是加载了一次，但是访问不了Controller。经过排查，发现Controlle并没有被加载，经过测试，发现是<br>&lt;context:exclude-filter type=”annotation” expression=”org.springframework.stereotype.Component” /&gt;<br>这条语句导致的。</p>
+<p>我把改为具体到Controller包，把那些exclude-filter都去掉之后，所有都正常了，但是还是对这个原因有些疑惑，然后我就看了一下include-filter和exclude-filter的区别。比较好的是下面这个文章，虽然短，但是描述的很清晰。</p>
+<p>include-filter和exclude-filter的区别 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/hanguocai/p/7783078.html">https://www.cnblogs.com/hanguocai/p/7783078.html</a></p>
+<p>需要把<a href="context:component-scan">context:component-scan</a>的use-default-filters属性设置为false，默认为true，同时需要把那些exclude-filter去掉</p>
+<h3 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h3><p>ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue)</p>
+<p>workQueue 还可能是 SynchronousQueue 队列</p>
+<p>当 workQueue 是 LinkedBlockingDeque<Runnable> 时，当需要执行的线程数大于 corePoolSize，则忽略 maximumPoolSize 和 keepAliveTime，在线程池里线程数达到 corePoolSize 后把之后的任务放到队列里，在队列满的时候才创建线程直到线程数达到 maximumPoolSize ，继续有任务时，抛出异常。</p>
+<p>当 workQueue 是 SynchronousQueue 时，当需要执行的线程数大于 corePoolSize，在线程池里的线程数达到 corePoolSize 后，继续创建线程执行任务；当线程池里的线程数达到 maximumPoolSize 后，则继续处理之前的任务，其他任务不再处理，且抛出异常。</p>
+<h3 id="yaml配置"><a href="#yaml配置" class="headerlink" title="yaml配置"></a>yaml配置</h3><p>Yaml文件被解析为Map形式</p>
+<p>“:”前是key，后是value</p>
+<p>每一行之前加”- “表示是数组或List</p>
+<p>字符串用双引号括起来，不会对里面的内容进行转意；<br>用单引号括起来，会对里面的内容进行转意，特殊字符最终只是一个普通的字符串数据，该是什么还是什么</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ol>
+<li>暂无</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/protocol/2019-05-28/protobuf%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/posts/protocol/2019-05-28/protobuf%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">protobuf使用详解</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2019-05-28 00:00:00" itemprop="dateCreated datePublished" datetime="2019-05-28T00:00:00+08:00">2019-05-28</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2019-06-28 00:00:00" itemprop="dateModified" datetime="2019-06-28T00:00:00+08:00">2019-06-28</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -537,7 +1118,7 @@
             </span>
 
           
-            <span id="/posts/protocol/2019-06-28/protobuf%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="protobuf使用详解" title="阅读次数">
+            <span id="/posts/protocol/2019-05-28/protobuf%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="protobuf使用详解" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -747,7 +1328,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/tool/2019-06-05/jenkins%E7%AC%94%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/java/2019-02-19/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95%E4%B8%93%E9%A2%98/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -761,7 +1342,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/posts/tool/2019-06-05/jenkins%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">jenkins部署及使用</a>
+            <a href="/posts/java/2019-02-19/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95%E4%B8%93%E9%A2%98/" class="post-title-link" itemprop="url">基础算法专题</a>
         </h2>
 
         <div class="post-meta">
@@ -771,370 +1352,7 @@
               </span>
               <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-06-05 00:00:00" itemprop="dateCreated datePublished" datetime="2019-06-05T00:00:00+08:00">2019-06-05</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/tool/" itemprop="url" rel="index"><span itemprop="name">tool</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/posts/tool/2019-06-05/jenkins%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="jenkins部署及使用" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="jdk版本"><a href="#jdk版本" class="headerlink" title="jdk版本"></a>jdk版本</h2><h4 id="版本"><a href="#版本" class="headerlink" title="版本"></a>版本</h4><p>V1.8</p>
-<p>也可用新版本</p>
-<p><a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/javase-downloads.html">Java jdk 下载地址</a></p>
-<h2 id="jenkins"><a href="#jenkins" class="headerlink" title="jenkins"></a>jenkins</h2><h4 id="安装环境"><a href="#安装环境" class="headerlink" title="安装环境"></a>安装环境</h4><p>Ubuntu 18.04.2 LTS</p>
-<h4 id="安装方式"><a href="#安装方式" class="headerlink" title="安装方式"></a>安装方式</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">wget -q -O - https://pkg.jenkins.io/debian/jenkins.io.key | sudo apt-key add -</span><br><span class="line">sudo sh -c <span class="string">&#x27;echo deb http://pkg.jenkins.io/debian-stable binary/ &gt; /etc/apt/sources.list.d/jenkins.list&#x27;</span></span><br><span class="line">sudo apt-get update</span><br><span class="line">sudo apt-get install jenkins</span><br></pre></td></tr></table></figure>
-
-<p>更改<code>/etc/init.d/jenkins</code>中配置: </p>
-<ol>
-<li>$HTTP_PORT后面端口为想要的端口, 如: 8800</li>
-<li>PATH中加上本机java所在目录, 如: /usr/local/java/jdk1.8.0_212/bin</li>
-</ol>
-<p>更改<code>/etc/default/jenkins</code>中设置: </p>
-<ol>
-<li>JAVA_ARGS=”-Djava.awt.headless=true -Xmx512m”, 作用是限制jenkins内存, 只是本机构建, 512m就够用了</li>
-<li>HTTP_PORT=8800 修改http端口</li>
-</ol>
-<p>其他默认即可</p>
-<p>首次启动选择默认jenkins插件即可, 其他跟着一步一步操作即可</p>
-<p>用到maven或者其他构建工具，需要在<em>全局工具配置</em>中进行配置</p>
-<h4 id="构建项目"><a href="#构建项目" class="headerlink" title="构建项目"></a>构建项目</h4><p>一般来说选择<em>构建一个自由风格的软件项目</em>这一条就好，其他后需要的请在官网查看</p>
-<ol>
-<li>General, 根据需要选择构建信息，如果选择参数化构建过程，参数的名称在下面能够用到</li>
-<li>源码管理，根据需要选择对应的代码管理，git或者svn</li>
-<li>构建触发器，自行选择</li>
-<li>构建环境，一般情况用不到，可以根据项目需求选用</li>
-<li>构建，可以进行maven构建、shell执行等等</li>
-</ol>
-<p><strong>注意事项</strong></p>
-<ol>
-<li>部署应用之后如果应用刚起来就被jenkins杀掉，则需要在启动前加 <code>BUILD_ID=project</code> 这一行, project替换为自己的项目名<br> 如：构建好java应用，然后在<em>构建</em>那一栏增加执行shell，把构建好的Java应用部署到指定目录，然后用命令启动该程序，在启动该程序前需要加入该语句<br>代码示例：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;pwd: &quot;</span>`<span class="built_in">pwd</span>`</span><br><span class="line"><span class="built_in">cd</span> ./target</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;pwd: &quot;</span>`<span class="built_in">pwd</span>`</span><br><span class="line">tar -xzvf project-deploy.tar.gz</span><br><span class="line"></span><br><span class="line">BUILD_ID=project</span><br><span class="line">bash ./project/bin/deploy.sh <span class="variable">$&#123;deploy_path&#125;</span> <span class="variable">$&#123;run_mode&#125;</span></span><br></pre></td></tr></table></figure>
-上面的<code>deploy.sh</code>脚本自己根据需要自行编写，<em>deploy_path</em>和<em>run_mode</em>是<em>General</em>步骤中的参数名称</li>
-</ol>
-<p>除了BUILD_ID还有其他的可用的环境变量，<em>构建</em>步骤中的<em>执行shell</em>下面可以查看比较全的变量，也可以在官网看可以使用的<a target="_blank" rel="noopener" href="https://www.jenkins.io/zh/doc/book/pipeline/jenkinsfile/#%E4%BD%BF%E7%94%A8%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F">环境变量</a></p>
-<p><a target="_blank" rel="noopener" href="https://jenkins.io/zh/doc/book/installing/">官方参考文档</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/architecture/2019-04-26/rest%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Apomelo">
-      <meta itemprop="description" content="我有一壶酒，足以慰风尘。尽倾江海里，赠饮天下人。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Apomelo - 追逐">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/architecture/2019-04-26/rest%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/" class="post-title-link" itemprop="url">REST软件架构</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-04-26 00:00:00" itemprop="dateCreated datePublished" datetime="2019-04-26T00:00:00+08:00">2019-04-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-04-30 00:00:00" itemprop="dateModified" datetime="2019-04-30T00:00:00+08:00">2019-04-30</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/architecture/" itemprop="url" rel="index"><span itemprop="name">architecture</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/posts/architecture/2019-04-26/rest%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/" class="post-meta-item leancloud_visitors" data-flag-title="REST软件架构" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h4 id="Web技术发展"><a href="#Web技术发展" class="headerlink" title="Web技术发展"></a>Web技术发展</h4><p>World Wide Web（万维网），简称Web，是一种基于超文本和HTTP的、全球性的、动态交互的、跨平台的分布式图形信息系统。</p>
-<h5 id="web形式发展"><a href="#web形式发展" class="headerlink" title="web形式发展"></a>web形式发展</h5><p>先后经历了web 1.0 —&gt; web 2.0 —&gt; web 3.0</p>
-<p><strong>web 1.0</strong><br>开始于1994年，主要是静态的HTML页面发布信息，其特点是：信息杂乱无序，只满足了人们对信息的搜索、传递需求。</p>
-<p><strong>web 2.0</strong><br>开始于2004年，在web 2.0中，软件被当成一种服务，Internet从一系列网站演化成一个成熟的为最终用户提供网络应用的服务平台，强调用户的参与、在线的网络协作、数据储存的网络化、社会关系网络、RSS应用以及文件的共享等成为了web 2.0发展的主要支撑和表现。web 2.0模式大大激发了创造和创新的积极性，使Internet重新变得生机勃勃。web 2.0的典型应用包括Blog、Wiki、RSS、Tag、SNS、P2P、IM等。其特点是：更加注重交互性；核心是指导思想；与1.0没有绝对的界限。</p>
-<p><strong>web 3.0</strong><br>正在步入3.0，其特点是：智能化及个性化搜索引擎；数据的自由整合与有效聚合；适合多种终端平台，实现信息服务的普适性。</p>
-<h6 id="web开发技术几个阶段"><a href="#web开发技术几个阶段" class="headerlink" title="web开发技术几个阶段"></a>web开发技术几个阶段</h6><ol>
-<li><p>静态内容阶段<br>这个阶段web服务器作为共享文件服务器，存的大多是静态的HTML文档。</p>
-</li>
-<li><p>CGI程序阶段<br>这个阶段web服务器增加了一些编程API，通过API可以向客户端提供一些动态变化的内容。通信使用CGI（Common Gateway Interface）协议。</p>
-</li>
-<li><p>脚本语言阶段<br>这个阶段服务端出现ASP、PHP、JSP等，浏览器端出现Java Applet、Js等，提供了更加丰富的内容。</p>
-</li>
-<li><p>瘦客户端应用阶段<br>这个阶段出现了MVC模式，服务器端生成全部的动态内容。</p>
-</li>
-<li><p>RIA应用阶段<br>这个阶段出现了大量的RIA（Rich Internet Applications）技术，极大的完善了Web的用户体验，比如Ajax。</p>
-</li>
-<li><p>移动Web应用阶段<br>这个阶段出现了大量面向移动设备的Web应用技术，除了IOS、Android等操作系统平台原声的开发技术外，基于H5的开发技术越来越流行。</p>
-</li>
-</ol>
-<h5 id="web技术结构基石"><a href="#web技术结构基石" class="headerlink" title="web技术结构基石"></a>web技术结构基石</h5><ol>
-<li><p>URI</p>
-</li>
-<li><p>HTTP</p>
-</li>
-<li><p>HTML</p>
-</li>
-<li><p>MIME</p>
-</li>
-</ol>
-<h4 id="REST介绍"><a href="#REST介绍" class="headerlink" title="REST介绍"></a>REST介绍</h4><p>REST（Representational State Transfer, 表现层状态转换）软件架构是由Roy Thomas Fielding博士在2000年首次提出的。他为我们描绘了开发基于互联网的网络软件的蓝图。REST软件架构是一个抽象的概念，是一种为了实现这一互联网的超媒体分布式系统的行动指南。</p>
-<p>REST是目前世界上最成功的分布式应用架构风格（Web），<br>REST是所有Web应用都应该遵守的架构指导原则，违反了REST<br>的指导原则，网站应用功能仍能实现，但会付出很多代价，特别是<br>大流量的网站。</p>
-<p>在不同阶段，REST给我们不同的印象：</p>
-<ul>
-<li>没接触REST时，会认为REST是一个技术</li>
-<li>没有深入理解REST，日常使用仅限于修改REST风格的URI、增加PUT、DELETE操作等，会认为REST是一种具体的规范</li>
-<li>深入理解之后，会发现REST是一种内含丰富的架构风格</li>
-</ul>
-<h4 id="REST的五个关键词"><a href="#REST的五个关键词" class="headerlink" title="REST的五个关键词"></a>REST的五个关键词</h4><h5 id="1-资源（Resource）"><a href="#1-资源（Resource）" class="headerlink" title="1. 资源（Resource）"></a>1. 资源（Resource）</h5><p>资源是一种看待服务器的方式，服务器就是由很多离散的资源组成。资源是以名词为核心来组织的，首先关注的应该是名词。一个资源由一个或多个URI来标识，URI也即是资源的名称，客户端对某个资源感兴趣即通过URI来交互。</p>
-<h5 id="2-资源的表述（Representation）"><a href="#2-资源的表述（Representation）" class="headerlink" title="2. 资源的表述（Representation）"></a>2. 资源的表述（Representation）</h5><p>资源表述是指某一个资源某个时刻的状态描述，用于在客户端和服务端转移。例如：HTML/XML/JSON/图片/音频都是资源表述的格式。在通常的REST开发下，一般使用JSON作为HTTP请求响应的资源表述。</p>
-<h5 id="3-状态转移（State-Transfer）"><a href="#3-状态转移（State-Transfer）" class="headerlink" title="3. 状态转移（State Transfer）"></a>3. 状态转移（State Transfer）</h5><p>状态转移是指通过转移和操作资源的表述，来实现操作资源的目的。在REST开发下，通常使用HTTP的GET/POST/PUT/DELETE方法操作。</p>
-<h5 id="4-统一接口（Uniform-Interface）"><a href="#4-统一接口（Uniform-Interface）" class="headerlink" title="4. 统一接口（Uniform Interface）"></a>4. 统一接口（Uniform Interface）</h5><p><span id="统一接口"></span>REST要求必须使用统一的接口来对资源进行操作。</p>
-<p>REST要求对资源执行的操作，操作语义必须在HTPP消息体之前的部分完全表达，不能将操作语义封装到消息体内部。这样做为了提高交互可见性，便于通信的中间件实现缓存和安全审核。</p>
-<p>REST是不依赖于任何协议的，但目前几乎所有的REST都是基于HTTP协议的。接口应该使用标准的HTTP方法如GET，PUT和POST，并遵循这些方法的语义。</p>
-<p>非REST的接口，1000个人能写出1000个接口，例如对机器人的操作：<br>（1）/api/findRobots<br>（2）/api/robots/select<br>REST API：<br>&emsp;GET    /rest/robots/{id} 查询一个机器人<br>&emsp;POST   /rest/robots      新建一个机器人<br>&emsp;PUT    /rest/robots/{id} 更新一个机器人<br>&emsp;DELETE /rest/robots/{id} 删除一个机器人</p>
-<p><strong>统一接口主要包括：</strong><br>（1）7个HTTP方法：GET/POST/PUT/DELETE/PATCH/HEAD/OPTIONS<br>（2）HTTP头信息（可自定义）<br>（3）HTTP响应状态代码（可自定义）<br>（4）一套标准的内容协商机制<br>（5）一套标准的缓存机制<br>（6）一套标准的客户端身份认证机制</p>
-<p><strong>HTTP方法幂等性</strong><br>幂等是指一次或多次请求一个资源的时候，应该具有相同的副作用。<br><strong>HTTP方法安全性</strong><br>安全是指对原有资源没有任何影响，安全性不代表请求一定不产生副作用。比如GET请求增加计数器，这种产生的副作用是服务端自作主张，服务端在设计的时候应该不让副作用太大，客户端可以这些请求不会产生副作用。</p>
-<p>GET: 安全且幂等，用来获取资源表示<br>POST: 不安全且不幂等，用来创建资源或用于部分更新资源<br>PUT: 不安全且幂等，用替换的方式更新资源<br>DELETE: 不安全且幂等，用于删除一个资源</p>
-<p>PUT和POST的区别：<br>PUT和POST最大的区别是PUT是幂等的，此外PUT需要完成的URI。<br>PUT    /rest/robots/        是不会成功的，URI不能定位到具体的资源<br>PUT    /rest/robots/{1234}  是会成功的，如果存在，则更新这个robots</p>
-<h5 id="5-超文本驱动（Hypertext-Driven）"><a href="#5-超文本驱动（Hypertext-Driven）" class="headerlink" title="5. 超文本驱动（Hypertext Driven）"></a>5. 超文本驱动（Hypertext Driven）</h5><p>2008.10.28Fielding博士针对REST的滥用，发表了《REST API 必须是超文本驱动的》。他指出除非应用状态引擎是超文本驱动的，否则它就不是RESTFUL。</p>
-<p>超文本驱动是客户端不再需要将某些接口的 URI 硬编码在代码中，唯一需要存储的只是 API 的 HOST 地址，能够非常有效的降低客户端与服务端之间的耦合，服务端对 URI 的任何改动都不会影响到客户端的稳定。</p>
-<h4 id="REST架构约束"><a href="#REST架构约束" class="headerlink" title="REST架构约束"></a>REST架构约束</h4><h5 id="1-客户-服务器（Client-Server）"><a href="#1-客户-服务器（Client-Server）" class="headerlink" title="1. 客户-服务器（Client-Server）"></a>1. 客户-服务器（Client-Server）</h5><p>这个约束是基于客户端-服务器架构背后的原则—–关注点分离。通过分离用户界面和数据存储这两个关注点，提高了用户界面跨平台的可能性，通过简化服务器组件提高了其伸缩性。</p>
-<h5 id="2-无状态（Stateless）"><a href="#2-无状态（Stateless）" class="headerlink" title="2. 无状态（Stateless）"></a>2. 无状态（Stateless）</h5><p>服务器不保存除单次请求外的通信状态，REST要求状态要么被放入资源状态中，要么保存在客户端，从客户端发出的每个请求都包含了服务端所必须的信息。</p>
-<p>无状态约束使服务器的变化对客户端不可见，因而在连续的请求中，客户端并不依赖于同一台服务器，一台服务器坏掉了，客户端感知不到。</p>
-<h5 id="3-可缓存（Cachable）"><a href="#3-可缓存（Cachable）" class="headerlink" title="3. 可缓存（Cachable）"></a>3. 可缓存（Cachable）</h5><p>互联网中的客户端和中间层服务器可以缓存响应。</p>
-<p>因此响应必须直接或间接定义自身是否可被缓存，以免客户端使用过期的响应数据来发送其它请求。</p>
-<p>良好的缓存策略可以有效减少客户端-服务器之间的交互，从而进一步提高系统的可伸缩性和性能。</p>
-<h5 id="4-分层系统-（Layered-system）"><a href="#4-分层系统-（Layered-system）" class="headerlink" title="4. 分层系统 （Layered system）"></a>4. 分层系统 （Layered system）</h5><p>通过限制组件的行为（即，每个组件只能“看到”与其交互的紧邻层），将架构分解为若干等级的层。</p>
-<p>客户端通常无法判断它是否是直接连接到后端服务器，还是中间服务器。</p>
-<p>中间服务器可通过启用负载平衡，并通过提供共享高速缓存来提高系统的可扩展性。</p>
-<p>当然也可以强制执行安全政策。</p>
-<h5 id="5-统一接口-（Unitform-interface）"><a href="#5-统一接口-（Unitform-interface）" class="headerlink" title="5. 统一接口 （Unitform interface）"></a>5. 统一接口 （Unitform interface）</h5><p><a href="#%E7%BB%9F%E4%B8%80%E6%8E%A5%E5%8F%A3">如上</a><br>(1) 资源标志的唯一性<br>(2) 资源的自描述性<br>(3) 超媒体驱动型<br>(4) 消息的自描述性</p>
-<h5 id="6-按需代码（可选）"><a href="#6-按需代码（可选）" class="headerlink" title="6. 按需代码（可选）"></a>6. 按需代码（可选）</h5><p>支持通过下载并执行一些代码（例如Java Applet、Flash或JavaScript），对客户端的功能进行扩展。</p>
-<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ol>
-<li><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/Web/150564">https://baike.baidu.com/item/Web/150564</a></li>
-<li><a target="_blank" rel="noopener" href="https://baike.baidu.com/item/REST%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/2018579?fr=aladdin">https://baike.baidu.com/item/REST%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/2018579?fr=aladdin</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.ics.uci.edu/~fielding/pubs/dissertation/top.htm">Roy Thomas Fielding博士论文地址</a></li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/other/2019-04-29/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB%E7%AC%94%E8%AE%B0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Apomelo">
-      <meta itemprop="description" content="我有一壶酒，足以慰风尘。尽倾江海里，赠饮天下人。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Apomelo - 追逐">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/other/2019-04-29/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">杂七杂八笔记</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-04-29 00:00:00" itemprop="dateCreated datePublished" datetime="2019-04-29T00:00:00+08:00">2019-04-29</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/other/" itemprop="url" rel="index"><span itemprop="name">other</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/posts/other/2019-04-29/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="杂七杂八笔记" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>平日积累的一些小笔记，因比较杂且短，先放到本文中。</p>
-<h3 id="正则"><a href="#正则" class="headerlink" title="正则"></a>正则</h3><p>$0——$9</p>
-<p>$0代表完整的模式匹配文本（想index.css的话它全部都变成的斜体）,$1代表第一个x小括号的字串</p>
-<p>比如 /gai([\w]+?)over([\d]+)/ 匹配 gainover123 $1= 括号里的 n $2= 第2个括号里的 123</p>
-<h3 id="jdb命令"><a href="#jdb命令" class="headerlink" title="jdb命令"></a>jdb命令</h3><p>jdb -connect sun.jvm.hotspot.jdi.SAPIDAttachingConnector:pid=<br>jdb -attach 127.0.0.1:<br>stop in org.zoolu.iax.protocol.peer.Peer.handleRecvFrame(byte[])<br>clear org.zoolu.iax.protocol.peer.Peer.handleRecvFrame(byte[])</p>
-<h3 id="Component和Repository注入两次解决方案"><a href="#Component和Repository注入两次解决方案" class="headerlink" title="Component和Repository注入两次解决方案"></a>Component和Repository注入两次解决方案</h3><p>因为一些需要，所以需要加个定时器，并且在InitializingBean中的afterPropertiesSet中启动。完成后，加了一些log，看一下是否成功。</p>
-<p>最初的时候是在加了@Repository注解的类里面实现的，当时日志就重复打印了一次，一共打印了两次，但是当时在调试主要功能，也没太注意。后来，为了Dao类的纯粹性，就把定时器移到了加了@Service的类里面。这时候，日志打印次数正常。</p>
-<p>后来，功能调试OK后，觉得放在Service中也不太合适，就新建了一个类，把定时器移到了Component中，然后运行，如果无误，就准备提交代码了。这时候，日志又重新打印了两次。</p>
-<p>然后首先想到的是去网上搜索，搜到的都是 加上@Scope(“singleton”)改为单例、把类上的@Component改为只加载一次的注解等等。</p>
-<p>后来，我就用debug模式，自己去跟踪，后来发现，我的代码中@Component和@Repository被加载了两次，@Controller和@Service被加载了一次。试了很多种方案，都没有用，想加个全局变量类控制一下定时任务，但是第二次注入相当于是重新注入，所以也没有用。后来发现是配置中自动扫描注解的配置有交集。</p>
-<p>在很多配置中一般都会把Spring-common.xml和Spring-MVC.xml进行分开配置，这种配置就行各施其职一样，显得特别清晰。</p>
-<p>在Spring-MVC.xml中只对@Controller进行扫描就可，作为一个控制器，其他的事情不做。</p>
-<p>在Spring-common.xml中只对一些事务逻辑的注解扫描。</p>
-<p>现在给定一个项目包的机构:<br>com.fq.controlller<br>com.fq.service</p>
-<p>正确的是：</p>
-<!-- 扫描@Controller注解 -->
-<p>&lt;context:component-scan base-package=”com.fq.controller”&gt;<br>    &lt;context:include-filter type=”annotation” expression=”org.springframework.stereotype.Controller” /&gt;<br></context:component-scan></p>
-<p>我的配置里面Spring-MVC.xml并没有具体到controller，而是com.fq.*</p>
-<p>所以我在Spring-MVC.xml中加入了exclude-filter</p>
-<!-- 扫描@Controller注解 -->
-<p>&lt;context:component-scan base-package=”com.fq.controller”&gt;<br>    &lt;context:include-filter type=”annotation” expression=”org.springframework.stereotype.Controller” /&gt;<br>    &lt;context:exclude-filter type=”annotation” expression=”org.springframework.stereotype.Service” /&gt;<br>    &lt;context:exclude-filter type=”annotation” expression=”org.springframework.stereotype.Repository” /&gt;<br>    &lt;context:exclude-filter type=”annotation” expression=”org.springframework.stereotype.Component” /&gt;<br></context:component-scan></p>
-<p>这样，确实是加载了一次，但是访问不了Controller。经过排查，发现Controlle并没有被加载，经过测试，发现是<br>&lt;context:exclude-filter type=”annotation” expression=”org.springframework.stereotype.Component” /&gt;<br>这条语句导致的。</p>
-<p>我把改为具体到Controller包，把那些exclude-filter都去掉之后，所有都正常了，但是还是对这个原因有些疑惑，然后我就看了一下include-filter和exclude-filter的区别。比较好的是下面这个文章，虽然短，但是描述的很清晰。</p>
-<p>include-filter和exclude-filter的区别 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/hanguocai/p/7783078.html">https://www.cnblogs.com/hanguocai/p/7783078.html</a></p>
-<p>需要把<a href="context:component-scan">context:component-scan</a>的use-default-filters属性设置为false，默认为true，同时需要把那些exclude-filter去掉</p>
-<h3 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h3><p>ThreadPoolExecutor(int corePoolSize, int maximumPoolSize, long keepAliveTime, TimeUnit unit, BlockingQueue<Runnable> workQueue)</p>
-<p>workQueue 还可能是 SynchronousQueue 队列</p>
-<p>当 workQueue 是 LinkedBlockingDeque<Runnable> 时，当需要执行的线程数大于 corePoolSize，则忽略 maximumPoolSize 和 keepAliveTime，在线程池里线程数达到 corePoolSize 后把之后的任务放到队列里，在队列满的时候才创建线程直到线程数达到 maximumPoolSize ，继续有任务时，抛出异常。</p>
-<p>当 workQueue 是 SynchronousQueue 时，当需要执行的线程数大于 corePoolSize，在线程池里的线程数达到 corePoolSize 后，继续创建线程执行任务；当线程池里的线程数达到 maximumPoolSize 后，则继续处理之前的任务，其他任务不再处理，且抛出异常。</p>
-<h3 id="yaml配置"><a href="#yaml配置" class="headerlink" title="yaml配置"></a>yaml配置</h3><p>Yaml文件被解析为Map形式</p>
-<p>“:”前是key，后是value</p>
-<p>每一行之前加”- “表示是数组或List</p>
-<p>字符串用双引号括起来，不会对里面的内容进行转意；<br>用单引号括起来，会对里面的内容进行转意，特殊字符最终只是一个普通的字符串数据，该是什么还是什么</p>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ol>
-<li>暂无</li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/java/2019-04-19/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95%E4%B8%93%E9%A2%98/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Apomelo">
-      <meta itemprop="description" content="我有一壶酒，足以慰风尘。尽倾江海里，赠饮天下人。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Apomelo - 追逐">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/java/2019-04-19/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95%E4%B8%93%E9%A2%98/" class="post-title-link" itemprop="url">基础算法专题</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2019-04-19 00:00:00" itemprop="dateCreated datePublished" datetime="2019-04-19T00:00:00+08:00">2019-04-19</time>
+              <time title="创建时间：2019-02-19 00:00:00" itemprop="dateCreated datePublished" datetime="2019-02-19T00:00:00+08:00">2019-02-19</time>
             </span>
               <span class="post-meta-item">
                 <span class="post-meta-item-icon">
@@ -1154,7 +1372,7 @@
             </span>
 
           
-            <span id="/posts/java/2019-04-19/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95%E4%B8%93%E9%A2%98/" class="post-meta-item leancloud_visitors" data-flag-title="基础算法专题" title="阅读次数">
+            <span id="/posts/java/2019-02-19/%E5%9F%BA%E7%A1%80%E7%AE%97%E6%B3%95%E4%B8%93%E9%A2%98/" class="post-meta-item leancloud_visitors" data-flag-title="基础算法专题" title="阅读次数">
               <span class="post-meta-item-icon">
                 <i class="fa fa-eye"></i>
               </span>
@@ -1491,116 +1709,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/protocol/2018-05-12/iax2%E5%8D%8F%E8%AE%AE%E6%96%87%E6%A1%A3%EF%BC%88rfc-5456%EF%BC%89%E4%B8%AD%E6%96%87%E7%BF%BB%E8%AF%91/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Apomelo">
-      <meta itemprop="description" content="我有一壶酒，足以慰风尘。尽倾江海里，赠饮天下人。">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Apomelo - 追逐">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/posts/protocol/2018-05-12/iax2%E5%8D%8F%E8%AE%AE%E6%96%87%E6%A1%A3%EF%BC%88rfc-5456%EF%BC%89%E4%B8%AD%E6%96%87%E7%BF%BB%E8%AF%91/" class="post-title-link" itemprop="url">IAX2协议文档（RFC 5456）中文翻译</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
-
-              <time title="创建时间：2018-05-12 00:00:00" itemprop="dateCreated datePublished" datetime="2018-05-12T00:00:00+08:00">2018-05-12</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-03-26 00:00:00" itemprop="dateModified" datetime="2019-03-26T00:00:00+08:00">2019-03-26</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/protocol/" itemprop="url" rel="index"><span itemprop="name">protocol</span></a>
-                </span>
-            </span>
-
-          
-            <span id="/posts/protocol/2018-05-12/iax2%E5%8D%8F%E8%AE%AE%E6%96%87%E6%A1%A3%EF%BC%88rfc-5456%EF%BC%89%E4%B8%AD%E6%96%87%E7%BF%BB%E8%AF%91/" class="post-meta-item leancloud_visitors" data-flag-title="IAX2协议文档（RFC 5456）中文翻译" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>欢迎来到我的博客，这是我第一篇自己写的博客，也是第一次用markdown语法来写，怀着有些激动的心写下这篇博客。<br></p>
-<p>在工作中接触到了IAX2协议，找遍了网上只找到了一些中文的论文。没有协议文档的具体翻译，最后只能自己看英文文档：<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5456">《RFC 5456》</a>。后因需要整理IAX2文档，就开始整理一个简短的文档，但发现还有所不足，后就开始着手进行翻译，也是为之后需要中文文档的人提供一些帮助，完整的文档地址：<a target="_blank" rel="noopener" href="https://download.csdn.net/download/nosecure/10410387">IAX2协议文档（RFC 5456）中文翻译</a>。建议英文水平好的看原英文文档。<br></p>
-<p>下面为大家简单介绍一下IAX2协议：<br></p>
-<p>IAX 是 Inter-Asterisk eXchange 的缩写，也就是 Asterisk 内部交换协议。IAX最初用在Asterisk上。</p>
-<p>IAX优点：</p>
-<ol>
-<li>只用一个UDP端口：4569，来传输通信数据，包括控制信令和媒体数据等。</li>
-<li>媒体数据并不需要额外的RTP流，所以可以轻易穿越NAT。</li>
-<li>媒体数据会用一个迷你帧来发送，迷你帧帧头只有4字节，不携带控制或信令数据，有效载荷比较大。迷你帧是不可靠传输，但由于语音通话通常是实时发送的，因此丢失的帧太旧而无法重新集成到音频流中，以至于无法重新传输，所以几乎没有影响，而且每65.536秒需要重置时间标志。</li>
-<li>用二进制编码。</li>
-</ol>
-<p>IAX缺点:</p>
-<ol>
-<li>因为只用一个端口，所以容易被攻击。</li>
-<li>编解码器定义由内部定义的32位掩码控制，因此编解码器必须在协议中定义，同时编解码器的最大数量受到限制。</li>
-<li>实施问题（如果资源较少没有非常完善的库算的话）。</li>
-<li>用二进制编码。</li>
-</ol>
-<p>协议里每个字段的具体含义及详细介绍请参见：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5456">英文文档《RFC 5456》</a></li>
-<li><a target="_blank" rel="noopener" href="https://download.csdn.net/download/nosecure/10410387">IAX2协议文档（RFC 5456）中文翻译</a></li>
-</ul>
-<p>这里给大家推荐几个iax Java库：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://code.google.com/archive/p/njiax/downloads">njiax</a><br>  实现的比较简陋，但是层次相对清晰，需要增加信令、完善交互流程等，线程创建数量较多，需要用线程池替代。</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/misternerd/djiax">djiax</a><br>  实现相对完善，也需要增加信令、完善交互流程编码等，线程复用，但是限制了电话的并发数，应该用线程池替代。</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/apomelo/njiax-a">njiax-a</a><br>  本人fork了njiax库，在此基础上增加部分信令、完善交互流程、增加G711和G729等编码方式、增加DTFMFrame处理、添加了简单的注册拨打示例等，详细信息见github。</li>
-</ul>
-<p align="right">可以转载，但请标明出处</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1670,7 +1778,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -1683,7 +1791,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">28</span>
+        <span class="site-state-item-count">29</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
