@@ -18,12 +18,12 @@
     var CONFIG = {"hostname":"apomelo.cc","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="创建 github 仓库直接参考官方网站的创建要求 注意  如果创建的是用户或组织站点, 仓库名称必须为 &lt;user&gt;.github.io 或 &lt;organization&gt;.github.io 这样的话能直接访问: http(s):&#x2F;&#x2F;&lt;username&gt;.github.io 或 http(s):&#x2F;&#x2F;&lt;organization&gt;.github.io">
+  <meta name="description" content="[TOC] 创建 github 仓库直接参考官方网站的创建要求 注意  如果创建的是用户或组织站点, 仓库名称必须为 &lt;user&gt;.github.io 或 &lt;organization&gt;.github.io 这样的话能直接访问: http(s):&#x2F;&#x2F;&lt;username&gt;.github.io 或 http(s):&#x2F;&#x2F;&lt;organization&gt;.gith">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Github Page 部署">
 <meta property="og:url" content="https://apomelo.cc/posts/2021/08/13/Github%20Page%20%E9%83%A8%E7%BD%B2/index.html">
 <meta property="og:site_name" content="Apomelo - 追逐">
-<meta property="og:description" content="创建 github 仓库直接参考官方网站的创建要求 注意  如果创建的是用户或组织站点, 仓库名称必须为 &lt;user&gt;.github.io 或 &lt;organization&gt;.github.io 这样的话能直接访问: http(s):&#x2F;&#x2F;&lt;username&gt;.github.io 或 http(s):&#x2F;&#x2F;&lt;organization&gt;.github.io">
+<meta property="og:description" content="[TOC] 创建 github 仓库直接参考官方网站的创建要求 注意  如果创建的是用户或组织站点, 仓库名称必须为 &lt;user&gt;.github.io 或 &lt;organization&gt;.github.io 这样的话能直接访问: http(s):&#x2F;&#x2F;&lt;username&gt;.github.io 或 http(s):&#x2F;&#x2F;&lt;organization&gt;.gith">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-08-12T16:00:00.000Z">
 <meta property="article:modified_time" content="2021-08-12T16:00:00.000Z">
@@ -208,7 +208,7 @@
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="Apomelo">
-      <meta itemprop="description" content="我有一壶酒，足以慰风尘。尽倾江海里，赠饮天下人。">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
@@ -256,7 +256,8 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="创建-github-仓库"><a href="#创建-github-仓库" class="headerlink" title="创建 github 仓库"></a>创建 github 仓库</h2><p>直接参考<a target="_blank" rel="noopener" href="https://docs.github.com/cn/pages/getting-started-with-github-pages/creating-a-github-pages-site">官方网站</a>的创建要求</p>
+        <p>[TOC]</p>
+<h2 id="创建-github-仓库"><a href="#创建-github-仓库" class="headerlink" title="创建 github 仓库"></a>创建 github 仓库</h2><p>直接参考<a target="_blank" rel="noopener" href="https://docs.github.com/cn/pages/getting-started-with-github-pages/creating-a-github-pages-site">官方网站</a>的创建要求</p>
 <p><strong>注意</strong></p>
 <ol>
 <li><p>如果创建的是用户或组织站点, 仓库名称必须为 &lt;user&gt;.github.io 或 &lt;organization&gt;.github.io</p>
@@ -305,7 +306,12 @@
 <p><strong>注意</strong></p>
 <p>配置的域名一定要与 source 目录下增加 CNAME 文件中配置的一致, 如果文件中配置的是 apomelo.cc, 则 url 一定<strong>不能</strong>配置成 <a target="_blank" rel="noopener" href="http://www.apomelo.cc/">www.apomelo.cc</a></p>
 <p>原因: 很多地方会有 CONFIG.hostname 和 location.hostname 的对比, 根据是否相等执行一些语句</p>
-<h4 id="permalink"><a href="#permalink" class="headerlink" title="permalink"></a>permalink</h4><p>文章的目录结构, 个人比较推荐: posts/:category/:year-:month-:day/:title/</p>
+<h4 id="permalink"><a href="#permalink" class="headerlink" title="permalink"></a>permalink</h4><p>文章的目录结构, 个人比较推荐: posts/:year/:month/:day/:urlname/</p>
+<p>推荐用 urlname，不直接用 title</p>
+<p><strong>注意</strong></p>
+<p>需要在文章头加上 urlname 字段，如：</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: Github Page 部署</span><br><span class="line">urlname: Github Page 部署</span><br></pre></td></tr></table></figure>
+
 <h4 id="theme"><a href="#theme" class="headerlink" title="theme"></a>theme</h4><p>配置主题</p>
 <h3 id="NexT-主题-config-yml-详解"><a href="#NexT-主题-config-yml-详解" class="headerlink" title="NexT 主题 _config.yml 详解"></a>NexT 主题 _config.yml 详解</h3><h4 id="favicon"><a href="#favicon" class="headerlink" title="favicon"></a>favicon</h4><p>可以使用自定义页面标签图标</p>
 <h4 id="menu"><a href="#menu" class="headerlink" title="menu"></a>menu</h4><p>可以开启相关页面</p>
@@ -351,7 +357,7 @@
 <li><p>博客_config.yml 末尾添加以下代码</p>
 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># Algolia Search</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Docs: https://theme-next.org/docs/third-party-services/search-services</span></span><br><span class="line"></span><br><span class="line">algolia:</span><br><span class="line">applicationID: &#x27;你的 Application ID&#x27;</span><br><span class="line">apiKey: &#x27;你的 Search-Only API Key&#x27;</span><br><span class="line">indexName: &#x27;输入刚才创建 index name&#x27;</span><br><span class="line">chunkSize: 5000</span><br></pre></td></tr></table></figure></li>
 <li><p>测试 algolia, 如果不生效, 安装 Hexo Algolia 扩展 (我最新版本没有安装该插件, 功能可以正常使用)</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-algolia --save</span><br></pre></td></tr></table></figure></li>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-algolia --save</span><br></pre></td></tr></table></figure></li>
 </ol>
 <h3 id="配置博客域名"><a href="#配置博客域名" class="headerlink" title="配置博客域名"></a>配置博客域名</h3><p>在 source 目录下增加 CNAME 文件, 该文件中填写要配置的域名, 如: apomelo.cc</p>
 <p>并在域名购买网站或相关网站把域名解析解析到博客地址, 如: apomelo.github.io</p>
@@ -383,6 +389,30 @@
 </ol>
 <p>禁用评论同上</p>
 <h3 id="图片"><a href="#图片" class="headerlink" title="图片"></a>图片</h3><p>建议在 source 目录下新建一个文件夹用来放置图片</p>
+<h2 id="隐藏文章"><a href="#隐藏文章" class="headerlink" title="隐藏文章"></a>隐藏文章</h2><h3 id="安装-hexo-hide-posts-插件"><a href="#安装-hexo-hide-posts-插件" class="headerlink" title="安装 hexo-hide-posts 插件"></a>安装 hexo-hide-posts 插件</h3><p>在博客根目录下安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-hide-posts --save</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置-1"><a href="#配置-1" class="headerlink" title="配置"></a>配置</h3><ol>
+<li>在博客根目录下 _config.yml 文件末尾加上以下内容 <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># hexo-hide-posts</span></span><br><span class="line"><span class="attr">hide_posts:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">  <span class="comment"># 可以改成其他你喜欢的名字</span></span><br><span class="line">  <span class="attr">filter:</span> <span class="string">hidden</span></span><br><span class="line">  <span class="comment"># 指定你想要传递隐藏文章的 generator，比如让所有隐藏文章在存档页面可见</span></span><br><span class="line">  <span class="comment"># 常见的 generators 有：index, tag, category, archive, sitemap, feed, etc.</span></span><br><span class="line">  <span class="attr">public_generators:</span> []</span><br><span class="line">  <span class="comment"># 为隐藏的文章添加 noindex meta 标签，阻止搜索引擎收录</span></span><br><span class="line">  <span class="attr">noindex:</span> <span class="literal">true</span></span><br></pre></td></tr></table></figure>
+</li>
+<li>在文章头加上 hidden 字段 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: Github Page 部署</span><br><span class="line"><span class="section">hidden: true</span></span><br><span class="line"><span class="section">---</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="添加-mermaid-流程图"><a href="#添加-mermaid-流程图" class="headerlink" title="添加 mermaid 流程图"></a>添加 mermaid 流程图</h2><h3 id="安装-hexo-filter-mermaid-diagrams-插件"><a href="#安装-hexo-filter-mermaid-diagrams-插件" class="headerlink" title="安装 hexo-filter-mermaid-diagrams 插件"></a>安装 hexo-filter-mermaid-diagrams 插件</h3><p>在博客根目录下安装</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-filter-mermaid-diagrams --save</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置-2"><a href="#配置-2" class="headerlink" title="配置"></a>配置</h3><ol>
+<li><p>在博客根目录下 _config.yml 中 “highlight” 下面排除掉 mermaid:</p>
+ <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">highlight:</span></span><br><span class="line">  <span class="attr">exclude_languages:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="string">mermaid</span></span><br></pre></td></tr></table></figure></li>
+<li><p>在next主题下面 _config.yml 文件配置，开启 mermaid:</p>
+ <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># Mermaid tag</span></span><br><span class="line">mermaid:</span><br><span class="line">  enable: true</span><br><span class="line">  # Available themes: default | dark | forest | neutral</span><br><span class="line">  theme: </span><br><span class="line"><span class="code">    light: default</span></span><br><span class="line"><span class="code">    dark: dark</span></span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="Hexo引用站内文章"><a href="#Hexo引用站内文章" class="headerlink" title="Hexo引用站内文章"></a>Hexo引用站内文章</h2><p>写文章的时候，经常需要引用站内的其他文章，此时可以使用Hexo内置的标签插件（Tag Plugins）中的post_link来实现。</p>
+<p>用法:</p>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% post<span class="emphasis">_link slug [title] %&#125;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>slug: _posts文件夹下需要引用的文章的markdown文件的名字（不带文件扩展名）</li>
+<li>title: 指定引用的文章需要显示的名字</li>
+</ul>
 
     </div>
 
@@ -405,7 +435,10 @@
     <a href="/posts/2021/06/06/xray%E9%83%A8%E7%BD%B2/" rel="prev" title="xray部署">
       <i class="fa fa-chevron-left"></i> xray部署
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/posts/2022/01/09/IO%E6%B5%81/" rel="next" title="IO流">
+      IO流 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -464,21 +497,21 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-github-%E4%BB%93%E5%BA%93"><span class="nav-number">1.</span> <span class="nav-text">创建 github 仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo"><span class="nav-number">2.</span> <span class="nav-text">安装 hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-node-js"><span class="nav-number">2.1.</span> <span class="nav-text">安装 node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-git"><span class="nav-number">2.2.</span> <span class="nav-text">安装 git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-1"><span class="nav-number">2.3.</span> <span class="nav-text">安装 hexo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-NexT-%E4%B8%BB%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">安装 NexT 主题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0"><span class="nav-number">3.2.</span> <span class="nav-text">更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%85%E7%9C%8B%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">4.1.</span> <span class="nav-text">必看的注意事项!!!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%9A%E5%AE%A2-config-yml-%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.2.</span> <span class="nav-text">博客 _config.yml 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#url"><span class="nav-number">4.2.1.</span> <span class="nav-text">url</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#permalink"><span class="nav-number">4.2.2.</span> <span class="nav-text">permalink</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#theme"><span class="nav-number">4.2.3.</span> <span class="nav-text">theme</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NexT-%E4%B8%BB%E9%A2%98-config-yml-%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.3.</span> <span class="nav-text">NexT 主题 _config.yml 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#favicon"><span class="nav-number">4.3.1.</span> <span class="nav-text">favicon</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#menu"><span class="nav-number">4.3.2.</span> <span class="nav-text">menu</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#social"><span class="nav-number">4.3.3.</span> <span class="nav-text">social</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#toc"><span class="nav-number">4.3.4.</span> <span class="nav-text">toc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#baidu-push"><span class="nav-number">4.3.5.</span> <span class="nav-text">baidu_push</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#google-analytics"><span class="nav-number">4.3.6.</span> <span class="nav-text">google_analytics</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#baidu-analytics"><span class="nav-number">4.3.7.</span> <span class="nav-text">baidu_analytics</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cnzz-siteid"><span class="nav-number">4.3.8.</span> <span class="nav-text">cnzz_siteid</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#leancloud-visitors"><span class="nav-number">4.3.9.</span> <span class="nav-text">leancloud_visitors</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#busuanzi-count"><span class="nav-number">4.3.10.</span> <span class="nav-text">busuanzi_count</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#algolia-search"><span class="nav-number">4.3.11.</span> <span class="nav-text">algolia_search</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%8D%9A%E5%AE%A2%E5%9F%9F%E5%90%8D"><span class="nav-number">4.4.</span> <span class="nav-text">配置博客域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tags-%E5%90%AF%E7%94%A8"><span class="nav-number">4.5.</span> <span class="nav-text">tags 启用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#categories-%E5%90%AF%E7%94%A8"><span class="nav-number">4.6.</span> <span class="nav-text">categories 启用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87"><span class="nav-number">4.7.</span> <span class="nav-text">图片</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-github-%E4%BB%93%E5%BA%93"><span class="nav-number">1.</span> <span class="nav-text">创建 github 仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo"><span class="nav-number">2.</span> <span class="nav-text">安装 hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-node-js"><span class="nav-number">2.1.</span> <span class="nav-text">安装 node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-git"><span class="nav-number">2.2.</span> <span class="nav-text">安装 git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-1"><span class="nav-number">2.3.</span> <span class="nav-text">安装 hexo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-NexT-%E4%B8%BB%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">安装 NexT 主题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0"><span class="nav-number">3.2.</span> <span class="nav-text">更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%85%E7%9C%8B%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">4.1.</span> <span class="nav-text">必看的注意事项!!!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%9A%E5%AE%A2-config-yml-%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.2.</span> <span class="nav-text">博客 _config.yml 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#url"><span class="nav-number">4.2.1.</span> <span class="nav-text">url</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#permalink"><span class="nav-number">4.2.2.</span> <span class="nav-text">permalink</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#theme"><span class="nav-number">4.2.3.</span> <span class="nav-text">theme</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NexT-%E4%B8%BB%E9%A2%98-config-yml-%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.3.</span> <span class="nav-text">NexT 主题 _config.yml 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#favicon"><span class="nav-number">4.3.1.</span> <span class="nav-text">favicon</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#menu"><span class="nav-number">4.3.2.</span> <span class="nav-text">menu</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#social"><span class="nav-number">4.3.3.</span> <span class="nav-text">social</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#toc"><span class="nav-number">4.3.4.</span> <span class="nav-text">toc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#baidu-push"><span class="nav-number">4.3.5.</span> <span class="nav-text">baidu_push</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#google-analytics"><span class="nav-number">4.3.6.</span> <span class="nav-text">google_analytics</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#baidu-analytics"><span class="nav-number">4.3.7.</span> <span class="nav-text">baidu_analytics</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cnzz-siteid"><span class="nav-number">4.3.8.</span> <span class="nav-text">cnzz_siteid</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#leancloud-visitors"><span class="nav-number">4.3.9.</span> <span class="nav-text">leancloud_visitors</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#busuanzi-count"><span class="nav-number">4.3.10.</span> <span class="nav-text">busuanzi_count</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#algolia-search"><span class="nav-number">4.3.11.</span> <span class="nav-text">algolia_search</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%8D%9A%E5%AE%A2%E5%9F%9F%E5%90%8D"><span class="nav-number">4.4.</span> <span class="nav-text">配置博客域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tags-%E5%90%AF%E7%94%A8"><span class="nav-number">4.5.</span> <span class="nav-text">tags 启用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#categories-%E5%90%AF%E7%94%A8"><span class="nav-number">4.6.</span> <span class="nav-text">categories 启用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87"><span class="nav-number">4.7.</span> <span class="nav-text">图片</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E6%96%87%E7%AB%A0"><span class="nav-number">5.</span> <span class="nav-text">隐藏文章</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-hide-posts-%E6%8F%92%E4%BB%B6"><span class="nav-number">5.1.</span> <span class="nav-text">安装 hexo-hide-posts 插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-1"><span class="nav-number">5.2.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-mermaid-%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">6.</span> <span class="nav-text">添加 mermaid 流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-filter-mermaid-diagrams-%E6%8F%92%E4%BB%B6"><span class="nav-number">6.1.</span> <span class="nav-text">安装 hexo-filter-mermaid-diagrams 插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-2"><span class="nav-number">6.2.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo%E5%BC%95%E7%94%A8%E7%AB%99%E5%86%85%E6%96%87%E7%AB%A0"><span class="nav-number">7.</span> <span class="nav-text">Hexo引用站内文章</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
   <p class="site-author-name" itemprop="name">Apomelo</p>
-  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。尽倾江海里，赠饮天下人。</div>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-count">22</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -491,7 +524,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">32</span>
+        <span class="site-state-item-count">38</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -724,6 +757,19 @@
 
 
 
+<script>
+if (document.querySelectorAll('pre.mermaid').length) {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
+    mermaid.initialize({
+      theme    : '[object Object]',
+      logLevel : 3,
+      flowchart: { curve     : 'linear' },
+      gantt    : { axisFormat: '%m/%d/%Y' },
+      sequence : { actorMargin: 50 }
+    });
+  }, window.mermaid);
+}
+</script>
 
 
   
