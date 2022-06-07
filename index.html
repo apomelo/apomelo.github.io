@@ -2316,7 +2316,69 @@ Mark Word在在64位JVM中存储状态：
 <li>EventHandler：事件处理器，由用户自定义实现，也就是最终的事件消费者，需要实现EventHandler接口；</li>
 <li>Producer：事件生产者；</li>
 </ol>
-<p>下面忽略数组的环形结构，介绍一下如何实现无锁设计。整个过程通过原子变量CAS，保证操作的线程安全。</p>
+<h2 id="无锁设计实现原理"><a href="#无锁设计实现原理" class="headerlink" title="无锁设计实现原理"></a>无锁设计实现原理</h2><p>下面忽略数组的环形结构，介绍一下如何实现无锁设计。整个过程通过原子变量CAS，保证操作的线程安全。</p>
+<h3 id="多生产者"><a href="#多生产者" class="headerlink" title="多生产者"></a>多生产者</h3><p>多个生产者的情况下，会遇到“如何防止多个线程重复写同一个元素”的问题。Disruptor的解决方法是，每个线程获取不同的一段数组空间进行操作。这个通过CAS很容易达到。只需要在分配元素的时候，通过CAS判断一下这段空间是否已经分配出去即可。     </p>
+<p>但是会遇到一个新问题：如何防止读取的时候，读到还未写的元素。Disruptor在多个生产者的情况下，引入了一个与Ring Buffer大小相同的buffer：available Buffer。当某个位置写入成功的时候，便把availble Buffer相应的位置置位，标记为写入成功。读取的时候，会遍历available Buffer，来判断元素是否已经就绪。</p>
+<p>下面分读数据和写数据两种情况介绍。</p>
+<h4 id="读数据"><a href="#读数据" class="headerlink" title="读数据"></a>读数据</h4><ol>
+<li>申请读取到序号n；</li>
+<li>若writer cursor &gt;= n，这时仍然无法确定连续可读的最大下标。从reader cursor开始读取available Buffer，一直查到第一个不可用的元素，然后返回最大连续可读元素的位置；</li>
+<li>消费者读取元素。</li>
+</ol>
+<p>如下图所示，读线程读到下标为2的元素，三个线程Writer1/Writer2/Writer3正在向RingBuffer相应位置写数据，写线程被分配到的最大元素下标是11。</p>
+<p>读线程申请读取到下标从3到11的元素，判断writer cursor&gt;=11。然后开始读取availableBuffer，从3开始，往后读取，发现下标为7的元素没有生产成功，于是WaitFor(11)返回6。</p>
+<p>然后，消费者读取下标从3到6共计4个元素。</p>
+<p><img src="/imgs/disruptor%E7%AC%94%E8%AE%B0/%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85_%E6%B6%88%E8%B4%B9%E8%BF%87%E7%A8%8B.png" alt="多个生产者情况下，消费者消费过程示意图"></p>
+<h4 id="写数据"><a href="#写数据" class="headerlink" title="写数据"></a>写数据</h4><ol>
+<li>申请写入m个元素；</li>
+<li>若是有m个元素可以写入，则返回最大的序列号。每个生产者会被分配一段独享的空间；</li>
+<li>生产者写入元素，写入元素的同时设置available Buffer里面相应的位置，以标记自己哪些位置是已经写入成功的。</li>
+</ol>
+<p>如下图所示，Writer1和Writer2两个线程写入数组，都申请可写的数组空间。Writer1被分配了下标3到下表5的空间，Writer2被分配了下标6到下标9的空间。</p>
+<p>Writer1写入下标3位置的元素，同时把available Buffer相应位置置位，标记已经写入成功，往后移一位，开始写下标4位置的元素。Writer2同样的方式。最终都写入完成。</p>
+<p><img src="/imgs/disruptor%E7%AC%94%E8%AE%B0/%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85_%E7%94%9F%E4%BA%A7%E8%BF%87%E7%A8%8B.png" alt="多个生产者情况下，生产者生产过程示意图"></p>
+<h2 id="等待策略"><a href="#等待策略" class="headerlink" title="等待策略"></a>等待策略</h2><h3 id="生产者等待策略"><a href="#生产者等待策略" class="headerlink" title="生产者等待策略"></a>生产者等待策略</h3><p>暂时只有休眠1ns。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LockSupport.parkNanos(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="消费者等待策略"><a href="#消费者等待策略" class="headerlink" title="消费者等待策略"></a>消费者等待策略</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>措施</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BlockingWaitStrategy</td>
+<td>加锁</td>
+<td>CPU资源紧缺，吞吐量和延迟并不重要的场景</td>
+</tr>
+<tr>
+<td>BusySpinWaitStrategy</td>
+<td>自旋</td>
+<td>通过不断重试，减少切换线程导致的系统调用，而降低延迟。推荐在线程绑定到固定的CPU的场景下使用</td>
+</tr>
+<tr>
+<td>PhasedBackoffWaitStrategy</td>
+<td>自旋 + yield + 自定义策略</td>
+<td>CPU资源紧缺，吞吐量和延迟并不重要的场景</td>
+</tr>
+<tr>
+<td>SleepingWaitStrategy</td>
+<td>自旋 + yield + sleep</td>
+<td>性能和CPU资源之间有很好的折中。延迟不均匀</td>
+</tr>
+<tr>
+<td>TimeoutBlockingWaitStrategy</td>
+<td>加锁，有超时限制</td>
+<td>CPU资源紧缺，吞吐量和延迟并不重要的场景</td>
+</tr>
+<tr>
+<td>YieldingWaitStrategy</td>
+<td>自旋 + yield + 自旋</td>
+<td>性能和CPU资源之间有很好的折中。延迟比较均匀</td>
+</tr>
+</tbody></table>
 <p>参考资料:</p>
 <ol>
 <li><a target="_blank" rel="noopener" href="https://lmax-exchange.github.io/disruptor/user-guide/index.html">https://lmax-exchange.github.io/disruptor/user-guide/index.html</a></li>

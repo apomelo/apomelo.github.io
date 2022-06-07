@@ -25,6 +25,8 @@
 <meta property="og:site_name" content="Apomelo - 追逐">
 <meta property="og:description" content="Disruptor 简介Disruptor是一个开源的高性能队列框架，由英国外汇交易公司LMAX开发。研发的初衷是为了解决内存队列的延迟问题，能够在无锁的情况下实现队列的并发操作，基于Disruptor开发的系统单线程能支撑每秒600万订单。 队列的特性先进先出（FIFO），生产者往队列里发布事件，消费者获得通知消费事件；如果队列中没有事件时，消费者堵塞，直到生产者发布了新事件。 Java 内置队">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://apomelo.cc/imgs/disruptor%E7%AC%94%E8%AE%B0/%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85_%E6%B6%88%E8%B4%B9%E8%BF%87%E7%A8%8B.png">
+<meta property="og:image" content="https://apomelo.cc/imgs/disruptor%E7%AC%94%E8%AE%B0/%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85_%E7%94%9F%E4%BA%A7%E8%BF%87%E7%A8%8B.png">
 <meta property="article:published_time" content="2020-06-04T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-06-04T16:00:00.000Z">
 <meta property="article:author" content="Apomelo">
@@ -32,6 +34,7 @@
 <meta property="article:tag" content="queue">
 <meta property="article:tag" content="disruptor">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://apomelo.cc/imgs/disruptor%E7%AC%94%E8%AE%B0/%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85_%E6%B6%88%E8%B4%B9%E8%BF%87%E7%A8%8B.png">
 
 <link rel="canonical" href="https://apomelo.cc/posts/2020/06/05/disruptor%E7%AC%94%E8%AE%B0/">
 
@@ -386,7 +389,69 @@
 <li>EventHandler：事件处理器，由用户自定义实现，也就是最终的事件消费者，需要实现EventHandler接口；</li>
 <li>Producer：事件生产者；</li>
 </ol>
-<p>下面忽略数组的环形结构，介绍一下如何实现无锁设计。整个过程通过原子变量CAS，保证操作的线程安全。</p>
+<h2 id="无锁设计实现原理"><a href="#无锁设计实现原理" class="headerlink" title="无锁设计实现原理"></a>无锁设计实现原理</h2><p>下面忽略数组的环形结构，介绍一下如何实现无锁设计。整个过程通过原子变量CAS，保证操作的线程安全。</p>
+<h3 id="多生产者"><a href="#多生产者" class="headerlink" title="多生产者"></a>多生产者</h3><p>多个生产者的情况下，会遇到“如何防止多个线程重复写同一个元素”的问题。Disruptor的解决方法是，每个线程获取不同的一段数组空间进行操作。这个通过CAS很容易达到。只需要在分配元素的时候，通过CAS判断一下这段空间是否已经分配出去即可。     </p>
+<p>但是会遇到一个新问题：如何防止读取的时候，读到还未写的元素。Disruptor在多个生产者的情况下，引入了一个与Ring Buffer大小相同的buffer：available Buffer。当某个位置写入成功的时候，便把availble Buffer相应的位置置位，标记为写入成功。读取的时候，会遍历available Buffer，来判断元素是否已经就绪。</p>
+<p>下面分读数据和写数据两种情况介绍。</p>
+<h4 id="读数据"><a href="#读数据" class="headerlink" title="读数据"></a>读数据</h4><ol>
+<li>申请读取到序号n；</li>
+<li>若writer cursor &gt;= n，这时仍然无法确定连续可读的最大下标。从reader cursor开始读取available Buffer，一直查到第一个不可用的元素，然后返回最大连续可读元素的位置；</li>
+<li>消费者读取元素。</li>
+</ol>
+<p>如下图所示，读线程读到下标为2的元素，三个线程Writer1/Writer2/Writer3正在向RingBuffer相应位置写数据，写线程被分配到的最大元素下标是11。</p>
+<p>读线程申请读取到下标从3到11的元素，判断writer cursor&gt;=11。然后开始读取availableBuffer，从3开始，往后读取，发现下标为7的元素没有生产成功，于是WaitFor(11)返回6。</p>
+<p>然后，消费者读取下标从3到6共计4个元素。</p>
+<p><img src="/imgs/disruptor%E7%AC%94%E8%AE%B0/%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85_%E6%B6%88%E8%B4%B9%E8%BF%87%E7%A8%8B.png" alt="多个生产者情况下，消费者消费过程示意图"></p>
+<h4 id="写数据"><a href="#写数据" class="headerlink" title="写数据"></a>写数据</h4><ol>
+<li>申请写入m个元素；</li>
+<li>若是有m个元素可以写入，则返回最大的序列号。每个生产者会被分配一段独享的空间；</li>
+<li>生产者写入元素，写入元素的同时设置available Buffer里面相应的位置，以标记自己哪些位置是已经写入成功的。</li>
+</ol>
+<p>如下图所示，Writer1和Writer2两个线程写入数组，都申请可写的数组空间。Writer1被分配了下标3到下表5的空间，Writer2被分配了下标6到下标9的空间。</p>
+<p>Writer1写入下标3位置的元素，同时把available Buffer相应位置置位，标记已经写入成功，往后移一位，开始写下标4位置的元素。Writer2同样的方式。最终都写入完成。</p>
+<p><img src="/imgs/disruptor%E7%AC%94%E8%AE%B0/%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85_%E7%94%9F%E4%BA%A7%E8%BF%87%E7%A8%8B.png" alt="多个生产者情况下，生产者生产过程示意图"></p>
+<h2 id="等待策略"><a href="#等待策略" class="headerlink" title="等待策略"></a>等待策略</h2><h3 id="生产者等待策略"><a href="#生产者等待策略" class="headerlink" title="生产者等待策略"></a>生产者等待策略</h3><p>暂时只有休眠1ns。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LockSupport.parkNanos(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<h3 id="消费者等待策略"><a href="#消费者等待策略" class="headerlink" title="消费者等待策略"></a>消费者等待策略</h3><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>措施</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BlockingWaitStrategy</td>
+<td>加锁</td>
+<td>CPU资源紧缺，吞吐量和延迟并不重要的场景</td>
+</tr>
+<tr>
+<td>BusySpinWaitStrategy</td>
+<td>自旋</td>
+<td>通过不断重试，减少切换线程导致的系统调用，而降低延迟。推荐在线程绑定到固定的CPU的场景下使用</td>
+</tr>
+<tr>
+<td>PhasedBackoffWaitStrategy</td>
+<td>自旋 + yield + 自定义策略</td>
+<td>CPU资源紧缺，吞吐量和延迟并不重要的场景</td>
+</tr>
+<tr>
+<td>SleepingWaitStrategy</td>
+<td>自旋 + yield + sleep</td>
+<td>性能和CPU资源之间有很好的折中。延迟不均匀</td>
+</tr>
+<tr>
+<td>TimeoutBlockingWaitStrategy</td>
+<td>加锁，有超时限制</td>
+<td>CPU资源紧缺，吞吐量和延迟并不重要的场景</td>
+</tr>
+<tr>
+<td>YieldingWaitStrategy</td>
+<td>自旋 + yield + 自旋</td>
+<td>性能和CPU资源之间有很好的折中。延迟比较均匀</td>
+</tr>
+</tbody></table>
 <p>参考资料:</p>
 <ol>
 <li><a target="_blank" rel="noopener" href="https://lmax-exchange.github.io/disruptor/user-guide/index.html">https://lmax-exchange.github.io/disruptor/user-guide/index.html</a></li>
@@ -477,7 +542,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Disruptor-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">Disruptor 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">队列的特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-%E5%86%85%E7%BD%AE%E9%98%9F%E5%88%97"><span class="nav-number">3.</span> <span class="nav-text">Java 内置队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E5%8A%A0%E9%94%81%E6%80%A7%E8%83%BD"><span class="nav-number">4.</span> <span class="nav-text">队列加锁性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Disruptor-%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%A1%88"><span class="nav-number">5.</span> <span class="nav-text">Disruptor 设计方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Disruptor-%E4%B8%BB%E8%A6%81%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="nav-number">6.</span> <span class="nav-text">Disruptor 主要实现类</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Disruptor-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">Disruptor 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">队列的特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-%E5%86%85%E7%BD%AE%E9%98%9F%E5%88%97"><span class="nav-number">3.</span> <span class="nav-text">Java 内置队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E5%8A%A0%E9%94%81%E6%80%A7%E8%83%BD"><span class="nav-number">4.</span> <span class="nav-text">队列加锁性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Disruptor-%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%A1%88"><span class="nav-number">5.</span> <span class="nav-text">Disruptor 设计方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Disruptor-%E4%B8%BB%E8%A6%81%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="nav-number">6.</span> <span class="nav-text">Disruptor 主要实现类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A0%E9%94%81%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">无锁设计实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85"><span class="nav-number">7.1.</span> <span class="nav-text">多生产者</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%BB%E6%95%B0%E6%8D%AE"><span class="nav-number">7.1.1.</span> <span class="nav-text">读数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%86%99%E6%95%B0%E6%8D%AE"><span class="nav-number">7.1.2.</span> <span class="nav-text">写数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AD%89%E5%BE%85%E7%AD%96%E7%95%A5"><span class="nav-number">8.</span> <span class="nav-text">等待策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%9F%E4%BA%A7%E8%80%85%E7%AD%89%E5%BE%85%E7%AD%96%E7%95%A5"><span class="nav-number">8.1.</span> <span class="nav-text">生产者等待策略</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B6%88%E8%B4%B9%E8%80%85%E7%AD%89%E5%BE%85%E7%AD%96%E7%95%A5"><span class="nav-number">8.2.</span> <span class="nav-text">消费者等待策略</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
