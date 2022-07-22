@@ -18,12 +18,12 @@
     var CONFIG = {"hostname":"apomelo.cc","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="netty 简介Netty 是一个高性能、异步事件驱动的网络应用框架。 基于 Netty，可以快速的开发和部署高性能、 高可用的网络服务端和客户端应用。 netty 优点NIO简介NIO 主要有三大核心部分：Channel(通道)，Buffer(缓冲区), Selector。 传统 IO 基于字节流和字符流进行操作，而 NIO 基于 Channel 和 Buffer(缓冲区)进行操作，数据总是从通">
+  <meta name="description" content="netty 简介Netty 是一个高性能、异步事件驱动的 NIO 网络应用框架，它提供了对TCP、UDP和文件传输的支持。基于 Netty，可以快速的开发和部署高性能、 高可用的网络服务端和客户端应用。 netty 优点 API使用简单，开发门槛低； 功能强大，预置了多种编解码功能，支持多种主流协议； 定制能力强，可以通过ChannelHandler对通信框架进行灵活地扩展； 性能高，通过与其他业">
 <meta property="og:type" content="article">
 <meta property="og:title" content="netty笔记">
 <meta property="og:url" content="https://apomelo.cc/posts/2022/01/09/netty%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Apomelo - 追逐">
-<meta property="og:description" content="netty 简介Netty 是一个高性能、异步事件驱动的网络应用框架。 基于 Netty，可以快速的开发和部署高性能、 高可用的网络服务端和客户端应用。 netty 优点NIO简介NIO 主要有三大核心部分：Channel(通道)，Buffer(缓冲区), Selector。 传统 IO 基于字节流和字符流进行操作，而 NIO 基于 Channel 和 Buffer(缓冲区)进行操作，数据总是从通">
+<meta property="og:description" content="netty 简介Netty 是一个高性能、异步事件驱动的 NIO 网络应用框架，它提供了对TCP、UDP和文件传输的支持。基于 Netty，可以快速的开发和部署高性能、 高可用的网络服务端和客户端应用。 netty 优点 API使用简单，开发门槛低； 功能强大，预置了多种编解码功能，支持多种主流协议； 定制能力强，可以通过ChannelHandler对通信框架进行灵活地扩展； 性能高，通过与其他业">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-01-08T16:00:00.000Z">
 <meta property="article:modified_time" content="2022-01-08T16:00:00.000Z">
@@ -257,12 +257,28 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="netty-简介"><a href="#netty-简介" class="headerlink" title="netty 简介"></a>netty 简介</h2><p>Netty 是一个高性能、异步事件驱动的网络应用框架。 基于 Netty，可以快速的开发和部署高性能、 高可用的网络服务端和客户端应用。</p>
-<h2 id="netty-优点"><a href="#netty-优点" class="headerlink" title="netty 优点"></a>netty 优点</h2><h2 id="NIO简介"><a href="#NIO简介" class="headerlink" title="NIO简介"></a>NIO简介</h2><p>NIO 主要有三大核心部分：Channel(通道)，Buffer(缓冲区), Selector。</p>
+        <h2 id="netty-简介"><a href="#netty-简介" class="headerlink" title="netty 简介"></a>netty 简介</h2><p>Netty 是一个高性能、异步事件驱动的 NIO 网络应用框架，它提供了对TCP、UDP和文件传输的支持。基于 Netty，可以快速的开发和部署高性能、 高可用的网络服务端和客户端应用。</p>
+<h2 id="netty-优点"><a href="#netty-优点" class="headerlink" title="netty 优点"></a>netty 优点</h2><ol>
+<li>API使用简单，开发门槛低；</li>
+<li>功能强大，预置了多种编解码功能，支持多种主流协议；</li>
+<li>定制能力强，可以通过ChannelHandler对通信框架进行灵活地扩展；</li>
+<li>性能高，通过与其他业界主流的NIO框架对比，Netty的综合性能最优；</li>
+<li>成熟、稳定，Netty修复了已经发现的所有JDK NIO BUG，业务开发人员不需要再为NIO的BUG而烦恼；</li>
+<li>社区活跃，版本迭代周期短，发现的BUG可以被及时修复，同时，更多的新功能会加入；</li>
+<li>经历了大规模的商业应用考验，质量得到验证。在互联网、大数据、网络游戏、企业应用、电信软件等众多行业得到成功商用，证明了它已经完全能够满足不同行业的商业应用了。</li>
+</ol>
+<h3 id="与-mina-对比"><a href="#与-mina-对比" class="headerlink" title="与 mina 对比"></a>与 mina 对比</h3><ol>
+<li>都是Trustin Lee的作品，Netty更晚，也更成熟；</li>
+<li>Mina将内核和一些特性的联系过于紧密，使得用户在不需要这些特性的时候无法脱离，相比下性能会有所下降，Netty解决了这个设计问题；</li>
+<li>Netty的文档更清晰，很多Mina的特性在Netty里都有；</li>
+<li>Netty更新周期更短，新版本的发布比较快；</li>
+<li>它们的架构差别不大，Mina靠apache生存，而Netty靠jboss，和jboss的结合度非常高，Netty有对google protocal buf的支持，有更完整的ioc容器支持(spring,guice,jbossmc和osgi)；</li>
+<li>Netty和Mina在处理UDP时有一些不同，Netty将UDP无连接的特性暴露出来；而Mina对UDP进行了高级层次的抽象，可以把UDP当成”面向连接”的协议，而要Netty做到这一点比较困难。</li>
+</ol>
+<h2 id="NIO简介"><a href="#NIO简介" class="headerlink" title="NIO简介"></a>NIO简介</h2><p>NIO 主要有三大核心部分：Channel(通道)，Buffer(缓冲区), Selector。</p>
 <p>传统 IO 基于字节流和字符流进行操作，而 NIO 基于 Channel 和 Buffer(缓冲区)进行操作，数据总是从通道读取到缓冲区中，或者从缓冲区写入到通道中。</p>
 <p>Selector(选择区)用于监听多个通道的事件（比如：连接打开，数据到达）。因此，单个线程可以监听多个数据通道</p>
-<!-- NIO详细介绍参考：[]() -->
-
+<p>NIO详细介绍参考：<a href="/posts/2022/01/09/IO%E6%B5%81/" title="[io流]">[io流]</a></p>
 <h3 id="NIO-与-IO-的区别"><a href="#NIO-与-IO-的区别" class="headerlink" title="NIO 与 IO 的区别"></a>NIO 与 IO 的区别</h3><ul>
 <li>IO 是面向流的，NIO 是面向缓冲区的</li>
 <li>IO 流是阻塞的，NIO 流是不阻塞的</li>
@@ -276,6 +292,15 @@
 <li>ByteBuf.slice 操作与 Unpooled.wrappedBuffer 相反，slice 操作可以将一个 ByteBuf 对象切分成多个 ByteBuf 对象，切分过程中不会产生内存拷贝，底层共享一个 byte 数组的存储空间。</li>
 <li>Netty 使用 FileRegion 实现文件传输，FileRegion 底层封装了 FileChannel#transferTo() 方法，可以将文件缓冲区的数据直接传输到目标 Channel，避免内核缓冲区和用户态缓冲区之间的数据拷贝，这属于操作系统级别的零拷贝。</li>
 </ol>
+<h2 id="netty-核心组件"><a href="#netty-核心组件" class="headerlink" title="netty 核心组件"></a>netty 核心组件</h2><p>开发一个 netty 应用的核心组件：</p>
+<ul>
+<li>Bootstrap or ServerBootstrap</li>
+<li>EventLoop</li>
+<li>EventLoopGroup</li>
+<li>ChannelPipeline</li>
+<li>Channel</li>
+<li>Future or ChannelFuture</li>
+</ul>
 <p>参考资料:</p>
 <ol>
 <li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904146550652941">https://juejin.cn/post/6844904146550652941</a></li>
@@ -367,7 +392,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#netty-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">netty 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#netty-%E4%BC%98%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">netty 优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO%E7%AE%80%E4%BB%8B"><span class="nav-number">3.</span> <span class="nav-text">NIO简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO-%E4%B8%8E-IO-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.1.</span> <span class="nav-text">NIO 与 IO 的区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Netty-%E7%9A%84%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%8A%80%E6%9C%AF"><span class="nav-number">4.</span> <span class="nav-text">Netty 的零拷贝技术</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#netty-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">netty 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#netty-%E4%BC%98%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">netty 优点</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E-mina-%E5%AF%B9%E6%AF%94"><span class="nav-number">2.1.</span> <span class="nav-text">与 mina 对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO%E7%AE%80%E4%BB%8B"><span class="nav-number">3.</span> <span class="nav-text">NIO简介</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO-%E4%B8%8E-IO-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.1.</span> <span class="nav-text">NIO 与 IO 的区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Netty-%E7%9A%84%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%8A%80%E6%9C%AF"><span class="nav-number">4.</span> <span class="nav-text">Netty 的零拷贝技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#netty-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6"><span class="nav-number">5.</span> <span class="nav-text">netty 核心组件</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
