@@ -28,8 +28,8 @@
 <meta property="article:published_time" content="2021-08-12T16:00:00.000Z">
 <meta property="article:modified_time" content="2021-08-12T16:00:00.000Z">
 <meta property="article:author" content="Apomelo">
-<meta property="article:tag" content="blog">
 <meta property="article:tag" content="deploy">
+<meta property="article:tag" content="blog">
 <meta name="twitter:card" content="summary">
 
 <link rel="canonical" href="https://apomelo.cc/posts/2021/08/13/Github%20Page%20%E9%83%A8%E7%BD%B2/">
@@ -397,7 +397,7 @@
 </li>
 <li>在文章头加上 hidden 字段 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">---</span><br><span class="line">title: Github Page 部署</span><br><span class="line"><span class="section">hidden: true</span></span><br><span class="line"><span class="section">---</span></span><br></pre></td></tr></table></figure></li>
 </ol>
-<h2 id="添加-mermaid-流程图"><a href="#添加-mermaid-流程图" class="headerlink" title="添加 mermaid 流程图"></a>添加 mermaid 流程图</h2><h3 id="安装-hexo-filter-mermaid-diagrams-插件"><a href="#安装-hexo-filter-mermaid-diagrams-插件" class="headerlink" title="安装 hexo-filter-mermaid-diagrams 插件"></a>安装 hexo-filter-mermaid-diagrams 插件</h3><p>在博客根目录下安装</p>
+<h2 id="添加-mermaid-画图模块"><a href="#添加-mermaid-画图模块" class="headerlink" title="添加 mermaid 画图模块"></a>添加 mermaid 画图模块</h2><h3 id="安装-hexo-filter-mermaid-diagrams-插件"><a href="#安装-hexo-filter-mermaid-diagrams-插件" class="headerlink" title="安装 hexo-filter-mermaid-diagrams 插件"></a>安装 hexo-filter-mermaid-diagrams 插件</h3><p>在博客根目录下安装</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-filter-mermaid-diagrams --save</span><br></pre></td></tr></table></figure>
 
 <h3 id="配置-2"><a href="#配置-2" class="headerlink" title="配置"></a>配置</h3><ol>
@@ -406,6 +406,301 @@
 <li><p>在next主题下面 _config.yml 文件配置，开启 mermaid:</p>
  <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># Mermaid tag</span></span><br><span class="line">mermaid:</span><br><span class="line">  enable: true</span><br><span class="line">  # Available themes: default | dark | forest | neutral</span><br><span class="line">  theme: </span><br><span class="line"><span class="code">    light: default</span></span><br><span class="line"><span class="code">    dark: dark</span></span><br></pre></td></tr></table></figure></li>
 </ol>
+<h3 id="流程图"><a href="#流程图" class="headerlink" title="流程图"></a>流程图</h3><h4 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h4><h5 id="方向"><a href="#方向" class="headerlink" title="方向"></a>方向</h5><table>
+<thead>
+<tr>
+<th>方向</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TB</td>
+<td>从上到下</td>
+</tr>
+<tr>
+<td>BT</td>
+<td>从下到上</td>
+</tr>
+<tr>
+<td>RL</td>
+<td>从右到左</td>
+</tr>
+<tr>
+<td>LR</td>
+<td>从左到右</td>
+</tr>
+<tr>
+<td>TD</td>
+<td>与TB相同</td>
+</tr>
+</tbody></table>
+<h5 id="节点"><a href="#节点" class="headerlink" title="节点"></a>节点</h5><p>语法结构如下：<code>A[名称] --&gt; B(名称)</code> 其中，A、B均代表形状名称， <code>--&gt;</code>表示箭头指向，形状样式用后面的括号来表示，括号里面的内容是形状中要显示的文本内容。其中有以下几种形状：</p>
+<table>
+<thead>
+<tr>
+<th>括号形式</th>
+<th>形状样式</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>[ ]</td>
+<td>矩形框</td>
+</tr>
+<tr>
+<td>( )</td>
+<td>圆角矩形框</td>
+</tr>
+<tr>
+<td>{ }</td>
+<td>菱形</td>
+</tr>
+<tr>
+<td>(( ))</td>
+<td>圆形</td>
+</tr>
+</tbody></table>
+<h5 id="连接线"><a href="#连接线" class="headerlink" title="连接线"></a>连接线</h5><table>
+<thead>
+<tr>
+<th>符号</th>
+<th>箭头</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>--&gt;</code></td>
+<td>箭头</td>
+</tr>
+<tr>
+<td><code>---</code></td>
+<td>没有箭头</td>
+</tr>
+<tr>
+<td>`– 文字 — / —</td>
+<td>文字</td>
+</tr>
+<tr>
+<td>`–&gt;</td>
+<td>文字</td>
+</tr>
+<tr>
+<td><code>-.-&gt;</code></td>
+<td>虚线</td>
+</tr>
+<tr>
+<td><code>-. 文字 .-&gt;</code></td>
+<td>带文字的虚线连接</td>
+</tr>
+<tr>
+<td><code>==&gt;</code></td>
+<td>粗连接线</td>
+</tr>
+<tr>
+<td><code>== 文本 ==&gt;</code></td>
+<td>带文本的粗连接</td>
+</tr>
+</tbody></table>
+<h5 id="子图"><a href="#子图" class="headerlink" title="子图"></a>子图</h5><p>语法：</p>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">subgraph title</span><br><span class="line"><span class="code">    graph definition</span></span><br><span class="line"><span class="code">end</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>示例</strong></p>
+<pre class="mermaid">graph TB
+    subgraph one
+    a1-->a2
+    end
+    subgraph two
+    b1-->b2
+    end
+    subgraph three
+    c1-->c2
+    end
+    c1-->a2</pre>
+
+<h5 id="样式链接"><a href="#样式链接" class="headerlink" title="样式链接"></a>样式链接</h5><p><strong>示例</strong></p>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line"><span class="code">    id1(Start)--&gt;id2(Stop)</span></span><br><span class="line"><span class="code">    style id1 fill:#f9f,stroke:#333,stroke-width:4px</span></span><br><span class="line"><span class="code">    style id2 fill:#ccf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5</span></span><br></pre></td></tr></table></figure>
+<pre class="mermaid">graph LR
+    id1(Start)-->id2(Stop)
+    style id1 fill:#f9f,stroke:#333,stroke-width:4px
+    style id2 fill:#ccf,stroke:#f66,stroke-width:2px,stroke-dasharray: 5, 5</pre>
+
+<h5 id="注释"><a href="#注释" class="headerlink" title="注释"></a>注释</h5><p>mermaid注释为 <code>%%</code></p>
+<h4 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h4><h5 id="示例1"><a href="#示例1" class="headerlink" title="示例1"></a>示例1</h5><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">graph LR</span><br><span class="line"><span class="code">    A(1) --&gt; B(2) --&gt; C(3) --&gt; D(4)</span></span><br></pre></td></tr></table></figure>
+<pre class="mermaid">graph LR
+    A(1) --> B(2) --> C(3) --> D(4)</pre>
+
+<h5 id="示例2"><a href="#示例2" class="headerlink" title="示例2"></a>示例2</h5><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line"><span class="code">    A((开始)) -- 语句 --&gt; B(预处理)</span></span><br><span class="line"><span class="code">    B --&gt; C&#123;判断&#125;</span></span><br><span class="line"><span class="code">    C -- a=1 --&gt; D[执行语句 1]</span></span><br><span class="line"><span class="code">    C -- a=2 --&gt; E[执行语句 2]</span></span><br><span class="line"><span class="code">    C -- a=3 --&gt; F[执行语句 3]</span></span><br><span class="line"><span class="code">    C -- a=4 --&gt; F[执行语句 3]</span></span><br><span class="line"><span class="code">    D --&gt; AA((结束))</span></span><br><span class="line"><span class="code">    E --&gt; AA</span></span><br><span class="line"><span class="code">    F --&gt; AA</span></span><br></pre></td></tr></table></figure>
+<pre class="mermaid">graph TD
+    A((开始)) -- 语句 --> B(预处理)
+    B --> C{判断}
+    C -- a=1 --> D[执行语句 1]
+    C -- a=2 --> E[执行语句 2]
+    C -- a=3 --> F[执行语句 3]
+    C -- a=4 --> F[执行语句 3]
+    D --> AA((结束))
+    E --> AA
+    F --> AA</pre>
+
+<h5 id="示例3"><a href="#示例3" class="headerlink" title="示例3"></a>示例3</h5><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">graph TD</span><br><span class="line"><span class="code">    A((开始)) --&gt; |语句| B(预处理)</span></span><br><span class="line"><span class="code">    B --&gt; C&#123;判断&#125;</span></span><br><span class="line"><span class="code">    C --&gt; |a=1| D[执行语句 1]</span></span><br><span class="line"><span class="code">    C --&gt; |a=2| E[执行语句 2]</span></span><br><span class="line"><span class="code">    C --&gt; |a=3| F[执行语句 3]</span></span><br><span class="line"><span class="code">    C --&gt; |a=4| F[执行语句 3]</span></span><br><span class="line"><span class="code">    D --&gt; AA((结束))</span></span><br><span class="line"><span class="code">    E --&gt; AA</span></span><br><span class="line"><span class="code">    F --&gt; AA</span></span><br></pre></td></tr></table></figure>
+<pre class="mermaid">graph TD
+    A((开始)) --> |语句| B(预处理)
+    B --> C{判断}
+    C --> |a=1| D[执行语句 1]
+    C --> |a=2| E[执行语句 2]
+    C --> |a=3| F[执行语句 3]
+    C --> |a=4| F[执行语句 3]
+    D --> AA((结束))
+    E --> AA
+    F --> AA</pre>
+
+<h5 id="综合应用"><a href="#综合应用" class="headerlink" title="综合应用"></a>综合应用</h5><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">graph TB</span><br><span class="line"><span class="code">    id1(圆角矩形)--普通线--&gt;id2[矩形]</span></span><br><span class="line"><span class="code">    subgraph 子图表</span></span><br><span class="line"><span class="code">        id2==粗线==&gt;id3&#123;菱形&#125;</span></span><br><span class="line"><span class="code">        id3-.虚线.-&gt;id4&gt;右向旗帜]</span></span><br><span class="line"><span class="code">        id3--无箭头---id5((圆形))</span></span><br><span class="line"><span class="code">    end</span></span><br><span class="line"><span class="code">    style id1 fill:#f9f,stroke:#333,stroke-width:4px</span></span><br></pre></td></tr></table></figure>
+<pre class="mermaid">graph TB
+    id1(圆角矩形)--普通线-->id2[矩形]
+    subgraph 子图表
+        id2==粗线==>id3{菱形}
+        id3-.虚线.->id4>右向旗帜]
+        id3--无箭头---id5((圆形))
+    end
+    style id1 fill:#f9f,stroke:#333,stroke-width:4px</pre>
+
+<h3 id="甘特图"><a href="#甘特图" class="headerlink" title="甘特图"></a>甘特图</h3><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">gantt</span><br><span class="line">section Section</span><br><span class="line">Completed :done,    des1, 2014-01-06,2014-01-08</span><br><span class="line">Active        :active,  des2, 2014-01-07, 3d</span><br><span class="line">Parallel 1   :         des3, after des1, 1d</span><br><span class="line">Parallel 2   :         des4, after des1, 1d</span><br><span class="line">Parallel 3   :         des5, after des3, 1d</span><br><span class="line">Parallel 4   :         des6, after des4, 1d</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">gantt
+section Section
+Completed :done,    des1, 2014-01-06,2014-01-08
+Active        :active,  des2, 2014-01-07, 3d
+Parallel 1   :         des3, after des1, 1d
+Parallel 2   :         des4, after des1, 1d
+Parallel 3   :         des5, after des3, 1d
+Parallel 4   :         des6, after des4, 1d</pre>
+
+<h3 id="类图"><a href="#类图" class="headerlink" title="类图"></a>类图</h3><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">classDiagram</span><br><span class="line">Class01 &lt;|-- AveryLongClass : Cool</span><br><span class="line">&lt;<span class="xml"><span class="tag">&lt;<span class="name">interface</span>&gt;</span></span>&gt; Class01</span><br><span class="line">Class09 --&gt; C2 : Where am i?</span><br><span class="line">Class09 --<span class="emphasis">* C3</span></span><br><span class="line"><span class="emphasis">Class09 --|&gt; Class07</span></span><br><span class="line"><span class="emphasis">Class07 : equals()</span></span><br><span class="line"><span class="emphasis">Class07 : Object[] elementData</span></span><br><span class="line"><span class="emphasis">Class01 : size()</span></span><br><span class="line"><span class="emphasis">Class01 : int chimp</span></span><br><span class="line"><span class="emphasis">Class01 : int gorilla</span></span><br><span class="line"><span class="emphasis">class Class10 &#123;</span></span><br><span class="line"><span class="emphasis">  &lt;<span class="xml"><span class="tag">&lt;<span class="name">service</span>&gt;</span></span>&gt;</span></span><br><span class="line"><span class="emphasis">  int id</span></span><br><span class="line"><span class="emphasis">  size()</span></span><br><span class="line"><span class="emphasis">&#125;</span></span><br></pre></td></tr></table></figure>
+<pre class="mermaid">classDiagram
+Class01 <|-- AveryLongClass : Cool
+<<interface>> Class01
+Class09 --> C2 : Where am i?
+Class09 --* C3
+Class09 --|> Class07
+Class07 : equals()
+Class07 : Object[] elementData
+Class01 : size()
+Class01 : int chimp
+Class01 : int gorilla
+class Class10 {
+  <<service>>
+  int id
+  size()
+}</pre>
+
+<h3 id="状态图"><a href="#状态图" class="headerlink" title="状态图"></a>状态图</h3><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">stateDiagram-v2</span><br><span class="line">[<span class="emphasis">*] --&gt; Still</span></span><br><span class="line"><span class="emphasis">Still --&gt; [*</span>]</span><br><span class="line">Still --&gt; Moving</span><br><span class="line">Moving --&gt; Still</span><br><span class="line">Moving --&gt; Crash</span><br><span class="line">Crash --&gt; [<span class="emphasis">*]</span></span><br></pre></td></tr></table></figure>
+<pre class="mermaid">stateDiagram-v2
+[*] --> Still
+Still --> [*]
+Still --> Moving
+Moving --> Still
+Moving --> Crash
+Crash --> [*]</pre>
+
+<h3 id="饼图"><a href="#饼图" class="headerlink" title="饼图"></a>饼图</h3><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">pie</span><br><span class="line">&quot;Dogs&quot; : 386</span><br><span class="line">&quot;Cats&quot; : 85</span><br><span class="line">&quot;Rats&quot; : 15</span><br></pre></td></tr></table></figure>
+<pre class="mermaid">pie
+"Dogs" : 386
+"Cats" : 85
+"Rats" : 15</pre>
+
+<h3 id="旅程图"><a href="#旅程图" class="headerlink" title="旅程图"></a>旅程图</h3><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">journey</span><br><span class="line">  title My working day</span><br><span class="line">  section Go to work</span><br><span class="line"><span class="code">    Make tea: 5: Me</span></span><br><span class="line"><span class="code">    Go upstairs: 3: Me</span></span><br><span class="line"><span class="code">    Do work: 1: Me, Cat</span></span><br><span class="line"><span class="code">  section Go home</span></span><br><span class="line"><span class="code">    Go downstairs: 5: Me</span></span><br><span class="line"><span class="code">    Sit down: 3: Me</span></span><br></pre></td></tr></table></figure>
+<pre class="mermaid">journey
+  title My working day
+  section Go to work
+    Make tea: 5: Me
+    Go upstairs: 3: Me
+    Do work: 1: Me, Cat
+  section Go home
+    Go downstairs: 5: Me
+    Sit down: 3: Me</pre>
+
+<h3 id="序列图"><a href="#序列图" class="headerlink" title="序列图"></a>序列图</h3><h4 id="语法-1"><a href="#语法-1" class="headerlink" title="语法"></a>语法</h4><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line"><span class="code">    [参与者1][消息线][参与者2]:消息体</span></span><br><span class="line"><span class="code">    ...</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="参与者"><a href="#参与者" class="headerlink" title="参与者"></a>参与者</h5><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line"><span class="code">    participant 参与者 1</span></span><br><span class="line"><span class="code">    participant 参与者 2</span></span><br><span class="line"><span class="code">    ...</span></span><br><span class="line"><span class="code">    participant 简称 as 参与者 3 #该语法可以在接下来的描述中使用简称来代替参与者 312345</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="消息线"><a href="#消息线" class="headerlink" title="消息线"></a>消息线</h5><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>-&gt;</code></td>
+<td>无箭头的实线</td>
+</tr>
+<tr>
+<td><code>--&gt;</code></td>
+<td>无箭头的虚线</td>
+</tr>
+<tr>
+<td><code>-&gt;&gt;</code></td>
+<td>有箭头的实线</td>
+</tr>
+<tr>
+<td><code>--&gt;&gt;</code></td>
+<td>有箭头的虚线</td>
+</tr>
+<tr>
+<td><code>-x</code></td>
+<td>末端为叉的实线（表示异步）</td>
+</tr>
+<tr>
+<td><code>--x</code></td>
+<td>末端为叉的虚线（表示异步）</td>
+</tr>
+</tbody></table>
+<h5 id="处理中"><a href="#处理中" class="headerlink" title="处理中"></a>处理中</h5><p>在消息线末尾增加 + ，则消息接收者进入当前消息的“处理中”状态； 在消息线末尾增加 - ，则消息接收者离开当前消息的“处理中”状态。</p>
+<p>或者使用以下语法直接说明某个参与者进入“处理中”状态:</p>
+<figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">activate 参与者1</span><br></pre></td></tr></table></figure>
+
+<h5 id="标注"><a href="#标注" class="headerlink" title="标注"></a>标注</h5><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Note 位置表述 参与者: 标注文字1</span><br></pre></td></tr></table></figure>
+
+<p>其中位置表述可以为:</p>
+<table>
+<thead>
+<tr>
+<th>表述</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>right of</td>
+<td>右侧</td>
+</tr>
+<tr>
+<td>left of</td>
+<td>左侧</td>
+</tr>
+<tr>
+<td>over</td>
+<td>在当中，可以横跨多个参与者</td>
+</tr>
+</tbody></table>
+<h5 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h5><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">loop 循环的条件</span><br><span class="line"><span class="code">    循环体描述语句</span></span><br><span class="line"><span class="code">end123</span></span><br></pre></td></tr></table></figure>
+
+<h5 id="判断"><a href="#判断" class="headerlink" title="判断"></a>判断</h5><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">alt 条件 1 描述</span><br><span class="line"><span class="code">    分支 1 描述语句</span></span><br><span class="line"><span class="code">else 条件 2 描述 # else 分支可选</span></span><br><span class="line"><span class="code">    分支 2 描述语句</span></span><br><span class="line"><span class="code">else ...</span></span><br><span class="line"><span class="code">    ...</span></span><br><span class="line"><span class="code">end1234567</span></span><br><span class="line"><span class="code"></span></span><br><span class="line">// 如果遇到可选的情况，即没有 else 分支的情况，使用如下语法：</span><br><span class="line">opt 条件描述</span><br><span class="line"><span class="code">    分支描述语句</span></span><br><span class="line"><span class="code">end</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="综合应用-1"><a href="#综合应用-1" class="headerlink" title="综合应用"></a>综合应用</h4><figure class="highlight md"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line"><span class="code">    participant z as 张三</span></span><br><span class="line"><span class="code">    participant l as 李四</span></span><br><span class="line"><span class="code">    loop 日复一日</span></span><br><span class="line"><span class="code">        z-&gt;&gt;l: 吃了吗您呐？</span></span><br><span class="line"><span class="code">        l--&gt;&gt;z: 吃了，您呢？</span></span><br><span class="line"><span class="code">        activate z</span></span><br><span class="line"><span class="code">        Note left of z: 想了一下</span></span><br><span class="line"><span class="code">        alt 还没吃</span></span><br><span class="line"><span class="code">            z-xl: 还没呢，正准备回去吃</span></span><br><span class="line"><span class="code">        else 已经吃了</span></span><br><span class="line"><span class="code">            z-xl: 我也吃过了，哈哈</span></span><br><span class="line"><span class="code">        end</span></span><br><span class="line"><span class="code">        opt 大过年的</span></span><br><span class="line"><span class="code">            l--&gt;z: 祝您新年好啊</span></span><br><span class="line"><span class="code">        end</span></span><br><span class="line"><span class="code">    end</span></span><br></pre></td></tr></table></figure>
+<pre class="mermaid">sequenceDiagram
+    participant z as 张三
+    participant l as 李四
+    loop 日复一日
+        z->>l: 吃了吗您呐？
+        l-->>z: 吃了，您呢？
+        activate z
+        Note left of z: 想了一下
+        alt 还没吃
+            z-xl: 还没呢，正准备回去吃
+        else 已经吃了
+            z-xl: 我也吃过了，哈哈
+        end
+        opt 大过年的
+            l-->z: 祝您新年好啊
+        end
+    end</pre>
+
 <h2 id="Hexo引用站内文章"><a href="#Hexo引用站内文章" class="headerlink" title="Hexo引用站内文章"></a>Hexo引用站内文章</h2><p>写文章的时候，经常需要引用站内的其他文章，此时可以使用Hexo内置的标签插件（Tag Plugins）中的post_link来实现。</p>
 <p>用法:</p>
 <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#123;% post<span class="emphasis">_link slug [title] %&#125;</span></span><br></pre></td></tr></table></figure>
@@ -413,6 +708,9 @@
 <li>slug: _posts文件夹下需要引用的文章的markdown文件的名字（不带文件扩展名）</li>
 <li>title: 指定引用的文章需要显示的名字</li>
 </ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7030074642559664135#heading-22">Hexo -14- 利用 Markdown 语法画 mermaid 流程图</a></li>
+</ol>
 
     </div>
 
@@ -422,8 +720,8 @@
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/blog/" rel="tag"># blog</a>
               <a href="/tags/deploy/" rel="tag"># deploy</a>
+              <a href="/tags/blog/" rel="tag"># blog</a>
           </div>
 
         
@@ -497,7 +795,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-github-%E4%BB%93%E5%BA%93"><span class="nav-number">1.</span> <span class="nav-text">创建 github 仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo"><span class="nav-number">2.</span> <span class="nav-text">安装 hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-node-js"><span class="nav-number">2.1.</span> <span class="nav-text">安装 node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-git"><span class="nav-number">2.2.</span> <span class="nav-text">安装 git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-1"><span class="nav-number">2.3.</span> <span class="nav-text">安装 hexo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-NexT-%E4%B8%BB%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">安装 NexT 主题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0"><span class="nav-number">3.2.</span> <span class="nav-text">更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%85%E7%9C%8B%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">4.1.</span> <span class="nav-text">必看的注意事项!!!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%9A%E5%AE%A2-config-yml-%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.2.</span> <span class="nav-text">博客 _config.yml 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#url"><span class="nav-number">4.2.1.</span> <span class="nav-text">url</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#permalink"><span class="nav-number">4.2.2.</span> <span class="nav-text">permalink</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#theme"><span class="nav-number">4.2.3.</span> <span class="nav-text">theme</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NexT-%E4%B8%BB%E9%A2%98-config-yml-%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.3.</span> <span class="nav-text">NexT 主题 _config.yml 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#favicon"><span class="nav-number">4.3.1.</span> <span class="nav-text">favicon</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#menu"><span class="nav-number">4.3.2.</span> <span class="nav-text">menu</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#social"><span class="nav-number">4.3.3.</span> <span class="nav-text">social</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#toc"><span class="nav-number">4.3.4.</span> <span class="nav-text">toc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#baidu-push"><span class="nav-number">4.3.5.</span> <span class="nav-text">baidu_push</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#google-analytics"><span class="nav-number">4.3.6.</span> <span class="nav-text">google_analytics</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#baidu-analytics"><span class="nav-number">4.3.7.</span> <span class="nav-text">baidu_analytics</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cnzz-siteid"><span class="nav-number">4.3.8.</span> <span class="nav-text">cnzz_siteid</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#leancloud-visitors"><span class="nav-number">4.3.9.</span> <span class="nav-text">leancloud_visitors</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#busuanzi-count"><span class="nav-number">4.3.10.</span> <span class="nav-text">busuanzi_count</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#algolia-search"><span class="nav-number">4.3.11.</span> <span class="nav-text">algolia_search</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%8D%9A%E5%AE%A2%E5%9F%9F%E5%90%8D"><span class="nav-number">4.4.</span> <span class="nav-text">配置博客域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tags-%E5%90%AF%E7%94%A8"><span class="nav-number">4.5.</span> <span class="nav-text">tags 启用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#categories-%E5%90%AF%E7%94%A8"><span class="nav-number">4.6.</span> <span class="nav-text">categories 启用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87"><span class="nav-number">4.7.</span> <span class="nav-text">图片</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E6%96%87%E7%AB%A0"><span class="nav-number">5.</span> <span class="nav-text">隐藏文章</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-hide-posts-%E6%8F%92%E4%BB%B6"><span class="nav-number">5.1.</span> <span class="nav-text">安装 hexo-hide-posts 插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-1"><span class="nav-number">5.2.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-mermaid-%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">6.</span> <span class="nav-text">添加 mermaid 流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-filter-mermaid-diagrams-%E6%8F%92%E4%BB%B6"><span class="nav-number">6.1.</span> <span class="nav-text">安装 hexo-filter-mermaid-diagrams 插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-2"><span class="nav-number">6.2.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo%E5%BC%95%E7%94%A8%E7%AB%99%E5%86%85%E6%96%87%E7%AB%A0"><span class="nav-number">7.</span> <span class="nav-text">Hexo引用站内文章</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-github-%E4%BB%93%E5%BA%93"><span class="nav-number">1.</span> <span class="nav-text">创建 github 仓库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo"><span class="nav-number">2.</span> <span class="nav-text">安装 hexo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-node-js"><span class="nav-number">2.1.</span> <span class="nav-text">安装 node.js</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-git"><span class="nav-number">2.2.</span> <span class="nav-text">安装 git</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-1"><span class="nav-number">2.3.</span> <span class="nav-text">安装 hexo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-NexT-%E4%B8%BB%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">安装 NexT 主题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85"><span class="nav-number">3.1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0"><span class="nav-number">3.2.</span> <span class="nav-text">更新</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE"><span class="nav-number">4.</span> <span class="nav-text">配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BF%85%E7%9C%8B%E7%9A%84%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">4.1.</span> <span class="nav-text">必看的注意事项!!!</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%9A%E5%AE%A2-config-yml-%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.2.</span> <span class="nav-text">博客 _config.yml 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#url"><span class="nav-number">4.2.1.</span> <span class="nav-text">url</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#permalink"><span class="nav-number">4.2.2.</span> <span class="nav-text">permalink</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#theme"><span class="nav-number">4.2.3.</span> <span class="nav-text">theme</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#NexT-%E4%B8%BB%E9%A2%98-config-yml-%E8%AF%A6%E8%A7%A3"><span class="nav-number">4.3.</span> <span class="nav-text">NexT 主题 _config.yml 详解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#favicon"><span class="nav-number">4.3.1.</span> <span class="nav-text">favicon</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#menu"><span class="nav-number">4.3.2.</span> <span class="nav-text">menu</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#social"><span class="nav-number">4.3.3.</span> <span class="nav-text">social</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#toc"><span class="nav-number">4.3.4.</span> <span class="nav-text">toc</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#baidu-push"><span class="nav-number">4.3.5.</span> <span class="nav-text">baidu_push</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#google-analytics"><span class="nav-number">4.3.6.</span> <span class="nav-text">google_analytics</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#baidu-analytics"><span class="nav-number">4.3.7.</span> <span class="nav-text">baidu_analytics</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#cnzz-siteid"><span class="nav-number">4.3.8.</span> <span class="nav-text">cnzz_siteid</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#leancloud-visitors"><span class="nav-number">4.3.9.</span> <span class="nav-text">leancloud_visitors</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#busuanzi-count"><span class="nav-number">4.3.10.</span> <span class="nav-text">busuanzi_count</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#algolia-search"><span class="nav-number">4.3.11.</span> <span class="nav-text">algolia_search</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E5%8D%9A%E5%AE%A2%E5%9F%9F%E5%90%8D"><span class="nav-number">4.4.</span> <span class="nav-text">配置博客域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#tags-%E5%90%AF%E7%94%A8"><span class="nav-number">4.5.</span> <span class="nav-text">tags 启用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#categories-%E5%90%AF%E7%94%A8"><span class="nav-number">4.6.</span> <span class="nav-text">categories 启用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87"><span class="nav-number">4.7.</span> <span class="nav-text">图片</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E6%96%87%E7%AB%A0"><span class="nav-number">5.</span> <span class="nav-text">隐藏文章</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-hide-posts-%E6%8F%92%E4%BB%B6"><span class="nav-number">5.1.</span> <span class="nav-text">安装 hexo-hide-posts 插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-1"><span class="nav-number">5.2.</span> <span class="nav-text">配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0-mermaid-%E7%94%BB%E5%9B%BE%E6%A8%A1%E5%9D%97"><span class="nav-number">6.</span> <span class="nav-text">添加 mermaid 画图模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85-hexo-filter-mermaid-diagrams-%E6%8F%92%E4%BB%B6"><span class="nav-number">6.1.</span> <span class="nav-text">安装 hexo-filter-mermaid-diagrams 插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-2"><span class="nav-number">6.2.</span> <span class="nav-text">配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="nav-number">6.3.</span> <span class="nav-text">流程图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">6.3.1.</span> <span class="nav-text">语法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%96%B9%E5%90%91"><span class="nav-number">6.3.1.1.</span> <span class="nav-text">方向</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%8A%82%E7%82%B9"><span class="nav-number">6.3.1.2.</span> <span class="nav-text">节点</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E8%BF%9E%E6%8E%A5%E7%BA%BF"><span class="nav-number">6.3.1.3.</span> <span class="nav-text">连接线</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AD%90%E5%9B%BE"><span class="nav-number">6.3.1.4.</span> <span class="nav-text">子图</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A0%B7%E5%BC%8F%E9%93%BE%E6%8E%A5"><span class="nav-number">6.3.1.5.</span> <span class="nav-text">样式链接</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B3%A8%E9%87%8A"><span class="nav-number">6.3.1.6.</span> <span class="nav-text">注释</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">6.3.2.</span> <span class="nav-text">示例</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B1"><span class="nav-number">6.3.2.1.</span> <span class="nav-text">示例1</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B2"><span class="nav-number">6.3.2.2.</span> <span class="nav-text">示例2</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B3"><span class="nav-number">6.3.2.3.</span> <span class="nav-text">示例3</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E7%BB%BC%E5%90%88%E5%BA%94%E7%94%A8"><span class="nav-number">6.3.2.4.</span> <span class="nav-text">综合应用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%98%E7%89%B9%E5%9B%BE"><span class="nav-number">6.4.</span> <span class="nav-text">甘特图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B1%BB%E5%9B%BE"><span class="nav-number">6.5.</span> <span class="nav-text">类图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E5%9B%BE"><span class="nav-number">6.6.</span> <span class="nav-text">状态图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%A5%BC%E5%9B%BE"><span class="nav-number">6.7.</span> <span class="nav-text">饼图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%85%E7%A8%8B%E5%9B%BE"><span class="nav-number">6.8.</span> <span class="nav-text">旅程图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%8F%E5%88%97%E5%9B%BE"><span class="nav-number">6.9.</span> <span class="nav-text">序列图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95-1"><span class="nav-number">6.9.1.</span> <span class="nav-text">语法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%8F%82%E4%B8%8E%E8%80%85"><span class="nav-number">6.9.1.1.</span> <span class="nav-text">参与者</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E7%BA%BF"><span class="nav-number">6.9.1.2.</span> <span class="nav-text">消息线</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E4%B8%AD"><span class="nav-number">6.9.1.3.</span> <span class="nav-text">处理中</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%A0%87%E6%B3%A8"><span class="nav-number">6.9.1.4.</span> <span class="nav-text">标注</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF"><span class="nav-number">6.9.1.5.</span> <span class="nav-text">循环</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%88%A4%E6%96%AD"><span class="nav-number">6.9.1.6.</span> <span class="nav-text">判断</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BB%BC%E5%90%88%E5%BA%94%E7%94%A8-1"><span class="nav-number">6.9.2.</span> <span class="nav-text">综合应用</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hexo%E5%BC%95%E7%94%A8%E7%AB%99%E5%86%85%E6%96%87%E7%AB%A0"><span class="nav-number">7.</span> <span class="nav-text">Hexo引用站内文章</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">8.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -511,7 +809,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -524,7 +822,7 @@
       <div class="site-state-item site-state-tags">
             <a href="/tags/">
           
-        <span class="site-state-item-count">38</span>
+        <span class="site-state-item-count">39</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
