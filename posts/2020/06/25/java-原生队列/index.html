@@ -2,23 +2,25 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"apomelo.cc","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-  <meta name="description" content="队列简介先进先出（FIFO），生产者往队列里发布事件，消费者获得通知消费事件；如果队列中没有事件时，消费者堵塞，直到生产者发布了新事件。 Queue接口与List、Set同一级别，都是继承了Collection接口。LinkedList实现了Deque接口。 Java 内置队列   队列 有界性 锁 阻塞 数据结构    ArrayBlockingQueue bounded 加锁 是 arrayl">
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="队列简介先进先出（FIFO），生产者往队列里发布事件，消费者获得通知消费事件；如果队列中没有事件时，消费者堵塞，直到生产者发布了新事件。 Queue接口与List、Set同一级别，都是继承了Collection接口。LinkedList实现了Deque接口。 Java 内置队列   队列 有界性 锁 阻塞 数据结构    ArrayBlockingQueue bounded 加锁 是 arrayl">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java原生队列">
 <meta property="og:url" content="https://apomelo.cc/posts/2020/06/25/java-%E5%8E%9F%E7%94%9F%E9%98%9F%E5%88%97/index.html">
@@ -32,90 +34,51 @@
 <meta property="article:tag" content="queue">
 <meta name="twitter:card" content="summary">
 
+
 <link rel="canonical" href="https://apomelo.cc/posts/2020/06/25/java-%E5%8E%9F%E7%94%9F%E9%98%9F%E5%88%97/">
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
 
-  <title>java原生队列 | Apomelo - 追逐</title>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.cc/posts/2020/06/25/java-%E5%8E%9F%E7%94%9F%E9%98%9F%E5%88%97/","path":"posts/2020/06/25/java-原生队列/","title":"java原生队列"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>java原生队列 | Apomelo - 追逐</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
-    <script>
-      if (CONFIG.hostname === location.hostname) {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-2KQDESYMZF');
-      }
-    </script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
 
-
-  <script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
 
 
 
 
   <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
 
+  <main class="main">
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
   <div class="site-meta">
 
     <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Apomelo - 追逐</h1>
-      <span class="logo-line-after"><i></i></span>
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
     </a>
   </div>
 
@@ -128,29 +91,8 @@
 
 
 
-
 <nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -161,91 +103,169 @@
 
 
   <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
+    <div class="popup search-popup"><div class="search-header">
   <span class="search-icon">
     <i class="fa fa-search"></i>
   </span>
   <div class="search-input-container"></div>
-  <span class="popup-btn-close">
+  <span class="popup-btn-close" role="button">
     <i class="fa fa-times-circle"></i>
   </span>
 </div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
 </div>
 
-      
     </div>
   </div>
 
 </div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">队列简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-%E5%86%85%E7%BD%AE%E9%98%9F%E5%88%97"><span class="nav-number">2.</span> <span class="nav-text">Java 内置队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E5%8A%A0%E9%94%81%E6%80%A7%E8%83%BD"><span class="nav-number">3.</span> <span class="nav-text">队列加锁性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayBlockingQueue"><span class="nav-number">4.</span> <span class="nav-text">ArrayBlockingQueue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LinkedBlockingQueue"><span class="nav-number">5.</span> <span class="nav-text">LinkedBlockingQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tip%EF%BC%88wait-notify%E6%9C%BA%E5%88%B6%EF%BC%89"><span class="nav-number">5.1.</span> <span class="nav-text">tip（wait-notify机制）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConcurrentLinkedQueue"><span class="nav-number">6.</span> <span class="nav-text">ConcurrentLinkedQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HOPS-%E5%BB%B6%E8%BF%9F%E6%9B%B4%E6%96%B0%E7%9A%84%E7%AD%96%E7%95%A5-%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">6.1.</span> <span class="nav-text">HOPS(延迟更新的策略)的设计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LinkedTransferQueue"><span class="nav-number">7.</span> <span class="nav-text">LinkedTransferQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">7.1.</span> <span class="nav-text">常用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#transfer-%E6%96%B9%E6%B3%95"><span class="nav-number">7.1.1.</span> <span class="nav-text">transfer 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tryTransfer-E-e"><span class="nav-number">7.1.2.</span> <span class="nav-text">tryTransfer(E e)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tryTransfer-E-e-long-timeout-TimeUnit-unit"><span class="nav-number">7.1.3.</span> <span class="nav-text">tryTransfer(E e, long timeout, TimeUnit unit)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#xfer%E6%96%B9%E6%B3%95"><span class="nav-number">7.1.4.</span> <span class="nav-text">xfer方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#xfer%E6%96%B9%E6%B3%95%E5%8F%82%E6%95%B0"><span class="nav-number">7.1.4.1.</span> <span class="nav-text">xfer方法参数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#xfer%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="nav-number">7.1.4.2.</span> <span class="nav-text">xfer工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#NOW"><span class="nav-number">7.1.4.2.1.</span> <span class="nav-text">NOW</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#ASYNC"><span class="nav-number">7.1.4.2.2.</span> <span class="nav-text">ASYNC</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#SYNC"><span class="nav-number">7.1.4.2.3.</span> <span class="nav-text">SYNC</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#TIMED"><span class="nav-number">7.1.4.2.4.</span> <span class="nav-text">TIMED</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%BA%90%E7%A0%81"><span class="nav-number">7.1.4.3.</span> <span class="nav-text">源码</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PriorityBlockingQueue"><span class="nav-number">8.</span> <span class="nav-text">PriorityBlockingQueue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DelayQueue"><span class="nav-number">9.</span> <span class="nav-text">DelayQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84"><span class="nav-number">9.1.</span> <span class="nav-text">内部结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SynchronizedQueue"><span class="nav-number">10.</span> <span class="nav-text">SynchronizedQueue</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
     </header>
 
     
-  <div class="back-to-top">
+  <div class="back-to-top" role="button" aria-label="返回顶部">
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
 
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
 
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
 
-          <div class="content post posts-expand">
-            
+    <div class="main-inner post posts-expand">
 
-    
+
+  
+
+
+<div class="post-block">
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2020/06/25/java-%E5%8E%9F%E7%94%9F%E9%98%9F%E5%88%97/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="Apomelo">
-      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="java原生队列 | Apomelo - 追逐">
+      <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           java原生队列
         </h1>
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2020-06-25 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-25T00:00:00+08:00">2020-06-25</time>
-            </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-                </span>
-            </span>
+      <time title="创建时间：2020-06-25 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-25T00:00:00+08:00">2020-06-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
 
-          
-            <span id="/posts/2020/06/25/java-%E5%8E%9F%E7%94%9F%E9%98%9F%E5%88%97/" class="post-meta-item leancloud_visitors" data-flag-title="java原生队列" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
+  
+    <span id="/posts/2020/06/25/java-%E5%8E%9F%E7%94%9F%E9%98%9F%E5%88%97/" class="post-meta-item leancloud_visitors" data-flag-title="java原生队列" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
 
         </div>
       </header>
@@ -254,8 +274,6 @@
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
         <h2 id="队列简介"><a href="#队列简介" class="headerlink" title="队列简介"></a>队列简介</h2><p>先进先出（FIFO），生产者往队列里发布事件，消费者获得通知消费事件；如果队列中没有事件时，消费者堵塞，直到生产者发布了新事件。</p>
 <p>Queue接口与List、Set同一级别，都是继承了Collection接口。LinkedList实现了Deque接口。</p>
 <h2 id="Java-内置队列"><a href="#Java-内置队列" class="headerlink" title="Java 内置队列"></a>Java 内置队列</h2><table>
@@ -388,7 +406,7 @@
 <li>内部采用了原子操作类（CAS）进行控制链表长度。</li>
 <li>入队后，如果之前队列为空时，会通知take方法，队列已有数据可进行take，反之，出队后，队列之前已满，则通知put方法，队列已有空闲位置可进行put操作。</li>
 </ol>
-<h3 id="tip（wait-notify机制）"><a href="#tip（wait-notify机制）" class="headerlink" title="tip（wait-notify机制）"></a>tip（wait-notify机制）</h3><p>从整体上来看Object的wait和notify/notify是与对象监视器配合完成线程间的等待/通知机制，而Condition与Lock配合完成等待通知机制，前者是java底层级别的，后者是语言级别的，具有更高的可控制性和扩展性。两者除了在使用方式上不同外，在功能特性上还是有很多的不同：</p>
+<h3 id="tip（wait-notify机制）"><a href="#tip（wait-notify机制）" class="headerlink" title="tip（wait-notify机制）"></a>tip（wait-notify机制）</h3><p>从整体上来看Object的wait和notify&#x2F;notify是与对象监视器配合完成线程间的等待&#x2F;通知机制，而Condition与Lock配合完成等待通知机制，前者是java底层级别的，后者是语言级别的，具有更高的可控制性和扩展性。两者除了在使用方式上不同外，在功能特性上还是有很多的不同：</p>
 <ol>
 <li>Condition能够支持不响应中断，而通过使用Object方式不支持；</li>
 <li>Condition能够支持多个等待队列（new 多个Condition对象），而Object方式只能支持一个；</li>
@@ -414,8 +432,8 @@
 <h2 id="LinkedTransferQueue"><a href="#LinkedTransferQueue" class="headerlink" title="LinkedTransferQueue"></a>LinkedTransferQueue</h2><p>LinkedTransferQueue是在JDK1.7时，J.U.C包新增的一种比较特殊的阻塞队列，它除了具备阻塞队列的常用功能外，还有一个比较特殊的transfer方法。</p>
 <p>LinkedTransferQueue提供了两种构造器，也没有参数设置队列初始容量，所以是一种无界队列</p>
 <p><strong>注意</strong></p>
-<p>LinkedTransferQueue的单向链表中一定会有至少一个Node节点，既是LinkedTransferQueue队列集合通过默认的构造函数进行实例化时构建的“虚”节点，该节点的isData属性被标识为true，并且和该节点item属性实际引用数据对象的情况冲突（item属性为null），这样一来无论xfer操作进行的是入队操作还是出队操作，这个虚拟节点都会被排除在操作逻辑以外。并且因为q = p.next和p = q两个操作语句的缘故，代表当前正在处理的p引用会向单向链表的后续结点移动。</p>
-<h3 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h3><h4 id="transfer-方法"><a href="#transfer-方法" class="headerlink" title="transfer 方法"></a>transfer 方法</h4><p>用于将指定元素e传递给消费者线程(调用take/poll方法)。如果有消费者线程正在阻塞等待，则调用transfer方法的线程会直接将元素传递给它；如果没有消费者线程等待获取元素，则调用transfer方法的线程会将元素插入到队尾，然后阻塞等待，直到出现一个消费者线程获取元素。</p>
+<p>LinkedTransferQueue的单向链表中一定会有至少一个Node节点，既是LinkedTransferQueue队列集合通过默认的构造函数进行实例化时构建的“虚”节点，该节点的isData属性被标识为true，并且和该节点item属性实际引用数据对象的情况冲突（item属性为null），这样一来无论xfer操作进行的是入队操作还是出队操作，这个虚拟节点都会被排除在操作逻辑以外。并且因为q &#x3D; p.next和p &#x3D; q两个操作语句的缘故，代表当前正在处理的p引用会向单向链表的后续结点移动。</p>
+<h3 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h3><h4 id="transfer-方法"><a href="#transfer-方法" class="headerlink" title="transfer 方法"></a>transfer 方法</h4><p>用于将指定元素e传递给消费者线程(调用take&#x2F;poll方法)。如果有消费者线程正在阻塞等待，则调用transfer方法的线程会直接将元素传递给它；如果没有消费者线程等待获取元素，则调用transfer方法的线程会将元素插入到队尾，然后阻塞等待，直到出现一个消费者线程获取元素。</p>
 <p>在普通阻塞队列中，当队列为空时，消费者线程（调用take或poll方法的线程）一般会阻塞等待生产者线程往队列中存入元素。而LinkedTransferQueue的transfer方法则比较特殊：</p>
 <ol>
 <li>当有消费者线程阻塞等待时，调用transfer方法的生产者线程不会将元素存入队列，而是直接将元素传递给消费者。</li>
@@ -426,16 +444,16 @@
 <h4 id="tryTransfer-E-e-long-timeout-TimeUnit-unit"><a href="#tryTransfer-E-e-long-timeout-TimeUnit-unit" class="headerlink" title="tryTransfer(E e, long timeout, TimeUnit unit)"></a>tryTransfer(E e, long timeout, TimeUnit unit)</h4><p>tryTransfer（E e，long timeout，TimeUnit unit）方法则是加上了限时等待功能，如果没有消费者消费该元素，则等待指定的时间再返回；如果超时还没消费元素，则返回false，如果在超时时间内消费了元素，则返回true。</p>
 <h4 id="xfer方法"><a href="#xfer方法" class="headerlink" title="xfer方法"></a>xfer方法</h4><p>xfer方法从字面上可以直译为“传送”，它是指通过多种操作模式，利用LinkedTransferQueue队列内置的单向链表，使数据对象在生产者和消费者间进行传递。JDK 9+开始，xfer操作的逻辑做了一次较大的改造，处理逻辑变得更加高效。</p>
 <p>xfer方法是LinkedTransferQueue队列最核心的操作方法之一，其支撑了诸如offer、add、put、transfer、tryTransfer、take、poll等方法的内部实现。</p>
-<h5 id="xfer方法参数"><a href="#xfer方法参数" class="headerlink" title="xfer方法参数"></a>xfer方法参数</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> E <span class="title">xfer</span><span class="params">(E e, <span class="keyword">boolean</span> haveData, <span class="keyword">int</span> how, <span class="keyword">long</span> nanos)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="xfer方法参数"><a href="#xfer方法参数" class="headerlink" title="xfer方法参数"></a>xfer方法参数</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> E <span class="title function_">xfer</span><span class="params">(E e, <span class="type">boolean</span> haveData, <span class="type">int</span> how, <span class="type">long</span> nanos)</span> &#123;</span><br><span class="line">    <span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ol>
 <li>e：该参数就是本次进行传输的数据对象，如果当前xfer方法被消费者线程端调用，则e为null。</li>
 <li>haveData：该参数指示本次xfer方法的调用是否有数据对象通过上一个e参数进行传入，也就是说e和haveData这两个参数是配对使用的。当e为null时，haveData应该为false；反之当e不为nul时，haveData应该为true。</li>
 <li>how：本次xfer方法的操作模式。一共有四种: NOW, ASYNC, SYNC, TIMED。</li>
-<li>nanos：本次xfer方法的操作超时时间（单位纳秒），当本次操作的操作模式为TIMED时（限时/超时模式），需要通过该参数指定本次操作的超时时间。</li>
+<li>nanos：本次xfer方法的操作超时时间（单位纳秒），当本次操作的操作模式为TIMED时（限时&#x2F;超时模式），需要通过该参数指定本次操作的超时时间。</li>
 </ol>
 <h5 id="xfer工作模式"><a href="#xfer工作模式" class="headerlink" title="xfer工作模式"></a>xfer工作模式</h5><p>xfer的调用方式主要分为四种工作模式，在xfer方法的入参中表现为四个不同的数值：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * xfer方法的入参, 不同类型的方法内部调用xfer方法时入参不同.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> NOW = <span class="number">0</span>;   <span class="comment">// for untimed poll, tryTransfer</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> ASYNC = <span class="number">1</span>; <span class="comment">// for offer, put, add</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> SYNC = <span class="number">2</span>; <span class="comment">// for transfer, take</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> TIMED = <span class="number">3</span>; <span class="comment">// for timed poll, tryTransfer</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * xfer方法的入参, 不同类型的方法内部调用xfer方法时入参不同.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">NOW</span> <span class="operator">=</span> <span class="number">0</span>;   <span class="comment">// for untimed poll, tryTransfer</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">ASYNC</span> <span class="operator">=</span> <span class="number">1</span>; <span class="comment">// for offer, put, add</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">SYNC</span> <span class="operator">=</span> <span class="number">2</span>; <span class="comment">// for transfer, take</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">TIMED</span> <span class="operator">=</span> <span class="number">3</span>; <span class="comment">// for timed poll, tryTransfer</span></span><br></pre></td></tr></table></figure>
 
 <p>这四个常量值，作为xfer方法的入参，用于标识不同操作类型。其实从常量的命名也可以看出它们对应的操作含义：</p>
 <h6 id="NOW"><a href="#NOW" class="headerlink" title="NOW"></a>NOW</h6><p>表示即时操作（可能失败），即不会阻塞调用线程：</p>
@@ -458,7 +476,7 @@
 <li>poll(long timeout, TimeUnit unit)；</li>
 <li>tryTransfer(E e, long timeout, TimeUnit unit)</li>
 </ul>
-<h5 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ......</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> E <span class="title">xfer</span><span class="params">(E e, <span class="keyword">boolean</span> haveData, <span class="keyword">int</span> how, <span class="keyword">long</span> nanos)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (haveData &amp;&amp; (e == <span class="keyword">null</span>)) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 最外层的for循环，遵循cas操作思想，只要操作不符合预期，就不停的重新操作</span></span><br><span class="line">  <span class="comment">// 直到操作结果符合预期为止</span></span><br><span class="line">  restart: <span class="keyword">for</span> (Node s = <span class="keyword">null</span>, t = <span class="keyword">null</span>, h = <span class="keyword">null</span>;;) &#123;</span><br><span class="line">    <span class="comment">// 这是初始化是决定当前p的位置是依据当前单向链表的head节点进行引用还是依据当前单向链表的tail节点进行引用</span></span><br><span class="line">    <span class="comment">// 其本质判断是当前操作是入队操作还是出队操作</span></span><br><span class="line">    <span class="comment">// 其最本质的判定是当前xfer操作的性质（haveData）和当前链表tail引用位置所描述的操作性质（t.isData）是否一致</span></span><br><span class="line">    <span class="comment">// 如果操作性质一致，当前xfer操作就是从tail引用位置开始判定和进行的入队操作</span></span><br><span class="line">    <span class="comment">// 如果操作性质不一致，当前xfer操作就是从head引用位置开始判定和进行的出队操作</span></span><br><span class="line">    <span class="keyword">for</span> (Node p = (t != (t = tail) &amp;&amp; t.isData == haveData) ? t : (h = head);; ) &#123;</span><br><span class="line">      <span class="keyword">final</span> Node q; <span class="keyword">final</span> Object item;</span><br><span class="line">      <span class="comment">// 出队操作的场景，其处理策略在此代码段落 </span></span><br><span class="line">      <span class="comment">// 只有当前处理节点p的isData标识和入参的haveData标识一致 </span></span><br><span class="line">      <span class="comment">// 且当前处理节点p真实的数据对象存在情况和入参的haveData标识一致 </span></span><br><span class="line">      <span class="keyword">if</span> (p.isData != haveData &amp;&amp; haveData == ((item = p.item) == <span class="keyword">null</span>)) &#123;</span><br><span class="line">        <span class="comment">// 将局部变量h引用与当前单向链表的head位置</span></span><br><span class="line">        <span class="comment">// 避免在多线程情况下head引用被改变引起的处理错误</span></span><br><span class="line">        <span class="keyword">if</span> (h == <span class="keyword">null</span>) &#123;</span><br><span class="line">          h = head;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 对当前节点进行原子性赋值：</span></span><br><span class="line">        <span class="comment">// 如果是生产者任务从队列中取出，那么赋值成功后，当前节点p的item属性将为e（不会为null）</span></span><br><span class="line">        <span class="comment">// 如果是消费者任务从队列中取出，那么赋值成功后，当前节点p的item属性将为null</span></span><br><span class="line">        <span class="keyword">if</span> (p.tryMatch(item, e)) &#123;</span><br><span class="line">          <span class="comment">// 在双跳队列进行数据取数操作时，当前处理节点p可能和h不一致，但一定是在h代表的节点“附近”</span></span><br><span class="line">          <span class="comment">// 所以，如果条件成立，就要进行以h代表的节点为基准的链表清理操作</span></span><br><span class="line">          <span class="keyword">if</span> (h != p) &#123;</span><br><span class="line">            skipDeadNodesNearHead(h, p);</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">return</span> (E) item;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 入队操作的场景，其处理策略在此代码段落</span></span><br><span class="line">      <span class="comment">// 加入队列的可能是消费者任务，也可能是生产者任务</span></span><br><span class="line">      <span class="comment">// 根据之前对单向链表tail引用位置的描述，tail引用的位置不一定是单向链表的最后一个节点</span></span><br><span class="line">      <span class="comment">// 所以首先将p节点移动到链表的最后一个节点，否则就不进行业务逻辑处理</span></span><br><span class="line">      <span class="keyword">if</span> ((q = p.next) == <span class="keyword">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 操作方式为NOW的入队操作，将会被忽略</span></span><br><span class="line">        <span class="keyword">if</span> (how == NOW) &#123;</span><br><span class="line">          <span class="keyword">return</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 入队操作需要生成一个新的Node节点</span></span><br><span class="line">        <span class="keyword">if</span> (s == <span class="keyword">null</span>) &#123;</span><br><span class="line">          s = <span class="keyword">new</span> Node(e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 使用原子操作，将当前操作s结点引用到当前p结点的item属性</span></span><br><span class="line">        <span class="comment">// 如果操作失败，说明p结点的next操作已经被其它线程中的操作所引用，</span></span><br><span class="line">        <span class="comment">// 那么通过内层的for循环继续进行操作</span></span><br><span class="line">        <span class="keyword">if</span> (!p.casNext(<span class="keyword">null</span>, s)) &#123;</span><br><span class="line">          <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 当前p节点引用的位置和t节点引用的可能是单向链表tail处的位置可能不一样</span></span><br><span class="line">        <span class="comment">// 引起这个的原因可能有很多：</span></span><br><span class="line">        <span class="comment">// a、当前xfer操作在中为p节点关联next属性的操作：p.casNext(null, s)不停失败，</span></span><br><span class="line">        <span class="comment">// 不停的在第二层for循环中做q = p.next 和 p == (p = q) 操作</span></span><br><span class="line">        <span class="comment">// b、虽然xfer操作成功了，但是当前线程连续进行了两次xfer调用操作（不好理解？后文将进行图例化讲解）</span></span><br><span class="line">        <span class="keyword">if</span> (p != t) &#123;</span><br><span class="line">          casTail(t, s);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (how == ASYNC) &#123;</span><br><span class="line">          <span class="keyword">return</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> awaitMatch(s, p, e, (how == TIMED), nanos);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 让p引用指向当前节点的下一个节点</span></span><br><span class="line">      <span class="comment">// 如果当前节点的next属性指向自己，说明当前节点已经被移除队列</span></span><br><span class="line">      <span class="comment">// 按照cas的思路，本次xfer操作需要重来</span></span><br><span class="line">      <span class="keyword">if</span> (p == (p = q)) &#123;</span><br><span class="line">        <span class="keyword">continue</span> restart;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="comment">// ......</span></span><br><span class="line"><span class="comment">/** Tries to CAS-match this node; if successful, wakes waiter. */</span></span><br><span class="line"><span class="comment">// 这是LinkedTransferQueue.Node类中的方法</span></span><br><span class="line"><span class="comment">// 方法尝试如果当前Node对象的item属性值为cmp的情况下，重新赋值为val</span></span><br><span class="line"><span class="comment">// 如果设置成功，则解除当前Node所代表的等待线程的阻塞状态</span></span><br><span class="line"><span class="comment">// 这个阻塞状态的线程可能是生产者，也可能是生产者。</span></span><br><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">tryMatch</span><span class="params">(Object cmp, Object val)</span> </span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (casItem(cmp, val)) &#123;</span><br><span class="line">    LockSupport.unpark(waiter);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这是LinkedTransferQueue.Node类中的方法</span></span><br><span class="line"><span class="comment">// 该方法尝试如果当前Node对象的item属性值为cmp的情况下，重新赋值为val，并返回true</span></span><br><span class="line"><span class="comment">// 否则就返回false</span></span><br><span class="line"><span class="function"><span class="keyword">final</span> <span class="keyword">boolean</span> <span class="title">casItem</span><span class="params">(Object cmp, Object val)</span> </span>&#123;</span><br><span class="line">  <span class="comment">// assert isData == (cmp != null);</span></span><br><span class="line">  <span class="comment">// assert isData == (val == null);</span></span><br><span class="line">  <span class="comment">// assert !(cmp instanceof Node);</span></span><br><span class="line">  <span class="keyword">return</span> ITEM.compareAndSet(<span class="keyword">this</span>, cmp, val);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ......</span></span><br></pre></td></tr></table></figure>
+<h5 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ......</span></span><br><span class="line"><span class="keyword">private</span> E <span class="title function_">xfer</span><span class="params">(E e, <span class="type">boolean</span> haveData, <span class="type">int</span> how, <span class="type">long</span> nanos)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (haveData &amp;&amp; (e == <span class="literal">null</span>)) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NullPointerException</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 最外层的for循环，遵循cas操作思想，只要操作不符合预期，就不停的重新操作</span></span><br><span class="line">  <span class="comment">// 直到操作结果符合预期为止</span></span><br><span class="line">  restart: <span class="keyword">for</span> (<span class="type">Node</span> <span class="variable">s</span> <span class="operator">=</span> <span class="literal">null</span>, t = <span class="literal">null</span>, h = <span class="literal">null</span>;;) &#123;</span><br><span class="line">    <span class="comment">// 这是初始化是决定当前p的位置是依据当前单向链表的head节点进行引用还是依据当前单向链表的tail节点进行引用</span></span><br><span class="line">    <span class="comment">// 其本质判断是当前操作是入队操作还是出队操作</span></span><br><span class="line">    <span class="comment">// 其最本质的判定是当前xfer操作的性质（haveData）和当前链表tail引用位置所描述的操作性质（t.isData）是否一致</span></span><br><span class="line">    <span class="comment">// 如果操作性质一致，当前xfer操作就是从tail引用位置开始判定和进行的入队操作</span></span><br><span class="line">    <span class="comment">// 如果操作性质不一致，当前xfer操作就是从head引用位置开始判定和进行的出队操作</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">Node</span> <span class="variable">p</span> <span class="operator">=</span> (t != (t = tail) &amp;&amp; t.isData == haveData) ? t : (h = head);; ) &#123;</span><br><span class="line">      <span class="keyword">final</span> Node q; <span class="keyword">final</span> Object item;</span><br><span class="line">      <span class="comment">// 出队操作的场景，其处理策略在此代码段落 </span></span><br><span class="line">      <span class="comment">// 只有当前处理节点p的isData标识和入参的haveData标识一致 </span></span><br><span class="line">      <span class="comment">// 且当前处理节点p真实的数据对象存在情况和入参的haveData标识一致 </span></span><br><span class="line">      <span class="keyword">if</span> (p.isData != haveData &amp;&amp; haveData == ((item = p.item) == <span class="literal">null</span>)) &#123;</span><br><span class="line">        <span class="comment">// 将局部变量h引用与当前单向链表的head位置</span></span><br><span class="line">        <span class="comment">// 避免在多线程情况下head引用被改变引起的处理错误</span></span><br><span class="line">        <span class="keyword">if</span> (h == <span class="literal">null</span>) &#123;</span><br><span class="line">          h = head;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 对当前节点进行原子性赋值：</span></span><br><span class="line">        <span class="comment">// 如果是生产者任务从队列中取出，那么赋值成功后，当前节点p的item属性将为e（不会为null）</span></span><br><span class="line">        <span class="comment">// 如果是消费者任务从队列中取出，那么赋值成功后，当前节点p的item属性将为null</span></span><br><span class="line">        <span class="keyword">if</span> (p.tryMatch(item, e)) &#123;</span><br><span class="line">          <span class="comment">// 在双跳队列进行数据取数操作时，当前处理节点p可能和h不一致，但一定是在h代表的节点“附近”</span></span><br><span class="line">          <span class="comment">// 所以，如果条件成立，就要进行以h代表的节点为基准的链表清理操作</span></span><br><span class="line">          <span class="keyword">if</span> (h != p) &#123;</span><br><span class="line">            skipDeadNodesNearHead(h, p);</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">return</span> (E) item;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 入队操作的场景，其处理策略在此代码段落</span></span><br><span class="line">      <span class="comment">// 加入队列的可能是消费者任务，也可能是生产者任务</span></span><br><span class="line">      <span class="comment">// 根据之前对单向链表tail引用位置的描述，tail引用的位置不一定是单向链表的最后一个节点</span></span><br><span class="line">      <span class="comment">// 所以首先将p节点移动到链表的最后一个节点，否则就不进行业务逻辑处理</span></span><br><span class="line">      <span class="keyword">if</span> ((q = p.next) == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 操作方式为NOW的入队操作，将会被忽略</span></span><br><span class="line">        <span class="keyword">if</span> (how == NOW) &#123;</span><br><span class="line">          <span class="keyword">return</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 入队操作需要生成一个新的Node节点</span></span><br><span class="line">        <span class="keyword">if</span> (s == <span class="literal">null</span>) &#123;</span><br><span class="line">          s = <span class="keyword">new</span> <span class="title class_">Node</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 使用原子操作，将当前操作s结点引用到当前p结点的item属性</span></span><br><span class="line">        <span class="comment">// 如果操作失败，说明p结点的next操作已经被其它线程中的操作所引用，</span></span><br><span class="line">        <span class="comment">// 那么通过内层的for循环继续进行操作</span></span><br><span class="line">        <span class="keyword">if</span> (!p.casNext(<span class="literal">null</span>, s)) &#123;</span><br><span class="line">          <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 当前p节点引用的位置和t节点引用的可能是单向链表tail处的位置可能不一样</span></span><br><span class="line">        <span class="comment">// 引起这个的原因可能有很多：</span></span><br><span class="line">        <span class="comment">// a、当前xfer操作在中为p节点关联next属性的操作：p.casNext(null, s)不停失败，</span></span><br><span class="line">        <span class="comment">// 不停的在第二层for循环中做q = p.next 和 p == (p = q) 操作</span></span><br><span class="line">        <span class="comment">// b、虽然xfer操作成功了，但是当前线程连续进行了两次xfer调用操作（不好理解？后文将进行图例化讲解）</span></span><br><span class="line">        <span class="keyword">if</span> (p != t) &#123;</span><br><span class="line">          casTail(t, s);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (how == ASYNC) &#123;</span><br><span class="line">          <span class="keyword">return</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> awaitMatch(s, p, e, (how == TIMED), nanos);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 让p引用指向当前节点的下一个节点</span></span><br><span class="line">      <span class="comment">// 如果当前节点的next属性指向自己，说明当前节点已经被移除队列</span></span><br><span class="line">      <span class="comment">// 按照cas的思路，本次xfer操作需要重来</span></span><br><span class="line">      <span class="keyword">if</span> (p == (p = q)) &#123;</span><br><span class="line">        <span class="keyword">continue</span> restart;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="comment">// ......</span></span><br><span class="line"><span class="comment">/** Tries to CAS-match this node; if successful, wakes waiter. */</span></span><br><span class="line"><span class="comment">// 这是LinkedTransferQueue.Node类中的方法</span></span><br><span class="line"><span class="comment">// 方法尝试如果当前Node对象的item属性值为cmp的情况下，重新赋值为val</span></span><br><span class="line"><span class="comment">// 如果设置成功，则解除当前Node所代表的等待线程的阻塞状态</span></span><br><span class="line"><span class="comment">// 这个阻塞状态的线程可能是生产者，也可能是生产者。</span></span><br><span class="line"><span class="keyword">final</span> <span class="type">boolean</span> <span class="title function_">tryMatch</span><span class="params">(Object cmp, Object val)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (casItem(cmp, val)) &#123;</span><br><span class="line">    LockSupport.unpark(waiter);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这是LinkedTransferQueue.Node类中的方法</span></span><br><span class="line"><span class="comment">// 该方法尝试如果当前Node对象的item属性值为cmp的情况下，重新赋值为val，并返回true</span></span><br><span class="line"><span class="comment">// 否则就返回false</span></span><br><span class="line"><span class="keyword">final</span> <span class="type">boolean</span> <span class="title function_">casItem</span><span class="params">(Object cmp, Object val)</span> &#123;</span><br><span class="line">  <span class="comment">// assert isData == (cmp != null);</span></span><br><span class="line">  <span class="comment">// assert isData == (val == null);</span></span><br><span class="line">  <span class="comment">// assert !(cmp instanceof Node);</span></span><br><span class="line">  <span class="keyword">return</span> ITEM.compareAndSet(<span class="built_in">this</span>, cmp, val);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ......</span></span><br></pre></td></tr></table></figure>
 
 <h2 id="PriorityBlockingQueue"><a href="#PriorityBlockingQueue" class="headerlink" title="PriorityBlockingQueue"></a>PriorityBlockingQueue</h2><p>PriorityBlockingQueue是一个基于堆的无界并发安全的优先级队列，每次出队都返回优先级最高的元素，数据结构是一个二叉树最小堆算法维护的数组，这个数组是可扩容的，直接遍历队列元素是无序的。</p>
 <p>PriorityBlockingQueue可以理解为public操作都加锁的PriorityQueue，通过排他锁保证了操作的线程安全。PriorityBlockingQueue扩容时，因为增加堆数组的长度并不影响队列中元素的出队操作，因而使用自旋CAS操作实现的锁来控制扩容操作，仅在数组引用替换和拷贝元素时才加锁，从而减少了扩容对出队操作的影响。</p>
@@ -509,7 +527,7 @@
     
     
 
-      <footer class="post-footer">
+    <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/java/" rel="tag"># java</a>
               <a href="/tags/queue/" rel="tag"># queue</a>
@@ -517,136 +535,35 @@
 
         
 
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/posts/2020/06/05/disruptor%E7%AC%94%E8%AE%B0/" rel="prev" title="disruptor笔记">
-      <i class="fa fa-chevron-left"></i> disruptor笔记
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/posts/2021/03/15/java-spring/" rel="next" title="Spring">
-      Spring <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2020/06/05/disruptor%E7%AC%94%E8%AE%B0/" rel="prev" title="disruptor笔记">
+                  <i class="fa fa-chevron-left"></i> disruptor笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2021/03/15/java-spring/" rel="next" title="Spring">
+                  Spring <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
           </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">队列简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-%E5%86%85%E7%BD%AE%E9%98%9F%E5%88%97"><span class="nav-number">2.</span> <span class="nav-text">Java 内置队列</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E5%8A%A0%E9%94%81%E6%80%A7%E8%83%BD"><span class="nav-number">3.</span> <span class="nav-text">队列加锁性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayBlockingQueue"><span class="nav-number">4.</span> <span class="nav-text">ArrayBlockingQueue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LinkedBlockingQueue"><span class="nav-number">5.</span> <span class="nav-text">LinkedBlockingQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#tip%EF%BC%88wait-notify%E6%9C%BA%E5%88%B6%EF%BC%89"><span class="nav-number">5.1.</span> <span class="nav-text">tip（wait-notify机制）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ConcurrentLinkedQueue"><span class="nav-number">6.</span> <span class="nav-text">ConcurrentLinkedQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#HOPS-%E5%BB%B6%E8%BF%9F%E6%9B%B4%E6%96%B0%E7%9A%84%E7%AD%96%E7%95%A5-%E7%9A%84%E8%AE%BE%E8%AE%A1"><span class="nav-number">6.1.</span> <span class="nav-text">HOPS(延迟更新的策略)的设计</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LinkedTransferQueue"><span class="nav-number">7.</span> <span class="nav-text">LinkedTransferQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-number">7.1.</span> <span class="nav-text">常用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#transfer-%E6%96%B9%E6%B3%95"><span class="nav-number">7.1.1.</span> <span class="nav-text">transfer 方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tryTransfer-E-e"><span class="nav-number">7.1.2.</span> <span class="nav-text">tryTransfer(E e)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#tryTransfer-E-e-long-timeout-TimeUnit-unit"><span class="nav-number">7.1.3.</span> <span class="nav-text">tryTransfer(E e, long timeout, TimeUnit unit)</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#xfer%E6%96%B9%E6%B3%95"><span class="nav-number">7.1.4.</span> <span class="nav-text">xfer方法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#xfer%E6%96%B9%E6%B3%95%E5%8F%82%E6%95%B0"><span class="nav-number">7.1.4.1.</span> <span class="nav-text">xfer方法参数</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#xfer%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="nav-number">7.1.4.2.</span> <span class="nav-text">xfer工作模式</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#NOW"><span class="nav-number">7.1.4.2.1.</span> <span class="nav-text">NOW</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#ASYNC"><span class="nav-number">7.1.4.2.2.</span> <span class="nav-text">ASYNC</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#SYNC"><span class="nav-number">7.1.4.2.3.</span> <span class="nav-text">SYNC</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#TIMED"><span class="nav-number">7.1.4.2.4.</span> <span class="nav-text">TIMED</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%BA%90%E7%A0%81"><span class="nav-number">7.1.4.3.</span> <span class="nav-text">源码</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#PriorityBlockingQueue"><span class="nav-number">8.</span> <span class="nav-text">PriorityBlockingQueue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#DelayQueue"><span class="nav-number">9.</span> <span class="nav-text">DelayQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84"><span class="nav-number">9.1.</span> <span class="nav-text">内部结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SynchronizedQueue"><span class="nav-number">10.</span> <span class="nav-text">SynchronizedQueue</span></a></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">Apomelo</p>
-  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+    </footer>
+  </article>
 </div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">23</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">9</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">39</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
+
+
+
+
+
+
 </div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-  </div>
+  </main>
 
+  <footer class="footer">
+    <div class="footer-inner">
 
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
 
 <div class="copyright">
-  
   &copy; 
   <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
@@ -654,11 +571,8 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Apomelo</span>
 </div>
-
-        
 <div class="busuanzi-count">
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
       <span class="post-meta-item-icon">
         <i class="fa fa-user"></i>
       </span>
@@ -666,8 +580,7 @@
         <span id="busuanzi_value_site_uv"></span>
       </span>
     </span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
       <span class="post-meta-item-icon">
         <i class="fa fa-eye"></i>
       </span>
@@ -677,193 +590,31 @@
     </span>
 </div>
 
-
-  <div style="display: none;">
-    <script src="https://s5.cnzz.com/z_stat.php?id=1277140459&web_id=1277140459"></script>
-  </div>
-
-
-
-
-<script>
-  (function() {
-    function leancloudSelector(url) {
-      url = encodeURI(url);
-      return document.getElementById(url).querySelector('.leancloud-visitors-count');
-    }
-
-    function addCount(Counter) {
-      var visitors = document.querySelector('.leancloud_visitors');
-      var url = decodeURI(visitors.id);
-      var title = visitors.dataset.flagTitle;
-
-      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
-        .then(response => response.json())
-        .then(({ results }) => {
-          if (results.length > 0) {
-            var counter = results[0];
-            leancloudSelector(url).innerText = counter.time + 1;
-            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
-              .catch(error => {
-                console.error('Failed to save visitor count', error);
-              });
-          } else {
-              Counter('post', '/classes/Counter', { title, url, time: 1 })
-                .then(response => response.json())
-                .then(() => {
-                  leancloudSelector(url).innerText = 1;
-                })
-                .catch(error => {
-                  console.error('Failed to create', error);
-                });
-          }
-        })
-        .catch(error => {
-          console.error('LeanCloud Counter Error', error);
-        });
-    }
-
-    function showTime(Counter) {
-      var visitors = document.querySelectorAll('.leancloud_visitors');
-      var entries = [...visitors].map(element => {
-        return decodeURI(element.id);
-      });
-
-      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
-        .then(response => response.json())
-        .then(({ results }) => {
-          for (let url of entries) {
-            let target = results.find(item => item.url === url);
-            leancloudSelector(url).innerText = target ? target.time : 0;
-          }
-        })
-        .catch(error => {
-          console.error('LeanCloud Counter Error', error);
-        });
-    }
-
-    let { app_id, app_key, server_url } = {"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false};
-    function fetchData(api_server) {
-      var Counter = (method, url, data) => {
-        return fetch(`${api_server}/1.1${url}`, {
-          method,
-          headers: {
-            'X-LC-Id'     : app_id,
-            'X-LC-Key'    : app_key,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data)
-        });
-      };
-      if (CONFIG.page.isPost) {
-        // if (CONFIG.hostname !== location.hostname) return;
-        addCount(Counter);
-      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
-        showTime(Counter);
-      }
-    }
-
-    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
-
-    if (api_server) {
-      fetchData(api_server);
-    } else {
-      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
-        .then(response => response.json())
-        .then(({ api_server }) => {
-          fetchData('https://' + api_server);
-        });
-    }
-  })();
-</script>
-
-
-      </div>
-    </footer>
-  </div>
+    </div>
+  </footer>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.2/algoliasearch-lite.umd.js" integrity="sha256-dImjLPUsG/6p3+i7gVKBiDM8EemJAhQ0VvkRK2pVsQY=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.43.1/instantsearch.production.min.js" integrity="sha256-jLNoKrKRDKAOg8JBqkl8jSy2tpqCGQ1/++9QRYtWl8k=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
 
 
-<script src="/js/next-boot.js"></script>
-
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
 
 
 
   
-  <script>
-    (function(){
-      var canonicalURL, curProtocol;
-      //Get the <link> tag
-      var x=document.getElementsByTagName("link");
-		//Find the last canonical URL
-		if(x.length > 0){
-			for (i=0;i<x.length;i++){
-				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
-					canonicalURL=x[i].href;
-				}
-			}
-		}
-    //Get protocol
-	    if (!canonicalURL){
-	    	curProtocol = window.location.protocol.split(':')[0];
-	    }
-	    else{
-	    	curProtocol = canonicalURL.split(':')[0];
-	    }
-      //Get current URL if the canonical URL does not exist
-	    if (!canonicalURL) canonicalURL = window.location.href;
-	    //Assign script content. Replace current URL with the canonical URL
-      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  </script>
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
 
 
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-<script>
-if (document.querySelectorAll('pre.mermaid').length) {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
-    mermaid.initialize({
-      theme    : '[object Object]',
-      logLevel : 3,
-      flowchart: { curve     : 'linear' },
-      gantt    : { axisFormat: '%m/%d/%Y' },
-      sequence : { actorMargin: 50 }
-    });
-  }, window.mermaid);
-}
-</script>
-
-
-  
-
-  
 
 </body>
 </html>

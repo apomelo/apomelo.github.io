@@ -2,23 +2,25 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
-<meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 5.4.0">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
 <link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
-<script id="hexo-configurations">
-    var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"apomelo.cc","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
-  </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-  <meta name="description" content="Web技术发展World Wide Web（万维网），简称Web，是一种基于超文本和HTTP的、全球性的、动态交互的、跨平台的分布式图形信息系统。 web形式发展先后经历了web 1.0 —&gt; web 2.0 —&gt; web 3.0 web 1.0开始于1994年，主要是静态的HTML页面发布信息，其特点是：信息杂乱无序，只满足了人们对信息的搜索、传递需求。 web 2.0开始于2004">
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Web技术发展World Wide Web（万维网），简称Web，是一种基于超文本和HTTP的、全球性的、动态交互的、跨平台的分布式图形信息系统。 web形式发展先后经历了web 1.0 —&gt; web 2.0 —&gt; web 3.0 web 1.0开始于1994年，主要是静态的HTML页面发布信息，其特点是：信息杂乱无序，只满足了人们对信息的搜索、传递需求。 web 2.0开始于2004">
 <meta property="og:type" content="article">
 <meta property="og:title" content="REST软件架构">
 <meta property="og:url" content="https://apomelo.cc/posts/2019/07/26/REST%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/index.html">
@@ -31,90 +33,51 @@
 <meta property="article:tag" content="rest">
 <meta name="twitter:card" content="summary">
 
+
 <link rel="canonical" href="https://apomelo.cc/posts/2019/07/26/REST%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/">
 
 
-<script id="page-configurations">
-  // https://hexo.io/docs/variables.html
-  CONFIG.page = {
-    sidebar: "",
-    isHome : false,
-    isPost : true,
-    lang   : 'zh-CN'
-  };
-</script>
 
-  <title>REST软件架构 | Apomelo - 追逐</title>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.cc/posts/2019/07/26/REST%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/","path":"posts/2019/07/26/REST软件架构/","title":"REST软件架构"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>REST软件架构 | Apomelo - 追逐</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
-    <script>
-      if (CONFIG.hostname === location.hostname) {
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-2KQDESYMZF');
-      }
-    </script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
 
-
-  <script>
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
 
 
 
 
   <noscript>
-  <style>
-  .use-motion .brand,
-  .use-motion .menu-item,
-  .sidebar-inner,
-  .use-motion .post-block,
-  .use-motion .pagination,
-  .use-motion .comments,
-  .use-motion .post-header,
-  .use-motion .post-body,
-  .use-motion .collection-header { opacity: initial; }
-
-  .use-motion .site-title,
-  .use-motion .site-subtitle {
-    opacity: initial;
-    top: initial;
-  }
-
-  .use-motion .logo-line-before i { left: initial; }
-  .use-motion .logo-line-after i { right: initial; }
-  </style>
-</noscript>
-
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
 </head>
 
-<body itemscope itemtype="http://schema.org/WebPage">
-  <div class="container use-motion">
-    <div class="headband"></div>
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
 
+  <main class="main">
     <header class="header" itemscope itemtype="http://schema.org/WPHeader">
       <div class="header-inner"><div class="site-brand-container">
   <div class="site-nav-toggle">
-    <div class="toggle" aria-label="切换导航栏">
-      <span class="toggle-line toggle-line-first"></span>
-      <span class="toggle-line toggle-line-middle"></span>
-      <span class="toggle-line toggle-line-last"></span>
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
   <div class="site-meta">
 
     <a href="/" class="brand" rel="start">
-      <span class="logo-line-before"><i></i></span>
-      <h1 class="site-title">Apomelo - 追逐</h1>
-      <span class="logo-line-after"><i></i></span>
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
     </a>
   </div>
 
@@ -127,29 +90,8 @@
 
 
 
-
 <nav class="site-nav">
-  <ul id="menu" class="main-menu menu">
-        <li class="menu-item menu-item-home">
-
-    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
-
-  </li>
-        <li class="menu-item menu-item-tags">
-
-    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
-
-  </li>
-        <li class="menu-item menu-item-categories">
-
-    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
-
-  </li>
-        <li class="menu-item menu-item-archives">
-
-    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
-
-  </li>
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
       <li class="menu-item menu-item-search">
         <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
         </a>
@@ -160,98 +102,176 @@
 
 
   <div class="search-pop-overlay">
-    <div class="popup search-popup">
-        <div class="search-header">
+    <div class="popup search-popup"><div class="search-header">
   <span class="search-icon">
     <i class="fa fa-search"></i>
   </span>
   <div class="search-input-container"></div>
-  <span class="popup-btn-close">
+  <span class="popup-btn-close" role="button">
     <i class="fa fa-times-circle"></i>
   </span>
 </div>
-<div class="algolia-results">
-  <div id="algolia-stats"></div>
-  <div id="algolia-hits"></div>
-  <div id="algolia-pagination" class="algolia-pagination"></div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
 </div>
 
-      
     </div>
   </div>
 
 </div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Web%E6%8A%80%E6%9C%AF%E5%8F%91%E5%B1%95"><span class="nav-number">1.</span> <span class="nav-text">Web技术发展</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#web%E5%BD%A2%E5%BC%8F%E5%8F%91%E5%B1%95"><span class="nav-number">1.1.</span> <span class="nav-text">web形式发展</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#web%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF%E5%87%A0%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="nav-number">1.1.1.</span> <span class="nav-text">web开发技术几个阶段</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#web%E6%8A%80%E6%9C%AF%E7%BB%93%E6%9E%84%E5%9F%BA%E7%9F%B3"><span class="nav-number">1.2.</span> <span class="nav-text">web技术结构基石</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#REST%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">REST介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#REST%E7%9A%84%E4%BA%94%E4%B8%AA%E5%85%B3%E9%94%AE%E8%AF%8D"><span class="nav-number">3.</span> <span class="nav-text">REST的五个关键词</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E8%B5%84%E6%BA%90%EF%BC%88Resource%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">1. 资源（Resource）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E8%B5%84%E6%BA%90%E7%9A%84%E8%A1%A8%E8%BF%B0%EF%BC%88Representation%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">2. 资源的表述（Representation）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB%EF%BC%88State-Transfer%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">3. 状态转移（State Transfer）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E7%BB%9F%E4%B8%80%E6%8E%A5%E5%8F%A3%EF%BC%88Uniform-Interface%EF%BC%89"><span class="nav-number">3.4.</span> <span class="nav-text">4. 统一接口（Uniform Interface）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E8%B6%85%E6%96%87%E6%9C%AC%E9%A9%B1%E5%8A%A8%EF%BC%88Hypertext-Driven%EF%BC%89"><span class="nav-number">3.5.</span> <span class="nav-text">5. 超文本驱动（Hypertext Driven）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#REST%E6%9E%B6%E6%9E%84%E7%BA%A6%E6%9D%9F"><span class="nav-number">4.</span> <span class="nav-text">REST架构约束</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%AE%A2%E6%88%B7-%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%88Client-Server%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">1. 客户-服务器（Client-Server）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E6%97%A0%E7%8A%B6%E6%80%81%EF%BC%88Stateless%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">2. 无状态（Stateless）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%8F%AF%E7%BC%93%E5%AD%98%EF%BC%88Cachable%EF%BC%89"><span class="nav-number">4.3.</span> <span class="nav-text">3. 可缓存（Cachable）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E5%88%86%E5%B1%82%E7%B3%BB%E7%BB%9F-%EF%BC%88Layered-system%EF%BC%89"><span class="nav-number">4.4.</span> <span class="nav-text">4. 分层系统 （Layered system）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E7%BB%9F%E4%B8%80%E6%8E%A5%E5%8F%A3-%EF%BC%88Unitform-interface%EF%BC%89"><span class="nav-number">4.5.</span> <span class="nav-text">5. 统一接口 （Unitform interface）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-%E6%8C%89%E9%9C%80%E4%BB%A3%E7%A0%81%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89"><span class="nav-number">4.6.</span> <span class="nav-text">6. 按需代码（可选）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
     </header>
 
     
-  <div class="back-to-top">
+  <div class="back-to-top" role="button" aria-label="返回顶部">
     <i class="fa fa-arrow-up"></i>
     <span>0%</span>
   </div>
 
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
 
-    <main class="main">
-      <div class="main-inner">
-        <div class="content-wrap">
-          
 
-          <div class="content post posts-expand">
-            
+    <div class="main-inner post posts-expand">
 
-    
+
+  
+
+
+<div class="post-block">
   
   
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
     <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2019/07/26/REST%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
       <meta itemprop="name" content="Apomelo">
-      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
       <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="REST软件架构 | Apomelo - 追逐">
+      <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
           REST软件架构
         </h1>
 
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">发表于</span>
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
 
-              <time title="创建时间：2019-07-26 00:00:00" itemprop="dateCreated datePublished" datetime="2019-07-26T00:00:00+08:00">2019-07-26</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2019-07-30 00:00:00" itemprop="dateModified" datetime="2019-07-30T00:00:00+08:00">2019-07-30</time>
-              </span>
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-folder"></i>
-              </span>
-              <span class="post-meta-item-text">分类于</span>
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/architecture/" itemprop="url" rel="index"><span itemprop="name">architecture</span></a>
-                </span>
-            </span>
+      <time title="创建时间：2019-07-26 00:00:00" itemprop="dateCreated datePublished" datetime="2019-07-26T00:00:00+08:00">2019-07-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">更新于</span>
+      <time title="修改时间：2019-07-30 00:00:00" itemprop="dateModified" datetime="2019-07-30T00:00:00+08:00">2019-07-30</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/architecture/" itemprop="url" rel="index"><span itemprop="name">architecture</span></a>
+        </span>
+    </span>
 
-          
-            <span id="/posts/2019/07/26/REST%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/" class="post-meta-item leancloud_visitors" data-flag-title="REST软件架构" title="阅读次数">
-              <span class="post-meta-item-icon">
-                <i class="fa fa-eye"></i>
-              </span>
-              <span class="post-meta-item-text">阅读次数：</span>
-              <span class="leancloud-visitors-count"></span>
-            </span>
+  
+    <span id="/posts/2019/07/26/REST%E8%BD%AF%E4%BB%B6%E6%9E%B6%E6%9E%84/" class="post-meta-item leancloud_visitors" data-flag-title="REST软件架构" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
 
         </div>
       </header>
@@ -260,8 +280,6 @@
     
     
     <div class="post-body" itemprop="articleBody">
-
-      
         <h4 id="Web技术发展"><a href="#Web技术发展" class="headerlink" title="Web技术发展"></a>Web技术发展</h4><p>World Wide Web（万维网），简称Web，是一种基于超文本和HTTP的、全球性的、动态交互的、跨平台的分布式图形信息系统。</p>
 <h5 id="web形式发展"><a href="#web形式发展" class="headerlink" title="web形式发展"></a>web形式发展</h5><p>先后经历了web 1.0 —&gt; web 2.0 —&gt; web 3.0</p>
 <p><strong>web 1.0</strong><br>开始于1994年，主要是静态的HTML页面发布信息，其特点是：信息杂乱无序，只满足了人们对信息的搜索、传递需求。</p>
@@ -300,16 +318,16 @@
 <li>深入理解之后，会发现REST是一种内含丰富的架构风格</li>
 </ul>
 <h4 id="REST的五个关键词"><a href="#REST的五个关键词" class="headerlink" title="REST的五个关键词"></a>REST的五个关键词</h4><h5 id="1-资源（Resource）"><a href="#1-资源（Resource）" class="headerlink" title="1. 资源（Resource）"></a>1. 资源（Resource）</h5><p>资源是一种看待服务器的方式，服务器就是由很多离散的资源组成。资源是以名词为核心来组织的，首先关注的应该是名词。一个资源由一个或多个URI来标识，URI也即是资源的名称，客户端对某个资源感兴趣即通过URI来交互。</p>
-<h5 id="2-资源的表述（Representation）"><a href="#2-资源的表述（Representation）" class="headerlink" title="2. 资源的表述（Representation）"></a>2. 资源的表述（Representation）</h5><p>资源表述是指某一个资源某个时刻的状态描述，用于在客户端和服务端转移。例如：HTML/XML/JSON/图片/音频都是资源表述的格式。在通常的REST开发下，一般使用JSON作为HTTP请求响应的资源表述。</p>
-<h5 id="3-状态转移（State-Transfer）"><a href="#3-状态转移（State-Transfer）" class="headerlink" title="3. 状态转移（State Transfer）"></a>3. 状态转移（State Transfer）</h5><p>状态转移是指通过转移和操作资源的表述，来实现操作资源的目的。在REST开发下，通常使用HTTP的GET/POST/PUT/DELETE方法操作。</p>
+<h5 id="2-资源的表述（Representation）"><a href="#2-资源的表述（Representation）" class="headerlink" title="2. 资源的表述（Representation）"></a>2. 资源的表述（Representation）</h5><p>资源表述是指某一个资源某个时刻的状态描述，用于在客户端和服务端转移。例如：HTML&#x2F;XML&#x2F;JSON&#x2F;图片&#x2F;音频都是资源表述的格式。在通常的REST开发下，一般使用JSON作为HTTP请求响应的资源表述。</p>
+<h5 id="3-状态转移（State-Transfer）"><a href="#3-状态转移（State-Transfer）" class="headerlink" title="3. 状态转移（State Transfer）"></a>3. 状态转移（State Transfer）</h5><p>状态转移是指通过转移和操作资源的表述，来实现操作资源的目的。在REST开发下，通常使用HTTP的GET&#x2F;POST&#x2F;PUT&#x2F;DELETE方法操作。</p>
 <h5 id="4-统一接口（Uniform-Interface）"><a href="#4-统一接口（Uniform-Interface）" class="headerlink" title="4. 统一接口（Uniform Interface）"></a>4. 统一接口（Uniform Interface）</h5><p><span id="统一接口"></span>REST要求必须使用统一的接口来对资源进行操作。</p>
 <p>REST要求对资源执行的操作，操作语义必须在HTPP消息体之前的部分完全表达，不能将操作语义封装到消息体内部。这样做为了提高交互可见性，便于通信的中间件实现缓存和安全审核。</p>
 <p>REST是不依赖于任何协议的，但目前几乎所有的REST都是基于HTTP协议的。接口应该使用标准的HTTP方法如GET，PUT和POST，并遵循这些方法的语义。</p>
-<p>非REST的接口，1000个人能写出1000个接口，例如对机器人的操作：<br>（1）/api/findRobots<br>（2）/api/robots/select<br>REST API：<br>&emsp;GET    /rest/robots/{id} 查询一个机器人<br>&emsp;POST   /rest/robots      新建一个机器人<br>&emsp;PUT    /rest/robots/{id} 更新一个机器人<br>&emsp;DELETE /rest/robots/{id} 删除一个机器人</p>
-<p><strong>统一接口主要包括：</strong><br>（1）7个HTTP方法：GET/POST/PUT/DELETE/PATCH/HEAD/OPTIONS<br>（2）HTTP头信息（可自定义）<br>（3）HTTP响应状态代码（可自定义）<br>（4）一套标准的内容协商机制<br>（5）一套标准的缓存机制<br>（6）一套标准的客户端身份认证机制</p>
+<p>非REST的接口，1000个人能写出1000个接口，例如对机器人的操作：<br>（1）&#x2F;api&#x2F;findRobots<br>（2）&#x2F;api&#x2F;robots&#x2F;select<br>REST API：<br>&amp;emsp;GET    &#x2F;rest&#x2F;robots&#x2F;{id} 查询一个机器人<br>&amp;emsp;POST   &#x2F;rest&#x2F;robots      新建一个机器人<br>&amp;emsp;PUT    &#x2F;rest&#x2F;robots&#x2F;{id} 更新一个机器人<br>&amp;emsp;DELETE &#x2F;rest&#x2F;robots&#x2F;{id} 删除一个机器人</p>
+<p><strong>统一接口主要包括：</strong><br>（1）7个HTTP方法：GET&#x2F;POST&#x2F;PUT&#x2F;DELETE&#x2F;PATCH&#x2F;HEAD&#x2F;OPTIONS<br>（2）HTTP头信息（可自定义）<br>（3）HTTP响应状态代码（可自定义）<br>（4）一套标准的内容协商机制<br>（5）一套标准的缓存机制<br>（6）一套标准的客户端身份认证机制</p>
 <p><strong>HTTP方法幂等性</strong><br>幂等是指一次或多次请求一个资源的时候，应该具有相同的副作用。<br><strong>HTTP方法安全性</strong><br>安全是指对原有资源没有任何影响，安全性不代表请求一定不产生副作用。比如GET请求增加计数器，这种产生的副作用是服务端自作主张，服务端在设计的时候应该不让副作用太大，客户端可以这些请求不会产生副作用。</p>
 <p>GET: 安全且幂等，用来获取资源表示<br>POST: 不安全且不幂等，用来创建资源或用于部分更新资源<br>PUT: 不安全且幂等，用替换的方式更新资源<br>DELETE: 不安全且幂等，用于删除一个资源</p>
-<p>PUT和POST的区别：<br>PUT和POST最大的区别是PUT是幂等的，此外PUT需要完成的URI。<br>PUT    /rest/robots/        是不会成功的，URI不能定位到具体的资源<br>PUT    /rest/robots/{1234}  是会成功的，如果存在，则更新这个robots</p>
+<p>PUT和POST的区别：<br>PUT和POST最大的区别是PUT是幂等的，此外PUT需要完成的URI。<br>PUT    &#x2F;rest&#x2F;robots&#x2F;        是不会成功的，URI不能定位到具体的资源<br>PUT    &#x2F;rest&#x2F;robots&#x2F;{1234}  是会成功的，如果存在，则更新这个robots</p>
 <h5 id="5-超文本驱动（Hypertext-Driven）"><a href="#5-超文本驱动（Hypertext-Driven）" class="headerlink" title="5. 超文本驱动（Hypertext Driven）"></a>5. 超文本驱动（Hypertext Driven）</h5><p>2008.10.28Fielding博士针对REST的滥用，发表了《REST API 必须是超文本驱动的》。他指出除非应用状态引擎是超文本驱动的，否则它就不是RESTFUL。</p>
 <p>超文本驱动是客户端不再需要将某些接口的 URI 硬编码在代码中，唯一需要存储的只是 API 的 HOST 地址，能够非常有效的降低客户端与服务端之间的耦合，服务端对 URI 的任何改动都不会影响到客户端的稳定。</p>
 <h4 id="REST架构约束"><a href="#REST架构约束" class="headerlink" title="REST架构约束"></a>REST架构约束</h4><h5 id="1-客户-服务器（Client-Server）"><a href="#1-客户-服务器（Client-Server）" class="headerlink" title="1. 客户-服务器（Client-Server）"></a>1. 客户-服务器（Client-Server）</h5><p>这个约束是基于客户端-服务器架构背后的原则—–关注点分离。通过分离用户界面和数据存储这两个关注点，提高了用户界面跨平台的可能性，通过简化服务器组件提高了其伸缩性。</p>
@@ -336,143 +354,42 @@
     
     
 
-      <footer class="post-footer">
+    <footer class="post-footer">
           <div class="post-tags">
               <a href="/tags/rest/" rel="tag"># rest</a>
           </div>
 
         
 
-
-        
-    <div class="post-nav">
-      <div class="post-nav-item">
-    <a href="/posts/2019/06/29/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB%E7%AC%94%E8%AE%B0/" rel="prev" title="杂七杂八笔记">
-      <i class="fa fa-chevron-left"></i> 杂七杂八笔记
-    </a></div>
-      <div class="post-nav-item">
-    <a href="/posts/2019/09/05/jenkins%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8/" rel="next" title="jenkins部署及使用">
-      jenkins部署及使用 <i class="fa fa-chevron-right"></i>
-    </a></div>
-    </div>
-      </footer>
-    
-  </article>
-  
-  
-  
-
-
-
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2019/06/29/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB%E7%AC%94%E8%AE%B0/" rel="prev" title="杂七杂八笔记">
+                  <i class="fa fa-chevron-left"></i> 杂七杂八笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2019/09/05/jenkins%E9%83%A8%E7%BD%B2%E5%8F%8A%E4%BD%BF%E7%94%A8/" rel="next" title="jenkins部署及使用">
+                  jenkins部署及使用 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
           </div>
-          
-
-<script>
-  window.addEventListener('tabs:register', () => {
-    let { activeClass } = CONFIG.comments;
-    if (CONFIG.comments.storage) {
-      activeClass = localStorage.getItem('comments_active') || activeClass;
-    }
-    if (activeClass) {
-      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
-      if (activeTab) {
-        activeTab.click();
-      }
-    }
-  });
-  if (CONFIG.comments.storage) {
-    window.addEventListener('tabs:click', event => {
-      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
-      let commentClass = event.target.classList[1];
-      localStorage.setItem('comments_active', commentClass);
-    });
-  }
-</script>
-
-        </div>
-          
-  
-  <div class="toggle sidebar-toggle">
-    <span class="toggle-line toggle-line-first"></span>
-    <span class="toggle-line toggle-line-middle"></span>
-    <span class="toggle-line toggle-line-last"></span>
-  </div>
-
-  <aside class="sidebar">
-    <div class="sidebar-inner">
-
-      <ul class="sidebar-nav motion-element">
-        <li class="sidebar-nav-toc">
-          文章目录
-        </li>
-        <li class="sidebar-nav-overview">
-          站点概览
-        </li>
-      </ul>
-
-      <!--noindex-->
-      <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Web%E6%8A%80%E6%9C%AF%E5%8F%91%E5%B1%95"><span class="nav-number">1.</span> <span class="nav-text">Web技术发展</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#web%E5%BD%A2%E5%BC%8F%E5%8F%91%E5%B1%95"><span class="nav-number">1.1.</span> <span class="nav-text">web形式发展</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#web%E5%BC%80%E5%8F%91%E6%8A%80%E6%9C%AF%E5%87%A0%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="nav-number">1.1.1.</span> <span class="nav-text">web开发技术几个阶段</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#web%E6%8A%80%E6%9C%AF%E7%BB%93%E6%9E%84%E5%9F%BA%E7%9F%B3"><span class="nav-number">1.2.</span> <span class="nav-text">web技术结构基石</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#REST%E4%BB%8B%E7%BB%8D"><span class="nav-number">2.</span> <span class="nav-text">REST介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#REST%E7%9A%84%E4%BA%94%E4%B8%AA%E5%85%B3%E9%94%AE%E8%AF%8D"><span class="nav-number">3.</span> <span class="nav-text">REST的五个关键词</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E8%B5%84%E6%BA%90%EF%BC%88Resource%EF%BC%89"><span class="nav-number">3.1.</span> <span class="nav-text">1. 资源（Resource）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E8%B5%84%E6%BA%90%E7%9A%84%E8%A1%A8%E8%BF%B0%EF%BC%88Representation%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">2. 资源的表述（Representation）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E7%8A%B6%E6%80%81%E8%BD%AC%E7%A7%BB%EF%BC%88State-Transfer%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">3. 状态转移（State Transfer）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E7%BB%9F%E4%B8%80%E6%8E%A5%E5%8F%A3%EF%BC%88Uniform-Interface%EF%BC%89"><span class="nav-number">3.4.</span> <span class="nav-text">4. 统一接口（Uniform Interface）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E8%B6%85%E6%96%87%E6%9C%AC%E9%A9%B1%E5%8A%A8%EF%BC%88Hypertext-Driven%EF%BC%89"><span class="nav-number">3.5.</span> <span class="nav-text">5. 超文本驱动（Hypertext Driven）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#REST%E6%9E%B6%E6%9E%84%E7%BA%A6%E6%9D%9F"><span class="nav-number">4.</span> <span class="nav-text">REST架构约束</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-%E5%AE%A2%E6%88%B7-%E6%9C%8D%E5%8A%A1%E5%99%A8%EF%BC%88Client-Server%EF%BC%89"><span class="nav-number">4.1.</span> <span class="nav-text">1. 客户-服务器（Client-Server）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-%E6%97%A0%E7%8A%B6%E6%80%81%EF%BC%88Stateless%EF%BC%89"><span class="nav-number">4.2.</span> <span class="nav-text">2. 无状态（Stateless）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#3-%E5%8F%AF%E7%BC%93%E5%AD%98%EF%BC%88Cachable%EF%BC%89"><span class="nav-number">4.3.</span> <span class="nav-text">3. 可缓存（Cachable）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-%E5%88%86%E5%B1%82%E7%B3%BB%E7%BB%9F-%EF%BC%88Layered-system%EF%BC%89"><span class="nav-number">4.4.</span> <span class="nav-text">4. 分层系统 （Layered system）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#5-%E7%BB%9F%E4%B8%80%E6%8E%A5%E5%8F%A3-%EF%BC%88Unitform-interface%EF%BC%89"><span class="nav-number">4.5.</span> <span class="nav-text">5. 统一接口 （Unitform interface）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#6-%E6%8C%89%E9%9C%80%E4%BB%A3%E7%A0%81%EF%BC%88%E5%8F%AF%E9%80%89%EF%BC%89"><span class="nav-number">4.6.</span> <span class="nav-text">6. 按需代码（可选）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
-      </div>
-      <!--/noindex-->
-
-      <div class="site-overview-wrap sidebar-panel">
-        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">Apomelo</p>
-  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+    </footer>
+  </article>
 </div>
-<div class="site-state-wrap motion-element">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-          <a href="/archives/">
-        
-          <span class="site-state-item-count">23</span>
-          <span class="site-state-item-name">日志</span>
-        </a>
-      </div>
-      <div class="site-state-item site-state-categories">
-            <a href="/categories/">
-          
-        <span class="site-state-item-count">9</span>
-        <span class="site-state-item-name">分类</span></a>
-      </div>
-      <div class="site-state-item site-state-tags">
-            <a href="/tags/">
-          
-        <span class="site-state-item-count">39</span>
-        <span class="site-state-item-name">标签</span></a>
-      </div>
-  </nav>
+
+
+
+
+
+
 </div>
-  <div class="links-of-author motion-element">
-      <span class="links-of-author-item">
-        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
-      </span>
-      <span class="links-of-author-item">
-        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
-      </span>
-  </div>
+  </main>
 
+  <footer class="footer">
+    <div class="footer-inner">
 
-
-      </div>
-
-    </div>
-  </aside>
-  <div id="sidebar-dimmer"></div>
-
-
-      </div>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        
-
-        
 
 <div class="copyright">
-  
   &copy; 
   <span itemprop="copyrightYear">2022</span>
   <span class="with-love">
@@ -480,11 +397,8 @@
   </span>
   <span class="author" itemprop="copyrightHolder">Apomelo</span>
 </div>
-
-        
 <div class="busuanzi-count">
-  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
       <span class="post-meta-item-icon">
         <i class="fa fa-user"></i>
       </span>
@@ -492,8 +406,7 @@
         <span id="busuanzi_value_site_uv"></span>
       </span>
     </span>
-    <span class="post-meta-divider">|</span>
-    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
       <span class="post-meta-item-icon">
         <i class="fa fa-eye"></i>
       </span>
@@ -503,193 +416,31 @@
     </span>
 </div>
 
-
-  <div style="display: none;">
-    <script src="https://s5.cnzz.com/z_stat.php?id=1277140459&web_id=1277140459"></script>
-  </div>
-
-
-
-
-<script>
-  (function() {
-    function leancloudSelector(url) {
-      url = encodeURI(url);
-      return document.getElementById(url).querySelector('.leancloud-visitors-count');
-    }
-
-    function addCount(Counter) {
-      var visitors = document.querySelector('.leancloud_visitors');
-      var url = decodeURI(visitors.id);
-      var title = visitors.dataset.flagTitle;
-
-      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
-        .then(response => response.json())
-        .then(({ results }) => {
-          if (results.length > 0) {
-            var counter = results[0];
-            leancloudSelector(url).innerText = counter.time + 1;
-            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
-              .catch(error => {
-                console.error('Failed to save visitor count', error);
-              });
-          } else {
-              Counter('post', '/classes/Counter', { title, url, time: 1 })
-                .then(response => response.json())
-                .then(() => {
-                  leancloudSelector(url).innerText = 1;
-                })
-                .catch(error => {
-                  console.error('Failed to create', error);
-                });
-          }
-        })
-        .catch(error => {
-          console.error('LeanCloud Counter Error', error);
-        });
-    }
-
-    function showTime(Counter) {
-      var visitors = document.querySelectorAll('.leancloud_visitors');
-      var entries = [...visitors].map(element => {
-        return decodeURI(element.id);
-      });
-
-      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
-        .then(response => response.json())
-        .then(({ results }) => {
-          for (let url of entries) {
-            let target = results.find(item => item.url === url);
-            leancloudSelector(url).innerText = target ? target.time : 0;
-          }
-        })
-        .catch(error => {
-          console.error('LeanCloud Counter Error', error);
-        });
-    }
-
-    let { app_id, app_key, server_url } = {"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false};
-    function fetchData(api_server) {
-      var Counter = (method, url, data) => {
-        return fetch(`${api_server}/1.1${url}`, {
-          method,
-          headers: {
-            'X-LC-Id'     : app_id,
-            'X-LC-Key'    : app_key,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data)
-        });
-      };
-      if (CONFIG.page.isPost) {
-        // if (CONFIG.hostname !== location.hostname) return;
-        addCount(Counter);
-      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
-        showTime(Counter);
-      }
-    }
-
-    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
-
-    if (api_server) {
-      fetchData(api_server);
-    } else {
-      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
-        .then(response => response.json())
-        .then(({ api_server }) => {
-          fetchData('https://' + api_server);
-        });
-    }
-  })();
-</script>
-
-
-      </div>
-    </footer>
-  </div>
+    </div>
+  </footer>
 
   
-  <script src="/lib/anime.min.js"></script>
-  <script src="/lib/velocity/velocity.min.js"></script>
-  <script src="/lib/velocity/velocity.ui.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
-<script src="/js/utils.js"></script>
-
-<script src="/js/motion.js"></script>
-
-
-<script src="/js/schemes/pisces.js"></script>
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.2/algoliasearch-lite.umd.js" integrity="sha256-dImjLPUsG/6p3+i7gVKBiDM8EemJAhQ0VvkRK2pVsQY=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.43.1/instantsearch.production.min.js" integrity="sha256-jLNoKrKRDKAOg8JBqkl8jSy2tpqCGQ1/++9QRYtWl8k=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
 
 
-<script src="/js/next-boot.js"></script>
-
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
 
 
 
   
-  <script>
-    (function(){
-      var canonicalURL, curProtocol;
-      //Get the <link> tag
-      var x=document.getElementsByTagName("link");
-		//Find the last canonical URL
-		if(x.length > 0){
-			for (i=0;i<x.length;i++){
-				if(x[i].rel.toLowerCase() == 'canonical' && x[i].href){
-					canonicalURL=x[i].href;
-				}
-			}
-		}
-    //Get protocol
-	    if (!canonicalURL){
-	    	curProtocol = window.location.protocol.split(':')[0];
-	    }
-	    else{
-	    	curProtocol = canonicalURL.split(':')[0];
-	    }
-      //Get current URL if the canonical URL does not exist
-	    if (!canonicalURL) canonicalURL = window.location.href;
-	    //Assign script content. Replace current URL with the canonical URL
-      !function(){var e=/([http|https]:\/\/[a-zA-Z0-9\_\.]+\.baidu\.com)/gi,r=canonicalURL,t=document.referrer;if(!e.test(r)){var n=(String(curProtocol).toLowerCase() === 'https')?"https://sp0.baidu.com/9_Q4simg2RQJ8t7jm9iCKT-xh_/s.gif":"//api.share.baidu.com/s.gif";t?(n+="?r="+encodeURIComponent(document.referrer),r&&(n+="&l="+r)):r&&(n+="?l="+r);var i=new Image;i.src=n}}(window);})();
-  </script>
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
 
 
-  
-<script src="//cdn.jsdelivr.net/npm/algoliasearch@4/dist/algoliasearch-lite.umd.js"></script>
-<script src="//cdn.jsdelivr.net/npm/instantsearch.js@4/dist/instantsearch.production.min.js"></script>
-<script src="/js/algolia-search.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-<script>
-if (document.querySelectorAll('pre.mermaid').length) {
-  NexT.utils.getScript('//cdn.jsdelivr.net/npm/mermaid@8/dist/mermaid.min.js', () => {
-    mermaid.initialize({
-      theme    : '[object Object]',
-      logLevel : 3,
-      flowchart: { curve     : 'linear' },
-      gantt    : { axisFormat: '%m/%d/%Y' },
-      sequence : { actorMargin: 50 }
-    });
-  }, window.mermaid);
-}
-</script>
-
-
-  
-
-  
 
 </body>
 </html>
