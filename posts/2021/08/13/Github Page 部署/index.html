@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="[TOC] 创建 github 仓库直接参考官方网站的创建要求 注意  如果创建的是用户或组织站点, 仓库名称必须为 &lt;user&gt;.github.io 或 &lt;organization&gt;.github.io 这样的话能直接访问: http(s):&#x2F;&#x2F;&lt;username&gt;.github.io 或 http(s):&#x2F;&#x2F;&lt;o">
+    <meta name="description" content="创建 github 仓库直接参考官方网站的创建要求 注意  如果创建的是用户或组织站点, 仓库名称必须为 &lt;user&gt;.github.io 或 &lt;organization&gt;.github.io 这样的话能直接访问: http(s):&#x2F;&#x2F;&lt;username&gt;.github.io 或 http(s):&lt;organization&gt;.github.io 如果">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Github Page 部署">
 <meta property="og:url" content="https://apomelo.cc/posts/2021/08/13/Github%20Page%20%E9%83%A8%E7%BD%B2/index.html">
 <meta property="og:site_name" content="Apomelo - 追逐">
-<meta property="og:description" content="[TOC] 创建 github 仓库直接参考官方网站的创建要求 注意  如果创建的是用户或组织站点, 仓库名称必须为 &lt;user&gt;.github.io 或 &lt;organization&gt;.github.io 这样的话能直接访问: http(s):&#x2F;&#x2F;&lt;username&gt;.github.io 或 http(s):&#x2F;&#x2F;&lt;o">
+<meta property="og:description" content="创建 github 仓库直接参考官方网站的创建要求 注意  如果创建的是用户或组织站点, 仓库名称必须为 &lt;user&gt;.github.io 或 &lt;organization&gt;.github.io 这样的话能直接访问: http(s):&#x2F;&#x2F;&lt;username&gt;.github.io 或 http(s):&lt;organization&gt;.github.io 如果">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-08-12T16:00:00.000Z">
 <meta property="article:modified_time" content="2021-08-12T16:00:00.000Z">
@@ -169,7 +169,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -274,13 +274,12 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>[TOC]</p>
-<h2 id="创建-github-仓库"><a href="#创建-github-仓库" class="headerlink" title="创建 github 仓库"></a>创建 github 仓库</h2><p>直接参考<a target="_blank" rel="noopener" href="https://docs.github.com/cn/pages/getting-started-with-github-pages/creating-a-github-pages-site">官方网站</a>的创建要求</p>
+        <h2 id="创建-github-仓库"><a href="#创建-github-仓库" class="headerlink" title="创建 github 仓库"></a>创建 github 仓库</h2><p>直接参考<a target="_blank" rel="noopener" href="https://docs.github.com/cn/pages/getting-started-with-github-pages/creating-a-github-pages-site">官方网站</a>的创建要求</p>
 <p><strong>注意</strong></p>
 <ol>
-<li><p>如果创建的是用户或组织站点, 仓库名称必须为 &lt;user&gt;.github.io 或 &lt;organization&gt;.github.io</p>
-<p>这样的话能直接访问: <em>http(s):&#x2F;&#x2F;&lt;username&gt;.github.io</em> 或 <em>http(s):&#x2F;&#x2F;&lt;organization&gt;.github.io</em></p>
-<p>如果是 &lt;other&gt;.github.io, 则只能访问: <em>http(s):&#x2F;&#x2F;&lt;username&gt;.github.io&#x2F;&lt;other&gt;</em> 或 <em>http(s):&#x2F;&#x2F;&lt;organization&gt;.github.io&#x2F;&lt;other&gt;</em></p>
+<li><p>如果创建的是用户或组织站点, 仓库名称必须为 <code>&lt;user&gt;.github.io</code> 或 <code>&lt;organization&gt;.github.io</code></p>
+<p>这样的话能直接访问: <code>http(s)://&lt;username&gt;.github.io</code> 或 <code>http(s):&lt;organization&gt;.github.io</code></p>
+<p>如果是 <code>&lt;other&gt;.github.io</code>, 则只能访问: <code>http(s)://&lt;username&gt;.github.io/&lt;other&gt;</code> 或 <code>http(s)://&lt;organization&gt;.github.io/&lt;other&gt;</code></p>
 </li>
 <li><p>仓库需要是 public 的, private 目前还只有付费才能使用, 原文章可以存在另一个私有的仓库里, 这个只用来部署生成的页面</p>
 </li>
@@ -389,10 +388,13 @@
 <li><p>创建一个新的 Index，这个 index name 之后会用到</p>
 </li>
 <li><p>博客_config.yml 末尾添加以下代码</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># Algolia Search</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Docs: https://theme-next.org/docs/third-party-services/search-services</span></span><br><span class="line"></span><br><span class="line">algolia:</span><br><span class="line">applicationID: &#x27;你的 Application ID&#x27;</span><br><span class="line">apiKey: &#x27;你的 Search-Only API Key&#x27;</span><br><span class="line">indexName: &#x27;输入刚才创建 index name&#x27;</span><br><span class="line">chunkSize: 5000</span><br></pre></td></tr></table></figure>
+ <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># Algolia Search</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Docs: https://theme-next.org/docs/third-party-services/search-services</span></span><br><span class="line"></span><br><span class="line">algolia:</span><br><span class="line">applicationID: &#x27;你的 Application ID&#x27;</span><br><span class="line">apiKey: &#x27;你的 Search-Only API Key&#x27;</span><br><span class="line">indexName: &#x27;输入刚才创建 index name&#x27;</span><br><span class="line">chunkSize: 5000</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>测试 algolia, 如果不生效, 安装 Hexo Algolia 扩展 (我最新版本没有安装该插件, 功能可以正常使用)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-algolia --save</span><br></pre></td></tr></table></figure></li>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-algolia --save</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更新 algolia 索引</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># export HEXO_ALGOLIA_INDEXING_KEY=High-privilege API key # Use Git Bash</span></span><br><span class="line"><span class="comment"># set HEXO_ALGOLIA_INDEXING_KEY=High-privilege API key # Use Windows command line</span></span><br><span class="line">hexo clean</span><br><span class="line">hexo algolia</span><br></pre></td></tr></table></figure></li>
 </ol>
 <h3 id="配置博客域名"><a href="#配置博客域名" class="headerlink" title="配置博客域名"></a>配置博客域名</h3><p>在 source 目录下增加 CNAME 文件, 该文件中填写要配置的域名, 如: apomelo.cc</p>
 <p>并在域名购买网站或相关网站把域名解析解析到博客地址, 如: apomelo.github.io</p>

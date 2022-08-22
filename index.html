@@ -164,7 +164,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">39</span>
+        <span class="site-state-item-count">40</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -1773,13 +1773,12 @@ Mark Word在在64位JVM中存储状态：
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>[TOC]</p>
-<h2 id="创建-github-仓库"><a href="#创建-github-仓库" class="headerlink" title="创建 github 仓库"></a>创建 github 仓库</h2><p>直接参考<a target="_blank" rel="noopener" href="https://docs.github.com/cn/pages/getting-started-with-github-pages/creating-a-github-pages-site">官方网站</a>的创建要求</p>
+          <h2 id="创建-github-仓库"><a href="#创建-github-仓库" class="headerlink" title="创建 github 仓库"></a>创建 github 仓库</h2><p>直接参考<a target="_blank" rel="noopener" href="https://docs.github.com/cn/pages/getting-started-with-github-pages/creating-a-github-pages-site">官方网站</a>的创建要求</p>
 <p><strong>注意</strong></p>
 <ol>
-<li><p>如果创建的是用户或组织站点, 仓库名称必须为 &lt;user&gt;.github.io 或 &lt;organization&gt;.github.io</p>
-<p>这样的话能直接访问: <em>http(s):&#x2F;&#x2F;&lt;username&gt;.github.io</em> 或 <em>http(s):&#x2F;&#x2F;&lt;organization&gt;.github.io</em></p>
-<p>如果是 &lt;other&gt;.github.io, 则只能访问: <em>http(s):&#x2F;&#x2F;&lt;username&gt;.github.io&#x2F;&lt;other&gt;</em> 或 <em>http(s):&#x2F;&#x2F;&lt;organization&gt;.github.io&#x2F;&lt;other&gt;</em></p>
+<li><p>如果创建的是用户或组织站点, 仓库名称必须为 <code>&lt;user&gt;.github.io</code> 或 <code>&lt;organization&gt;.github.io</code></p>
+<p>这样的话能直接访问: <code>http(s)://&lt;username&gt;.github.io</code> 或 <code>http(s):&lt;organization&gt;.github.io</code></p>
+<p>如果是 <code>&lt;other&gt;.github.io</code>, 则只能访问: <code>http(s)://&lt;username&gt;.github.io/&lt;other&gt;</code> 或 <code>http(s)://&lt;organization&gt;.github.io/&lt;other&gt;</code></p>
 </li>
 <li><p>仓库需要是 public 的, private 目前还只有付费才能使用, 原文章可以存在另一个私有的仓库里, 这个只用来部署生成的页面</p>
 </li>
@@ -1888,10 +1887,13 @@ Mark Word在在64位JVM中存储状态：
 <li><p>创建一个新的 Index，这个 index name 之后会用到</p>
 </li>
 <li><p>博客_config.yml 末尾添加以下代码</p>
-<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># Algolia Search</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Docs: https://theme-next.org/docs/third-party-services/search-services</span></span><br><span class="line"></span><br><span class="line">algolia:</span><br><span class="line">applicationID: &#x27;你的 Application ID&#x27;</span><br><span class="line">apiKey: &#x27;你的 Search-Only API Key&#x27;</span><br><span class="line">indexName: &#x27;输入刚才创建 index name&#x27;</span><br><span class="line">chunkSize: 5000</span><br></pre></td></tr></table></figure>
+ <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># Algolia Search</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Docs: https://theme-next.org/docs/third-party-services/search-services</span></span><br><span class="line"></span><br><span class="line">algolia:</span><br><span class="line">applicationID: &#x27;你的 Application ID&#x27;</span><br><span class="line">apiKey: &#x27;你的 Search-Only API Key&#x27;</span><br><span class="line">indexName: &#x27;输入刚才创建 index name&#x27;</span><br><span class="line">chunkSize: 5000</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>测试 algolia, 如果不生效, 安装 Hexo Algolia 扩展 (我最新版本没有安装该插件, 功能可以正常使用)</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-algolia --save</span><br></pre></td></tr></table></figure></li>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-algolia --save</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>更新 algolia 索引</p>
+ <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># export HEXO_ALGOLIA_INDEXING_KEY=High-privilege API key # Use Git Bash</span></span><br><span class="line"><span class="comment"># set HEXO_ALGOLIA_INDEXING_KEY=High-privilege API key # Use Windows command line</span></span><br><span class="line">hexo clean</span><br><span class="line">hexo algolia</span><br></pre></td></tr></table></figure></li>
 </ol>
 <h3 id="配置博客域名"><a href="#配置博客域名" class="headerlink" title="配置博客域名"></a>配置博客域名</h3><p>在 source 目录下增加 CNAME 文件, 该文件中填写要配置的域名, 如: apomelo.cc</p>
 <p>并在域名购买网站或相关网站把域名解析解析到博客地址, 如: apomelo.github.io</p>
@@ -2843,15 +2845,15 @@ Crash --> [*]</pre>
 <p>可以这么理解，<strong>在spring中，一切东西都是bean</strong>。</p>
 <h3 id="bean-的生命周期"><a href="#bean-的生命周期" class="headerlink" title="bean 的生命周期"></a>bean 的生命周期</h3><ol>
 <li>读取class文件</li>
-<li>实例化对象</li>
+<li>实例化原始对象</li>
 <li>属性填充（也是DI，依赖注入）</li>
 <li>构造后初始化方法<ul>
 <li>实现了 InitializingBean 接口会执行afterPropertiesSet方法</li>
 <li>或者执行有注解 <code>@PostConstruct</code> 的方法</li>
 </ul>
 </li>
-<li>AOP 生成代理对象</li>
-<li>生成bean对象</li>
+<li>AOP 生成代理对象（有AOP切点的话）</li>
+<li>放入bean池子</li>
 </ol>
 <h3 id="单例bean"><a href="#单例bean" class="headerlink" title="单例bean"></a>单例bean</h3><p>spring中的单例bean，不等同于java中的单例模式。</p>
 <p>spring单例bean，允许同一个类有多个名称不相同的实例。</p>
@@ -2940,6 +2942,7 @@ Crash --> [*]</pre>
 <li>初始化A中获取到B，把B注入到A的依赖属性中。</li>
 <li>初始化A完成：1.2.2，1.2.3 把B放入到一级缓存，并把A从三级缓存中删除，返回A。</li>
 </ol>
+<p>注意：<br>有循环依赖的时候AOP阶段会提前</p>
 <h2 id="Spring-AOP"><a href="#Spring-AOP" class="headerlink" title="Spring AOP"></a>Spring AOP</h2><p>Spring的AOP实现原理其实很简单，就是通过动态代理实现的。</p>
 <p>如果为Spring的某个bean配置了切面，那么Spring在创建这个bean的时候，实际上创建的是这个bean的一个代理对象，我们后续对bean中方法的调用，实际上调用的是代理类重写的代理方法。</p>
 <p>Spring的AOP使用了两种动态代理，分别是JDK的动态代理，以及CGLib的动态代理，CGLib基于ASM实现。这些可以统一归于java字节码增强技术，详细参考：<a href="/posts/2019/04/18/java-jvm/" title="[java-jvm]">[java-jvm]</a></p>
@@ -2947,7 +2950,31 @@ Crash --> [*]</pre>
 <li>Spring默认使用JDK的动态代理实现AOP，类如果实现了接口，Spring就会使用这种方式实现动态代理。熟悉Java语言的应该会对JDK动态代理有所了解。JDK实现动态代理需要两个组件，首先第一个就是InvocationHandler接口。我们在使用JDK的动态代理时，需要编写一个类，去实现这个接口，然后重写invoke方法，这个方法其实就是我们提供的代理方法。然后JDK动态代理需要使用的第二个组件就是Proxy这个类，我们可以通过这个类的newProxyInstance方法，返回一个代理对象。生成的代理类实现了原来那个类的所有接口，并对接口的方法进行了代理，我们通过代理对象调用这些方法时，底层将通过反射，调用我们实现的invoke方法。</li>
 <li>JDK的动态代理存在限制，那就是被代理的类必须是一个实现了接口的类，代理类需要实现相同的接口，代理接口中声明的方法。若需要代理的类没有实现接口，此时JDK的动态代理将没有办法使用，于是Spring会使用CGLib的动态代理来生成代理对象。CGLib直接操作字节码，生成类的子类，重写类的方法完成代理。</li>
 </ol>
-<h2 id="Spring-事务"><a href="#Spring-事务" class="headerlink" title="Spring 事务"></a>Spring 事务</h2><p>Spring事务就是对数据库事务的一层封装</p>
+<h2 id="Spring-事务"><a href="#Spring-事务" class="headerlink" title="Spring 事务"></a>Spring 事务</h2><p>Spring事务就是对数据库事务的一层封装。</p>
+<p>工作原理：</p>
+<ol>
+<li>拿到对应代理对象</li>
+<li>执行代理对象的对应方法（在原有的方法上进行字节码增强）<ol>
+<li>建立数据库连接conn</li>
+<li>conn.setAutocommit(false)</li>
+<li>执行原生对象的该方法</li>
+<li>commit</li>
+</ol>
+</li>
+</ol>
+<h3 id="事务传播"><a href="#事务传播" class="headerlink" title="事务传播"></a>事务传播</h3><p>Spring 对事务的控制，是使用 aop 切面实现的，我们不用关心事务的开始，提交 ，回滚，只需要在方法上加 @Transactional 注解，这时候就有问题了:</p>
+<p>场景一：serviceA 方法调用了 serviceB 方法，但两个方法都有事务，这个时候如果 serviceB 方法异常，是让 serviceB 方法提交，还是两个一起回滚。<br>场景二：serviceA 方法调用了 serviceB 方法，但是只有 serviceA 方法加了事务，是否把 serviceB 也加入 serviceA 的事务，如果 serviceB 异常，是否回滚 serviceA 。<br>场景三：serviceA 方法调用了 serviceB 方法，两者都有事务，serviceB 已经正常执行完，但 serviceA 异常，是否需要回滚 serviceB 的数据。</p>
+<p>spring事务的传播机制说的是，当多个事务同时存在的时候，spring如何处理这些事务的行为。事务传播机制实际上是使用简单的ThreadLocal实现的，所以，如果调用的方法是在新线程调用的，事务传播实际上是会失效的。</p>
+<p><strong>同一个Service类中的方法相互调用需要使用注入的对象来调用，不能直接使用this.方法名来调用，this.方法名调用是对象内部方法调用，不会通过Spring代理，也就是事务不会起作用。原因：spring 代理对象中包含原生对象的变量，在执行原生对象的该方法时用this.方法名，这时候this指向的是原生对象</strong></p>
+<ul>
+<li>propagation_requierd: 如果当前没有事务，就新建一个事务，如果已存在一个事务中，加入到这个事务中，这是最常见的选择，也是默认模式，它适合于绝大多数情况。</li>
+<li>propagation_supports: 支持当前事务，如果没有当前事务，就以非事务方法执行。</li>
+<li>propagation_mandatory: 使用当前事务，如果没有当前事务，就抛出异常。</li>
+<li>propagation_required_new: 新建事务，如果当前存在事务，把当前事务挂起。</li>
+<li>propagation_not_supported: 以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。</li>
+<li>propagation_never: 以非事务方式执行操作，如果当前事务存在则抛出异常。</li>
+<li>propagation_nested: 如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则执行与propagation_required类似的操作</li>
+</ul>
 <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
 <li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/tuyang1129/p/12878549.html">浅析Spring中AOP的实现原理——动态代理</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/tanghaorong/p/13364634.html">Spring详解（三）—-认识IoC控制反转&#x2F;DI依赖注入</a></li>
