@@ -153,18 +153,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">43</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -574,7 +574,90 @@
 <li>Mock：测试时候对某些服务做Mock。 </li>
 <li>性能诊断工具：比如bTrace就是利用Instrument，实现无侵入地跟踪一个正在运行的JVM，监控到类和方法级别的状态信息。</li>
 </ul>
-<h2 id="GC-详解"><a href="#GC-详解" class="headerlink" title="GC 详解"></a>GC 详解</h2><p>JVM中GC专题（GC算法、回收器、内存泄露排查等等）</p>
+<h2 id="类加载"><a href="#类加载" class="headerlink" title="类加载"></a>类加载</h2><h3 id="类生命周期"><a href="#类生命周期" class="headerlink" title="类生命周期"></a>类生命周期</h3><p>类的生命周期包括：加载、链接、初始化、使用和卸载，其中加载、链接、初始化，属于类加载的过程。</p>
+<p><img src="/imgs/java-jvm/java-%E7%B1%BB%E5%8A%A0%E8%BD%BD%E8%BF%87%E7%A8%8B.png" alt="java-类加载过程"></p>
+<p>其中类加载的过程包括了加载、链接、初始化三个阶段。链接阶段又分为验证、准备、解析三个阶段。</p>
+<p>在这五个阶段中，加载、验证、准备和初始化这四个阶段发生的顺序是确定的，而解析阶段则不一定，它在某些情况下可以在初始化阶段之后开始，这是为了支持Java语言的运行时绑定(也成为动态绑定或晚期绑定)。</p>
+<p>另外注意这里的几个阶段是<strong>按顺序开始</strong>，而不是按顺序进行或完成，因为这些阶段通常都是互相交叉地混合进行的，通常在一个阶段执行的过程中调用或激活另一个阶段。</p>
+<h4 id="加载"><a href="#加载" class="headerlink" title="加载"></a>加载</h4><p>在加载阶段，虚拟机需要完成以下三件事情:</p>
+<ol>
+<li><p>通过类的全限定名（包名 + 类名），获取到该类的.class文件的二进制字节流</p>
+</li>
+<li><p>将二进制字节流所代表的静态存储结构，转化为方法区运行时的数据结构</p>
+</li>
+<li><p>在Java堆中生成一个代表该类的java.lang.Class对象，作为方法区这个类的各种数据的访问入口</p>
+</li>
+</ol>
+<p>总结：加载二进制数据到内存 —&gt; 映射成jvm能识别的结构 —&gt; 在内存中生成class对象。</p>
+<p>加载阶段(准确地说，是加载阶段获取类的二进制字节流的动作)是可控性最强的阶段，因为开发人员既可以使用系统提供的类加载器来完成加载，也可以自定义自己的类加载器来完成加载。</p>
+<p>类加载器并不需要等到某个类被“首次主动使用”时再加载它，JVM规范允许类加载器在预料某个类将要被使用时就预先加载它，如果在预先加载的过程中遇到了.class文件缺失或存在错误，类加载器必须在程序首次主动使用该类时才报告错误(LinkageError错误)如果这个类一直没有被程序主动使用，那么类加载器就不会报告错误。</p>
+<h5 id="加载-class文件的方式"><a href="#加载-class文件的方式" class="headerlink" title="加载.class文件的方式"></a>加载.class文件的方式</h5><ul>
+<li>从本地系统中直接加载</li>
+<li>通过网络下载.class文件</li>
+<li>从zip，jar等归档文件中加载.class文件</li>
+<li>从专有数据库中提取.class文件</li>
+<li>将Java源文件动态编译为.class文件</li>
+</ul>
+<h4 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h4><h5 id="验证"><a href="#验证" class="headerlink" title="验证"></a>验证</h5><p>确保被加载的类的正确性，符合当前虚拟机的要求，不会危害到虚拟机的安全。</p>
+<p>验证阶段大致会完成4个阶段的检验动作: </p>
+<ol>
+<li><strong>文件格式验证</strong>: 验证字节流是否符合Class文件格式的规范；例如: 是否以0xCAFEBABE开头、主次版本号是否在当前虚拟机的处理范围之内、常量池中的常量是否有不被支持的类型。 </li>
+<li><strong>元数据验证</strong>: 对字节码描述的信息进行语义分析(注意: 对比javac编译阶段的语义分析)，以保证其描述的信息符合Java语言规范的要求；例如: 这个类是否有父类，除了java.lang.Object之外。 </li>
+<li><strong>字节码验证</strong>: 通过数据流和控制流分析，确定程序语义是合法的、符合逻辑的。 </li>
+<li><strong>符号引用验证</strong>: 确保解析动作能正确执行。</li>
+</ol>
+<p><strong>注意</strong></p>
+<p>验证阶段是非常重要的，但<strong>不是必须的</strong>，它对程序运行期没有影响，如果所引用的类经过反复验证，那么可以考虑采用 <code>-Xverifynone</code> 参数来关闭大部分的类验证措施，以缩短虚拟机类加载的时间。</p>
+<h5 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h5><p>为类中的静态字段分配内存，并设置默认的初始值，这些内存都将在方法区中分配。</p>
+<p>对于该阶段有以下几点需要注意:</p>
+<ol>
+<li>这时候进行内存分配的仅包括类变量(static)，而不包括实例变量，实例变量会在对象实例化时随着对象一块分配在Java堆中。 </li>
+<li>这里所设置的初始值通常情况下是数据类型默认的零值(如0、0L、null、false等)，而不是被在Java代码中被显式地赋予的值。<br> 假设一个类变量的定义为: <code>public static int value = 3;</code> 那么变量 <code>value</code> 在准备阶段过后的初始值为 <code>0</code>, 而不是 <code>3</code>, 因为这时候尚未开始执行任何Java方法，而把 value 赋值为 <code>3</code> 的<code> put static</code> 指令是在程序编译后，存放于类构造器 <code>&lt;clinit&gt;()</code> 方法之中的，所以把 <code>value</code> 赋值为 <code>3</code> 的动作将在初始化阶段才会执行。</li>
+<li>如果类字段的字段属性表中存在ConstantValue属性，即同时被final和static修饰，那么在准备阶段变量value就会被初始化为ConstValue属性所指定的值。（ConstantValue属性的作用是通知虚拟机自动为静态变量赋值，用final修饰的实例变量，编译成class文件的时候，对应的字段表<strong>也有可能</strong>会加上ConstantValue属性，<strong>但是只有被static关键字修饰的类变量才可以使用这项属性</strong>。）<br> 假设上面的类变量value被定义为: <code>public static final int value = 3;</code> 编译时 Javac 将会为 <code>value</code> 生成ConstantValue属性，在准备阶段虚拟机就会根据ConstantValue的设置将 <code>value</code> 赋值为 <code>3</code> 。我们可以理解为 <code>static final</code> 常量在编译期就将其结果放入了调用它的类的常量池中。</li>
+</ol>
+<h5 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h5><p>把类中的符号引用转换为直接引用</p>
+<p>解析阶段是虚拟机将常量池内的符号引用替换为直接引用的过程，解析动作主要针对 <strong>类</strong> 或 <strong>接口</strong> 、 <strong>字段</strong> 、 <strong>类方法</strong> 、 <strong>接口方法</strong> 、 <strong>方法类型</strong> 、 <strong>方法句柄</strong> 和 <strong>调用点</strong> 限定符7类符号引用进行。</p>
+<p><strong>符号引用</strong>就是一组符号来描述目标，可以是任何字面量。 </p>
+<p><strong>直接引用</strong>就是直接指向目标的指针、相对偏移量或一个间接定位到目标的句柄。</p>
+<h4 id="初始化"><a href="#初始化" class="headerlink" title="初始化"></a>初始化</h4><p>初始化，为类的静态变量赋予正确的初始值，JVM负责对类进行初始化，主要对类变量进行初始化。在Java中对类变量进行初始值设定有两种方式:</p>
+<ol>
+<li>声明类变量是指定初始值</li>
+<li>使用静态代码块为类变量指定初始值</li>
+</ol>
+<p>JVM初始化步骤</p>
+<ol>
+<li>假如这个类还没有被加载和连接，则程序先加载并连接该类</li>
+<li>假如该类的直接父类还没有被初始化，则先初始化其直接父类</li>
+<li>假如类中有初始化语句，则系统依次执行这些初始化语句</li>
+</ol>
+<p><strong>类初始化时机</strong></p>
+<p>只有当对类的主动使用的时候才会导致类的初始化，类的主动使用包括以下六种: </p>
+<ol>
+<li>使用new关键字实例化对象。 </li>
+<li>读取或设置一个类型的静态字段（被final修饰、已在编译期把结果放入常量池的静态字段除外）。 </li>
+<li>调用类的静态方法 </li>
+<li>反射(如Class.forName(“com.pdai.jvm.Test”)) </li>
+<li>初始化某个类的子类，则其父类也会被初始化 </li>
+<li>Java虚拟机启动时被标明为启动类的类(Java Test或包含main()方法的那个类)</li>
+</ol>
+<p><strong>以下几种情况不会执行类初始化</strong></p>
+<ol>
+<li>通过子类引用父类的静态字段，只会触发父类的初始化，而不会触发子类的初始化。</li>
+<li>定义对象数组，不会触发该类的初始化。</li>
+<li>常量在编译期间会存入调用类的常量池中，本质上并没有直接引用定义常量的类，不会触发定义常量所在的类。</li>
+<li>通过类名获取 Class 对象，不会触发类的初始化。</li>
+<li>通过 Class.forName 加载指定类时，如果指定参数 initialize 为 false 时，也不会触发类初始化，其实这个参数是告诉虚拟机，是否要对类进行初始化。</li>
+<li>通过 ClassLoader 默认的 loadClass 方法，也不会触发初始化动作。</li>
+</ol>
+<h4 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h4><p>类访问方法区内的数据结构的接口，对象是Heap区的数据。</p>
+<h4 id="卸载"><a href="#卸载" class="headerlink" title="卸载"></a>卸载</h4><p>Java虚拟机将结束生命周期的几种情况</p>
+<ul>
+<li>执行了System.exit()方法</li>
+<li>程序正常执行结束</li>
+<li>程序在执行过程中遇到了异常或错误而异常终止</li>
+<li>由于操作系统出现错误而导致Java虚拟机进程终止</li>
+</ul>
+<h3 id="类加载机制"><a href="#类加载机制" class="headerlink" title="类加载机制"></a>类加载机制</h3><h4 id="类加载器"><a href="#类加载器" class="headerlink" title="类加载器"></a>类加载器</h4><h2 id="GC-详解"><a href="#GC-详解" class="headerlink" title="GC 详解"></a>GC 详解</h2><p>JVM中GC专题（GC算法、回收器、内存泄露排查等等）</p>
 <h3 id="GC简介"><a href="#GC简介" class="headerlink" title="GC简介"></a>GC简介</h3><p>垃圾回收(Garbage Collection)是Java虚拟机(JVM)垃圾回收器提供的一种用于在<label style="color:red; font-family:微软雅黑">空闲时间、不定时回收、无任何对象引用</label>的对象所占据的内存空间的一种机制。</p>
 <h3 id="判断对象是否存活的算法"><a href="#判断对象是否存活的算法" class="headerlink" title="判断对象是否存活的算法"></a>判断对象是否存活的算法</h3><ol>
 <li>引用计数算法（Reference Counting）</li>
@@ -692,7 +775,7 @@
 <li>用jstack、jstat、jmap查看线程堆栈信息，并转写出堆转储文件。</li>
 <li>放到win系统中用<a target="_blank" rel="noopener" href="https://www.ibm.com/developerworks/community/groups/service/html/communityview?communityUuid=4544bafe-c7a2-455f-9d43-eb866ea60091">IBM HeapAnalyzer</a>等类似工具进行分析。</li>
 </ol>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-x-overview.html">♥JVM相关知识体系详解♥</a><br>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-class.html">JVM 基础 - 类字节码详解</a><br>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-class-enhancer.html">JVM 基础 - 字节码的增强技术</a><br>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-classload.html">JVM 基础 - Java 类加载机制</a><br>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-struct.html">JVM 基础 - JVM 内存结构</a><br>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-x-introduce.html">JVM 基础 - Java 内存模型引入</a><br>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-jmm.html">JVM 基础 - Java 内存模型详解</a><br>1、<a target="_blank" rel="noopener" href="https://www.infoq.cn/article/rhw0p6vhzoz1swcd86rw">一文讲清 JVM 内存结构 | 极客视点</a></p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-x-overview.html">♥JVM相关知识体系详解♥</a><br>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-class.html">JVM 基础 - 类字节码详解</a><br>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-class-enhancer.html">JVM 基础 - 字节码的增强技术</a><br>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-classload.html">JVM 基础 - Java 类加载机制</a><br>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-struct.html">JVM 基础 - JVM 内存结构</a><br>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-x-introduce.html">JVM 基础 - Java 内存模型引入</a><br>1、<a target="_blank" rel="noopener" href="https://pdai.tech/md/java/jvm/java-jvm-jmm.html">JVM 基础 - Java 内存模型详解</a><br>1、<a target="_blank" rel="noopener" href="https://juejin.cn/post/6865572557329072141">关于JVM类加载机制，看这一篇就够了</a><br>1、<a target="_blank" rel="noopener" href="https://www.infoq.cn/article/rhw0p6vhzoz1swcd86rw">一文讲清 JVM 内存结构 | 极客视点</a></p>
 
       
     </div>
@@ -1715,6 +1798,333 @@ Mark Word在在64位JVM中存储状态：
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2021/11/06/mq/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Apomelo - 追逐">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/posts/2021/11/06/mq/" class="post-title-link" itemprop="url">消息队列</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2021-11-06 00:00:00" itemprop="dateCreated datePublished" datetime="2021-11-06T00:00:00+08:00">2021-11-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/mq/" itemprop="url" rel="index"><span itemprop="name">mq</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2021/11/06/mq/" class="post-meta-item leancloud_visitors" data-flag-title="消息队列" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>消息队列是一种异步的服务间通信方式，适用于无服务器和微服务架构。消息在被处理和删除之前一直存储在队列上。每条消息仅可被一位用户处理一次。消息队列可被用于分离重量级处理、缓冲或批处理工作以及缓解高峰期工作负载。</p>
+<p>在现在的服务架构中，应用程序通常被分解为多个规模较小且更易于开发、部署和维护的独立构建块。消息队列可为这些分布式应用程序提供通信和协调。消息队列可以显著简化分离应用程序的编码，同时提高性能、可靠性和可扩展性。</p>
+<p>借助消息队列，系统的不同部分可相互通信并异步执行处理操作。消息队列提供一个临时存储消息的轻量级缓冲区，以及允许软件组件连接到队列以发送和接收消息的终端节点。这些消息通常较小，可以是请求、恢复、错误消息或明文信息等。要发送消息时，一个名为“创建器”的组件会将消息添加到队列。消息将存储在队列中，直至名为“处理器”的另一组件检索该消息并执行相关操作。</p>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><h2 id="设计需求"><a href="#设计需求" class="headerlink" title="设计需求"></a>设计需求</h2><h3 id="解耦"><a href="#解耦" class="headerlink" title="解耦"></a>解耦</h3><p>解耦是消息队列要解决的最本质问题。</p>
+<p>简单点讲就是一个事务，只关心核心的流程。而需要依赖其他系统但不那么重要的事情，有通知即可，无需等待结果，即非实时性。</p>
+<p>如果所有的流程都等待结果，即通过接口方式去通知或者更新数据，那么整个系统会显得非常”笨重”，一个请求的响应时间也会大大增加。</p>
+<h3 id="最终一致性"><a href="#最终一致性" class="headerlink" title="最终一致性"></a>最终一致性</h3><p>最终一致性指的是两个系统的状态保持一致，要么都成功，要么都失败。</p>
+<p>理论上越快越好，但实际上在各种异常的情况下，可能会有一定延迟达到最终一致状态，但最后两个系统的状态是一样的。</p>
+<p>业界有一些为“最终一致性”而生的消息队列，如 Notify（阿里）、QMQ（去哪儿）等，其设计初衷，就是为了交易系统中的高可靠通知。</p>
+<p>所有跨 VM 的一致性问题，从技术的角度讲通用的解决方案是：</p>
+<ol>
+<li>强一致性<br>分布式事务，但落地太难且成本太高。</li>
+<li>最终一致性<br>主要是用“记录”和“补偿”的方式。在做所有的不确定的事情之前，先把事情记录下来，然后去做不确定的事情，结果可能是：成功、失败或是不确定，“不确定”（例如超时等）可以等价为失败。成功就可以把记录的东西清理掉了，对于失败和不确定，可以依靠定时任务等方式把所有失败的事情重新搞一遍，直到成功为止。</li>
+</ol>
+<p>最终一致性不是消息队列的必备特性，但确实可以依靠消息队列来做最终一致性的事情。另外，所有不保证理论上 100%不丢消息的消息队列 (排除系统严重故障和 bug)，理论上无法实现最终一致性。像 Kafka 一类的设计，在设计层面上就有丢消息的可能（比如定时刷盘，如果掉电就会丢消息）。哪怕只丢千分之一的消息，业务也必须用其他的手段来保证结果正确。</p>
+<h3 id="广播"><a href="#广播" class="headerlink" title="广播"></a>广播</h3><p>消息队列的基本功能之一是进行广播。</p>
+<p>如果没有消息队列，每当一个新的业务方接入，都要联调一次新接口。有了消息队列，只需要关心消息是否送达了队列，至于谁想订阅，是下游的事情，无疑极大地减少了开发和联调的工作量。</p>
+<h3 id="错峰与流控"><a href="#错峰与流控" class="headerlink" title="错峰与流控"></a>错峰与流控</h3><p>试想上下游对于事情的处理能力是不同的。比如，Web 前端每秒承受上千万的请求，并不是什么神奇的事情，只需要加多一点机器，再搭建一些 LVS 负载均衡设备和 Nginx 等即可。但数据库的处理能力却十分有限，即使使用 SSD 加分库分表，单机的处理能力仍然在万级。由于成本的考虑，我们不能奢求数据库的机器数量追上前端。 这种问题同样存在于系统和系统之间，如短信系统可能由于短板效应，速度卡在网关上（每秒几百次请求），跟前端的并发量不是一个数量级。但用户晚上个半分钟左右收到短信，一般是不会有太大问题的。</p>
+<p>如果没有消息队列，两个系统之间通过协商、滑动窗口等复杂的方案也不是说不能实现。但系统复杂性指数级增长，势必在上游或者下游做存储，并且要处理定时、拥塞等一系列问题。而且每当有处理能力有差距的时候，都需要单独开发一套逻辑来维护这套逻辑。所以，利用中间系统转储两个系统的通信内容，并在下游系统有能力处理这些消息的时候，再处理这些消息，是一套相对较通用的方式。</p>
+<p>总而言之，消息队列不是万能的。<strong>对于需要强事务保证而且延迟敏感的，RPC 是优于消息队列的</strong>。 对于一些无关痛痒，或者对于别人非常重要但是对于自己不是那么关心的事情，可以利用消息队列去做。 支持最终一致性的消息队列，能够用来处理延迟不那么敏感的“分布式事务”场景，而且相对于笨重的分布式事务，可能是更优的处理方式。 当上下游系统处理能力存在差距的时候，利用消息队列做一个通用的“漏斗”。在下游有能力处理的时候，再进行分发。 如果下游有很多系统关心你的系统发出的通知的时候，果断地使用消息队列吧。</p>
+<h3 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h3><p>基于消息的系统模型，不一定需要 broker(消息队列服务端)。市面上的的 Akka（actor 模型）、ZeroMQ 等，其实都是基于消息的系统设计范式，但是没有 broker。 我们之所以要设计一个消息队列，并且配备 broker，无外乎要做两件事情：</p>
+<ol>
+<li>消息的转储，在更合适的时间点投递，或者通过一系列手段辅助消息最终能送达消费机。</li>
+<li>规范一种范式和通用的模式，以满足解耦、最终一致性、错峰等需求。 掰开了揉碎了看，最简单的消息队列可以做成一个消息转发器，把一次 RPC 做成两次 RPC。发送者把消息投递到服务端（以下简称 broker），服务端再将消息转发一手到接收端，就是这么简单。</li>
+</ol>
+<p>一般来讲，设计消息队列的整体思路是先 build 一个整体的数据流，例如 producer 发送给 broker, broker 发送给 consumer, consumer 回复消费确认，broker 删除&#x2F;备份消息等。 利用 RPC 将数据流串起来。然后考虑 RPC 的高可用性，尽量做到无状态，方便水平扩展。之后考虑如何承载消息堆积，然后在合适的时机投递消息，而处理堆积的最佳方式，就是存储，存储的选型需要综合考虑性能&#x2F;可靠性和开发维护成本等诸多因素。 为了实现广播功能，我们必须要维护消费关系，可以利用 zk&#x2F;config server 等保存消费关系。 在完成了上述几个功能后，消息队列基本就实现了。然后我们可以考虑一些高级特性，如可靠投递，事务特性，性能优化等。</p>
+<p><img src="/imgs/mq/mq-%E9%98%9F%E5%88%97%E8%AE%BE%E8%AE%A1.png" alt="mq-队列设计"></p>
+<h3 id="实现一个消息队列"><a href="#实现一个消息队列" class="headerlink" title="实现一个消息队列"></a>实现一个消息队列</h3><p><a target="_blank" rel="noopener" href="https://tech.meituan.com/2016/07/01/mq-design.html">消息队列设计精要</a></p>
+<h2 id="现有模型"><a href="#现有模型" class="headerlink" title="现有模型"></a>现有模型</h2><h3 id="JMS（Java-Message-Service）"><a href="#JMS（Java-Message-Service）" class="headerlink" title="JMS（Java Message Service）"></a>JMS（Java Message Service）</h3><p><strong>JMS 是一个 Java 平台中关于面向消息中间件（MOM）的 API</strong>，用于在两个应用程序之间，或分布式系统中发送消息，进行异步通信。</p>
+<p>Java 消息服务是一个与具体平台无关的 API，它包括两种消息模式，点对点和发布者／订阅者：</p>
+<ul>
+<li>JMS 点对点或队列模型：一个生产者向一个特定的队列发布消息，只有一个消费者从该队列中读取消息；生产者不需要在接收者消费该消息期间处于运行状态，接收者也同样不需要在消息发送时处于运行状态；每一个成功处理的消息都由接收者签收；多个消费者对于队列内的消息是竞争消费关系，每个消费者只能收到队列中的一部分消息。<br><img src="/imgs/mq/mq-jms-%E9%98%9F%E5%88%97%E6%A8%A1%E5%9E%8B.jpg" alt="mq-jms-队列模型"></li>
+<li>JMS 发布者／订阅者模型：一个生产者向一个特定的队列发布消息，0 个或多个订阅者可以接受来自特定消息主题的消息；发布者需要创建一个订阅主题（Topic）以便客户能够购订阅并保持持续的活动以接受消息，一个订阅主题是由至少一个队列（Queue）组成的，除非订阅者创建了持久的订阅，在订阅者未连接时发布的消息将在订阅者重新连接时重新发布，每个消费者都能收到全量的消息。<br><img src="/imgs/mq/mq-jms-%E8%AE%A2%E9%98%85%E6%A8%A1%E5%9E%8B.jpg" alt="mq-jms-订阅模型"></li>
+</ul>
+<h3 id="AMQP（Advanced-Message-Queuing-Protocol）"><a href="#AMQP（Advanced-Message-Queuing-Protocol）" class="headerlink" title="AMQP（Advanced Message Queuing Protocol）"></a>AMQP（Advanced Message Queuing Protocol）</h3><p><strong>AMQP 是一种协议，更准确的说是一种 binary wire-level protocol（链接协议）。</strong></p>
+<p>AMQP 不从 API 层进行限定，而是直接定义网络交换的数据格式。这使得实现了 AMQP 的 provider 天然性就是跨平台的。意味着我们可以使用 Java 的 AMQP provider，同时使用一个 python 的 producer 加一个 rubby 的 consumer。从这一点看，AQMP 可以用 http 来进行类比，不关心实现的语言，只要大家都按照相应的数据格式去发送报文请求，不同语言的 client 均可以和不同语言的 server 链接。</p>
+<h4 id="协议"><a href="#协议" class="headerlink" title="协议"></a>协议</h4><p>从整体来看，AMQP 协议可划分为两层：</p>
+<ol>
+<li>Functional Layer (功能层)<br>位于协议上层，主要定义了一组命令（基于功能的逻辑分类），用于应用程序调用实现自身所需的业务逻辑。例如：应用程序可以通过功能层定义队列名称，生产消息到指定队列，消费指定队列消息等基于（Message queues 模型）</li>
+<li>Transport Layer (传输层)<br>基于二进制数据流传输，用于将应用程序调用的指令传回服务器，并返回结果，同时可以进行信道复用，帧处理，内容编码，心跳传输，数据传输和异常处理。</li>
+</ol>
+<p>这样分层之后，可以把传输层替换为其它传输协议，而不需要修改功能层。同样，也可以使用同样的传输层，基于此实现不同的上层协议。</p>
+<h4 id="设计思路"><a href="#设计思路" class="headerlink" title="设计思路"></a>设计思路</h4><p>AMQ Model 的设计是由以下需求驱动的：</p>
+<ul>
+<li>确保符合标准的实现之间的互操作性。</li>
+<li>提供清晰且直接的方式控制 QoS</li>
+<li>保持一致和明确的命名</li>
+<li>通过协议能够修改服务端的各种配置</li>
+<li>使用可以轻松映射到应用程序级 API 的命令符号</li>
+<li>清晰，每个操作只能做一件事。</li>
+</ul>
+<p>AMQP 传输层是由以下需求驱动的</p>
+<ul>
+<li>紧凑。能够快速封包和解包</li>
+<li>可以携带任意大小的消息，没有明显的限制</li>
+<li>同一个连接可以承载多个通道（Channel）</li>
+<li>长时间存活，没有显著的限制</li>
+<li>允许异步命令流水线</li>
+<li>容易扩展。易于处理新需求、或者变更需求</li>
+<li>向前兼容</li>
+<li>使用强大的断言模型，可修复</li>
+<li>对编程语言保持中立</li>
+<li>适合代码生成过程</li>
+</ul>
+<p>在设计过程中，希望能够支持不同的消息架构：</p>
+<ul>
+<li>先存后发模型。有多个 Writer，只有一个 Reader</li>
+<li>分散工作负载。有多个 Writer 和多个 Reader</li>
+<li>发布订阅模型，多个 Writer 和多个 reader</li>
+<li>基于消息内容的路由，多个 Writer，多个 Reader</li>
+<li>队列文件传输，多个 Writer，多个 Reader</li>
+<li>两个节点之间点对点连接</li>
+<li>市场数据（Market data）分发。多个数据源，多个 Reader</li>
+</ul>
+<h4 id="架构模型"><a href="#架构模型" class="headerlink" title="架构模型"></a>架构模型</h4><p>AMQP Model 主要包含了三个主要的组件：</p>
+<ol>
+<li>Exchange: message 到达 broker 的第一站，根据分发规则，匹配查询表中的 routing key，分发消息到 queue 中去。常用的类型有：direct (point-to-point), fanout (multicast), topic (publish-subscribe)。</li>
+<li>Queue: 消息最终被送到这里等待 consumer 取走。一个 message 可以被同时拷贝到多个 queue 中。</li>
+<li>Binding: exchange 和 queue 之间的虚拟连接，binding 中可以包含 routing key。Binding 信息被保存到 exchange 中的查询表中，用于 message 的分发依据。</li>
+</ol>
+<h5 id="Publisher（发布者）"><a href="#Publisher（发布者）" class="headerlink" title="Publisher（发布者）"></a>Publisher（发布者）</h5><p>发布者 (或称为生产者) 负责生产消息并将其投递到指定的交换器上</p>
+<h5 id="Consumer（消费者）"><a href="#Consumer（消费者）" class="headerlink" title="Consumer（消费者）"></a>Consumer（消费者）</h5><p>消费者订阅感兴趣的队列，并负责消费存储在队列中的消息。</p>
+<h5 id="Message（消息）"><a href="#Message（消息）" class="headerlink" title="Message（消息）"></a>Message（消息）</h5><p>消息由消息头和消息体组成。消息头用于存储与消息相关的元数据：如目标交换器的名字 (exchange_name) 、路由键 (RountingKey) 和其他可选配置 (properties) 信息。消息体为实际需要传递的数据。</p>
+<h5 id="Exchange（交换器）"><a href="#Exchange（交换器）" class="headerlink" title="Exchange（交换器）"></a>Exchange（交换器）</h5><p>交换器是一个虚拟主机内的消息路由 Agent，交换器可能是持久化的、临时的、自动删除的。交换器把消息路由到消息队列时可以是并行的。这会创建一个消息的多个实例。</p>
+<p>交换器负责接收来自生产者的消息，并将将消息路由到一个或者多个队列中，如果路由不到，则返回给生产者或者直接丢弃，这取决于交换器的 mandatory 属性：</p>
+<ul>
+<li>当 mandatory 为 true 时：如果交换器无法根据自身类型和路由键找到一个符合条件的队列，则会将该消息返回给生产者；</li>
+<li>当 mandatory 为 false 时：如果交换器无法根据自身类型和路由键找到一个符合条件的队列，则会直接丢弃该消息。</li>
+</ul>
+<p>四种交换机：Direct Exchange（直连交换机），Fanout Exchange（扇型交换机），Topic Exchange（主题交换机），Headers Exchange（头交换机）</p>
+<h6 id="Direct-Exchange"><a href="#Direct-Exchange" class="headerlink" title="Direct Exchange"></a>Direct Exchange</h6><p>Binding 的 Routing Key 要和消息的 Routing Key 完全匹配</p>
+<h6 id="Fanout-Exchange"><a href="#Fanout-Exchange" class="headerlink" title="Fanout Exchange"></a>Fanout Exchange</h6><p>不管消息的 Routing Key，广播给这个交换机下的所有绑定队列</p>
+<h6 id="Topic-Exchange"><a href="#Topic-Exchange" class="headerlink" title="Topic Exchange"></a>Topic Exchange</h6><p>绑定的 Routing Key 和 消息的 Routing Key 进行字符串的模糊匹配，匹配规则如下：</p>
+<ul>
+<li>RountingKey 和 BindingKey 由多个单词使用 <code>.</code> 进行连接；</li>
+<li>BindingKey 支持两个特殊符号：<code>#</code> 和 <code>*</code> 。其中 <code>*</code> 用于匹配一个单词， <code>#</code> 用于匹配零个或者多个单词。</li>
+</ul>
+<h6 id="Headers-Exchange"><a href="#Headers-Exchange" class="headerlink" title="Headers Exchange"></a>Headers Exchange</h6><p>在交换器与队列进行绑定时可以指定一组键值对作为 BindingKey；在发送消息的 headers 中的可以指定一组键值对属性，当这些属性与 BindingKey 相匹配时，则将消息路由到该队列。同时还可以使用 x-match 参数指定匹配模式：</p>
+<ol>
+<li>x-match &#x3D; all：所有的键值对都相同才算匹配成功；</li>
+<li>x-match &#x3D; any：只要有一个键值对相同就算匹配成功。</li>
+</ol>
+<p>headers 类型的交换器性能比较差，因此其在实际开发中使用得比较少。</p>
+<h5 id="BindingKey-绑定键）"><a href="#BindingKey-绑定键）" class="headerlink" title="BindingKey (绑定键）"></a>BindingKey (绑定键）</h5><p>交换器与队列通过 BindingKey 建立绑定关系。</p>
+<h5 id="Routingkey（路由键）"><a href="#Routingkey（路由键）" class="headerlink" title="Routingkey（路由键）"></a>Routingkey（路由键）</h5><p>生产者将消息发给交换器的时候，一般会指定一个 RountingKey，用来指定这个消息的路由规则。当 RountingKey 与 BindingKey 基于交换器类型的规则相匹配时，消息被路由到对应的队列中。</p>
+<h5 id="Queue（消息队列）"><a href="#Queue（消息队列）" class="headerlink" title="Queue（消息队列）"></a>Queue（消息队列）</h5><p>用于存储路由过来的消息。多个消费者可以订阅同一个消息队列，此时队列会将收到的消息将以轮询 (round-robin) 的方式分发给所有消费者。即每条消息只会发送给一个消费者，不会出现一条消息被多个消费者重复消费的情况。</p>
+<h5 id="Connection（连接）"><a href="#Connection（连接）" class="headerlink" title="Connection（连接）"></a>Connection（连接）</h5><p>用于传递消息的 TCP 连接。</p>
+<h5 id="Channel（信道）"><a href="#Channel（信道）" class="headerlink" title="Channel（信道）"></a>Channel（信道）</h5><p>类似 NIO (非阻塞式 IO ) 的设计，通过 Channel 来复用 TCP 连接，并确保每个 Channel 的隔离性，就像是拥有独立的 Connection 连接。</p>
+<h5 id="Virtual-Host（虚拟主机）"><a href="#Virtual-Host（虚拟主机）" class="headerlink" title="Virtual Host（虚拟主机）"></a>Virtual Host（虚拟主机）</h5><p>通过虚拟主机来实现逻辑分组和资源隔离，一个虚拟主机就是一个小型的 MQ 服务器，拥有独立的队列、交换器和绑定关系，虚拟主机之间是完全独立的。</p>
+<h3 id="AMQP-和-JMS-差异"><a href="#AMQP-和-JMS-差异" class="headerlink" title="AMQP 和 JMS 差异"></a>AMQP 和 JMS 差异</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>AMQP</th>
+<th>JMS</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>定义</td>
+<td>线级协议</td>
+<td>Java API</td>
+</tr>
+<tr>
+<td>跨平台</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>跨语言</td>
+<td>是</td>
+<td>否</td>
+</tr>
+<tr>
+<td>消息收发模型</td>
+<td>4 种消息收发模型：<br/> Direct Exchange<br/> Fanout Exchange<br/> Topic Exchange<br/> Header Exchange</td>
+<td>2 种消息收发模型：<br/> P2P<br/> Pub&#x2F;Sub</td>
+</tr>
+<tr>
+<td>消息类型</td>
+<td>二进制数据类型</td>
+<td>5 种消息类型：<br/> Text message<br/> Object message<br/> Bytes message<br/> Stream message<br/> Map message</td>
+</tr>
+<tr>
+<td>消息流</td>
+<td>Producer 将消息发送到 Exchange，Exchange 将消息路由到 Queue，Consumer 从 Queue 中消费消息。</td>
+<td>Producer 将消息发送到 Queue 或者 Topic，Consumer 从 Queue 或 Topic 中消费消息。</td>
+</tr>
+</tbody></table>
+<!-- # rocketmq
+
+# kafka
+
+# pulsar
+
+# rabbitmq
+
+# activemq -->
+
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><h2 id="MQ怎么解决重复消费的问题"><a href="#MQ怎么解决重复消费的问题" class="headerlink" title="MQ怎么解决重复消费的问题"></a>MQ怎么解决重复消费的问题</h2><p>关键是解决消费的幂等性。每条生产消息都应该配置一个全局唯一D和消费状态，存放在mysqli或edis中。在消费端的业务代码中可以通过中间件或拦截器检查消息表中的状态是否已经被消费过。</p>
+<h2 id="MQ消息积压怎么解决"><a href="#MQ消息积压怎么解决" class="headerlink" title="MQ消息积压怎么解决"></a>MQ消息积压怎么解决</h2><ol>
+<li>优先解决线上问题，临时扩容消费端</li>
+<li>通过日志排查，为何会积压消息</li>
+<li>优化业务逻辑，或根据实际情况选择扩容</li>
+</ol>
+<h2 id="MQ如何选择"><a href="#MQ如何选择" class="headerlink" title="MQ如何选择"></a>MQ如何选择</h2><p>kafka,只做消息持久化，不删消息，消费端需要维护offset,特点是高并发高吞吐，适合日志队列<br>rabbitmg,数据安全可靠，支持事务等，队列模型多样，适合各种业务场景<br>rocketmq,数据可靠，阿里维护，比较成熟</p>
+<h3 id="几种mq对比"><a href="#几种mq对比" class="headerlink" title="几种mq对比"></a>几种mq对比</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>ActiveMQ</th>
+<th>RabbitMQ</th>
+<th>RocketMQ</th>
+<th>Kafka</th>
+<th>Pulsar</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>单机吞吐量</td>
+<td>万级，比RocketMQ、Kafka低一个数量级</td>
+<td>同ActiveMQ</td>
+<td>10w+&#x2F;s，支撑高吞吐，支持强一致，强一致性下吞吐量稍低</td>
+<td>10w+&#x2F;s，高吞吐，一般配合大数据类的系统来进行实时数据计算、日志采集等场景</td>
+<td>14w+&#x2F;s，高吞吐，支持强一致</td>
+</tr>
+<tr>
+<td>topic数量对吞吐量的影响</td>
+<td></td>
+<td></td>
+<td>topic可以达到几百&#x2F;几千的级别，吞吐量会有较小幅度的下降，这是RocketMQ的一大优势，在同等机器下，可以支撑大量的topic</td>
+<td>topic从几十到几百个时候，吞吐量会大幅度下降，在同等机器下，Kafka尽量保证topic数量不要过多，如果要支撑大规模的topic，需要增加更多的机器资源</td>
+<td>Pulsar采用存算分离的架构，数据采用bookeeper存储。上层broker是无状态代理， 两层可以独立扩容，因此topic个数对吞吐量不会产生显著的影响，</td>
+</tr>
+<tr>
+<td>时效性</td>
+<td>ms级</td>
+<td>ms级</td>
+<td>ms级</td>
+<td>延迟在ms级以内</td>
+<td>ms级</td>
+</tr>
+<tr>
+<td>可用性</td>
+<td>高，基于主从架构实现高可用</td>
+<td>同ActiveMQ</td>
+<td>非常高，分布式架构（分为4.5版本后的Dledger架构和普通master-slave架构两种，但普通主从架构不支持故障自动切换，运维不太友好）</td>
+<td>非常高，分布式，一个数据多个副本，少数机器宕机，不会丢失数据，不会导致不可用</td>
+<td>非常高，broker层是无状态代理，动态扩容，数据存储层bookeeper采用segment-oriented存储机制，无写入不可用风险</td>
+</tr>
+<tr>
+<td>消息可靠性</td>
+<td>有较低的概率丢失数据</td>
+<td>基本不丢</td>
+<td>经过参数优化配置，可以做到0丢失</td>
+<td>经过参数优化配置，可以做到 最小概率不丢失</td>
+<td>经过参数配置后，可以做到0丢失</td>
+</tr>
+<tr>
+<td>功能支持</td>
+<td>MQ领域的功能极其完备</td>
+<td>基于erlang开发，并发能力很强，性能极好，延时很低</td>
+<td>MQ功能较为完善，还是分布式的，扩展性好，社区和kafka相比，并不是太活跃</td>
+<td>功能较为简单易用、生态完善、绝大部分场景都可使用，在大数据领域的实时计算以及日志采集被大规模使用</td>
+<td>云原生时代的新一代消息中间件，社区活跃、支持多租户、强一致、跨域部署等诸多特性</td>
+</tr>
+</tbody></table>
+<h2 id="延迟队列怎么实现"><a href="#延迟队列怎么实现" class="headerlink" title="延迟队列怎么实现"></a>延迟队列怎么实现</h2><p><strong>场景</strong></p>
+<ol>
+<li>订单成功后，在30分钟内没有支付，自动取消订单</li>
+<li>如果订单一直处于某一个未完结状态时，及时处理关单，并退还库存</li>
+<li>支付成功后，2秒后查询支付结果</li>
+<li><strong>方案</strong></li>
+<li>rabbitmg TTL+死消息队列：基本原理是对消息设置过期时间，过期的消息会放置到死消息队列，专门处理死消息队列视作延迟队列</li>
+<li>redis有序集合数据安全不太可靠，集合中的数据量大时，影响速度。基本原理是插入时间戳为score的消息，让zSet按时间自动排序。消费时判断时间戳，到时间则处理，没到时间则轮询等待。</li>
+<li>kfka时间轮：原理比较复杂，基本原理使用一个数组模拟时间钟，键作为秒针，把消息任务存放在某个键值内，程序定时取该数组键值执行然后。</li>
+</ol>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://tech.meituan.com/2016/07/01/mq-design.html">消息队列设计精要</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/99791229">消息队列漫谈：什么是消息模型？</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/jaredcoding/article/details/78656636">AMQP 协议详解</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.rabbitmq.com/tutorials/amqp-concepts.html">AMQP 0-9-1 Model Explained</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/147675691">AMQP 协议学习</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904039193280526">RabbitMQ 核心概念详解</a></li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
     <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2021/08/13/Github%20Page%20%E9%83%A8%E7%BD%B2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2280,7 +2690,7 @@ Crash --> [*]</pre>
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2019/11/21/MySQL%E7%AC%94%E8%AE%B0/">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2019/11/21/mysql/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -2298,7 +2708,7 @@ Crash --> [*]</pre>
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/2019/11/21/MySQL%E7%AC%94%E8%AE%B0/" class="post-title-link" itemprop="url">MySQL笔记</a>
+          <a href="/posts/2019/11/21/mysql/" class="post-title-link" itemprop="url">MySQL笔记</a>
         </h2>
 
         <div class="post-meta-container">
@@ -2329,7 +2739,7 @@ Crash --> [*]</pre>
     </span>
 
   
-    <span id="/posts/2019/11/21/MySQL%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="MySQL笔记" title="阅读次数">
+    <span id="/posts/2019/11/21/mysql/" class="post-meta-item leancloud_visitors" data-flag-title="MySQL笔记" title="阅读次数">
       <span class="post-meta-item-icon">
         <i class="far fa-eye"></i>
       </span>
@@ -2345,9 +2755,9 @@ Crash --> [*]</pre>
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>ubuntu 或者 centos, 更新过仓库之后, 直接用 apt 或者 yum 进行安装即可</p>
+          <h1 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>ubuntu 或者 centos, 更新过仓库之后, 直接用 apt 或者 yum 进行安装即可</p>
 <p>安装<a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/linux-installation.html">官方文档</a></p>
-<h3 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h3><ol>
+<h2 id="更新"><a href="#更新" class="headerlink" title="更新"></a>更新</h2><ol>
 <li><p>数据库备份, 备份所有数据库配置、系统数据库、自建数据库</p>
 </li>
 <li><p>确保更新路径是正确的</p>
@@ -2365,7 +2775,7 @@ Crash --> [*]</pre>
 <li><p>其他详细的信息参见 <a target="_blank" rel="noopener" href="https://dev.mysql.com/doc/refman/5.7/en/upgrading.html">MySQL 官网</a></p>
 </li>
 </ol>
-<h3 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h3><p>问题: 安装完之后怎么更改 root 用户密码都可以直接登录</p>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><p>问题: 安装完之后怎么更改 root 用户密码都可以直接登录</p>
 <p>版本: 5.7.26</p>
 <p>原因:</p>
 <ol>
@@ -2379,66 +2789,90 @@ Crash --> [*]</pre>
 <p>修改密码命令:</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> DATABASES;</span><br><span class="line">USE mysql;</span><br><span class="line"><span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span> IDENTIFIED <span class="keyword">WITH</span> mysql_native_password <span class="keyword">BY</span> <span class="string">&#x27;test&#x27;</span>;</span><br><span class="line">FLUSH PRIVILEGES;</span><br><span class="line">quit;</span><br><span class="line"></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 修改密码还可以用下面两条, 推荐第一个, 第二个会有 warning, 但是认证插件是 auth_socket 的时候必须用上面那个指定认证插件的修改语句</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> <span class="keyword">ALTER</span> <span class="keyword">USER</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span> IDENTIFIED <span class="keyword">BY</span> <span class="string">&#x27;密码&#x27;</span>;</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> <span class="keyword">UPDATE</span> <span class="keyword">USER</span> <span class="keyword">SET</span> authentication_string<span class="operator">=</span>PASSWORD(<span class="string">&#x27;密码&#x27;</span>) <span class="keyword">WHERE</span> <span class="keyword">USER</span><span class="operator">=</span><span class="string">&#x27;root&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 还可以修改 <span class="operator">/</span>etc<span class="operator">/</span>my.cnf 文件, 添加 <span class="keyword">skip</span><span class="operator">-</span><span class="keyword">grant</span><span class="operator">-</span>tables 或 <span class="keyword">skip</span><span class="operator">-</span><span class="keyword">grant</span><span class="operator">-</span>tables<span class="operator">=</span><span class="number">1</span>,</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 或者直接以 mysqld  <span class="comment">--skip-grant-tables &amp; 方式启动</span></span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 当时没有以这样忽略密码验证的方式启动, 仍然能修改成功</span><br><span class="line"><span class="operator">/</span><span class="operator">/</span> 该参数一般的使用情况是当 root 用户密码丢失时以此参数作为启动项</span><br></pre></td></tr></table></figure>
 
-<h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h3 id="用户相关命令"><a href="#用户相关命令" class="headerlink" title="用户相关命令"></a>用户相关命令</h3><h4 id="查看用户"><a href="#查看用户" class="headerlink" title="查看用户"></a>查看用户</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> concat(<span class="string">&#x27;User: &#x27;&#x27;&#x27;</span>,<span class="keyword">user</span>,<span class="string">&#x27;&#x27;&#x27;@&#x27;&#x27;&#x27;</span>,host,<span class="string">&#x27;&#x27;&#x27;;&#x27;</span>) <span class="keyword">as</span> query <span class="keyword">from</span> mysql.user;</span><br></pre></td></tr></table></figure>
+<h1 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h1><h2 id="用户相关命令"><a href="#用户相关命令" class="headerlink" title="用户相关命令"></a>用户相关命令</h2><h3 id="查看用户"><a href="#查看用户" class="headerlink" title="查看用户"></a>查看用户</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">distinct</span> concat(<span class="string">&#x27;User: &#x27;&#x27;&#x27;</span>,<span class="keyword">user</span>,<span class="string">&#x27;&#x27;&#x27;@&#x27;&#x27;&#x27;</span>,host,<span class="string">&#x27;&#x27;&#x27;;&#x27;</span>) <span class="keyword">as</span> query <span class="keyword">from</span> mysql.user;</span><br></pre></td></tr></table></figure>
 
-<h4 id="创建用户"><a href="#创建用户" class="headerlink" title="创建用户"></a>创建用户</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> <span class="keyword">on</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">to</span> <span class="string">&#x27;test&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;test&#x27;</span>;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> privileges <span class="keyword">on</span> `test`.<span class="operator">*</span> <span class="keyword">to</span> <span class="string">&#x27;test&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;test&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="创建用户"><a href="#创建用户" class="headerlink" title="创建用户"></a>创建用户</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> <span class="keyword">on</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">to</span> <span class="string">&#x27;test&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;test&#x27;</span>;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> privileges <span class="keyword">on</span> `test`.<span class="operator">*</span> <span class="keyword">to</span> <span class="string">&#x27;test&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;test&#x27;</span>;</span><br></pre></td></tr></table></figure>
 
-<h4 id="删除用户"><a href="#删除用户" class="headerlink" title="删除用户"></a>删除用户</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> <span class="string">&#x27;test&#x27;</span>;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> <span class="string">&#x27;test&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="删除用户"><a href="#删除用户" class="headerlink" title="删除用户"></a>删除用户</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> <span class="string">&#x27;test&#x27;</span>;</span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">user</span> <span class="string">&#x27;test&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br></pre></td></tr></table></figure>
 
-<h4 id="显示权限"><a href="#显示权限" class="headerlink" title="显示权限"></a>显示权限</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> grants <span class="keyword">for</span> <span class="string">&#x27;user&#x27;</span>;</span><br><span class="line"><span class="keyword">show</span> grants <span class="keyword">for</span> <span class="string">&#x27;user&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="显示权限"><a href="#显示权限" class="headerlink" title="显示权限"></a>显示权限</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">show</span> grants <span class="keyword">for</span> <span class="string">&#x27;user&#x27;</span>;</span><br><span class="line"><span class="keyword">show</span> grants <span class="keyword">for</span> <span class="string">&#x27;user&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br></pre></td></tr></table></figure>
 
-<h4 id="授予权限"><a href="#授予权限" class="headerlink" title="授予权限"></a>授予权限</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> privileges <span class="keyword">on</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">to</span> <span class="string">&#x27;user&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> privileges <span class="keyword">on</span> `test`.<span class="operator">*</span> <span class="keyword">to</span> <span class="string">&#x27;user&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="授予权限"><a href="#授予权限" class="headerlink" title="授予权限"></a>授予权限</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> privileges <span class="keyword">on</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">to</span> <span class="string">&#x27;user&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br><span class="line"><span class="keyword">grant</span> <span class="keyword">all</span> privileges <span class="keyword">on</span> `test`.<span class="operator">*</span> <span class="keyword">to</span> <span class="string">&#x27;user&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span>;</span><br></pre></td></tr></table></figure>
 
-<h4 id="回收权限"><a href="#回收权限" class="headerlink" title="回收权限"></a>回收权限</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">revoke</span> <span class="keyword">create</span> <span class="keyword">on</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">from</span> <span class="string">&#x27;user&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">drop</span> <span class="keyword">on</span> <span class="string">&#x27;test&#x27;</span>.<span class="operator">*</span> <span class="keyword">to</span> <span class="string">&#x27;user&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span>;</span><br></pre></td></tr></table></figure>
+<h3 id="回收权限"><a href="#回收权限" class="headerlink" title="回收权限"></a>回收权限</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">revoke</span> <span class="keyword">create</span> <span class="keyword">on</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">from</span> <span class="string">&#x27;user&#x27;</span>@<span class="string">&#x27;%&#x27;</span>;</span><br><span class="line"><span class="keyword">revoke</span> <span class="keyword">drop</span> <span class="keyword">on</span> <span class="string">&#x27;test&#x27;</span>.<span class="operator">*</span> <span class="keyword">to</span> <span class="string">&#x27;user&#x27;</span>@<span class="string">&#x27;localhost&#x27;</span>;</span><br></pre></td></tr></table></figure>
 
-<h4 id="刷新权限"><a href="#刷新权限" class="headerlink" title="刷新权限"></a>刷新权限</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+<h3 id="刷新权限"><a href="#刷新权限" class="headerlink" title="刷新权限"></a>刷新权限</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
 
-<h3 id="SHOW-DATABASES"><a href="#SHOW-DATABASES" class="headerlink" title="SHOW DATABASES"></a>SHOW DATABASES</h3><p>查看所有的数据库, 等同于 SELECT schema_name FROM information_schema.schemata\G 用 \G 替换 “;” 以纵向报表的形式输出结果, 有利于阅读</p>
-<h3 id="STATUS"><a href="#STATUS" class="headerlink" title="STATUS"></a>STATUS</h3><p>查看 mysql 数据库的运行状态</p>
-<h3 id="USE"><a href="#USE" class="headerlink" title="USE"></a>USE</h3><p>命令选择数据库 例如 USE information_schema, 当使用此命令后<br>SELECT schema_name FROM information_schema.schemata\G, 可以更改为<br>SELECT schema_name FROM schemata\G</p>
-<h3 id="SHOW-TABLES"><a href="#SHOW-TABLES" class="headerlink" title="SHOW TABLES"></a>SHOW TABLES</h3><p>查看数据库中的表<br>同样也可以在 information_schema 中查看, SHOW 命令是方便使用的简短模式<br>SELECT table_name FROM tables WHERE table_schema&#x3D;’jblog’;</p>
-<h3 id="DESC-table-name"><a href="#DESC-table-name" class="headerlink" title="DESC table_name"></a>DESC table_name</h3><p>查看表结构</p>
-<h3 id="查看表状态"><a href="#查看表状态" class="headerlink" title="查看表状态"></a>查看表状态</h3><p>SHOW 条件 或</p>
+<h2 id="SHOW-DATABASES"><a href="#SHOW-DATABASES" class="headerlink" title="SHOW DATABASES"></a>SHOW DATABASES</h2><p>查看所有的数据库, 等同于 SELECT schema_name FROM information_schema.schemata\G 用 \G 替换 “;” 以纵向报表的形式输出结果, 有利于阅读</p>
+<h2 id="STATUS"><a href="#STATUS" class="headerlink" title="STATUS"></a>STATUS</h2><p>查看 mysql 数据库的运行状态</p>
+<h2 id="USE"><a href="#USE" class="headerlink" title="USE"></a>USE</h2><p>命令选择数据库 例如 USE information_schema, 当使用此命令后<br>SELECT schema_name FROM information_schema.schemata\G, 可以更改为<br>SELECT schema_name FROM schemata\G</p>
+<h2 id="SHOW-TABLES"><a href="#SHOW-TABLES" class="headerlink" title="SHOW TABLES"></a>SHOW TABLES</h2><p>查看数据库中的表<br>同样也可以在 information_schema 中查看, SHOW 命令是方便使用的简短模式<br>SELECT table_name FROM tables WHERE table_schema&#x3D;’jblog’;</p>
+<h2 id="DESC-table-name"><a href="#DESC-table-name" class="headerlink" title="DESC table_name"></a>DESC table_name</h2><p>查看表结构</p>
+<h2 id="查看表状态"><a href="#查看表状态" class="headerlink" title="查看表状态"></a>查看表状态</h2><p>SHOW 条件 或</p>
 <p>SHOW STATUS like ‘%条件%’ 或</p>
 <p>SHOW VARIABLES LIKE “%条件%” 等</p>
 <p>可以查看 engine 数据库引擎, version, row, index 等信息</p>
 <p>查询数据库连接:</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SHOW</span> <span class="keyword">FULL</span> PROCESSLIST;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;%Max_used_connections%&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;%Threads_connected%&#x27;</span>; #当前连接数</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;%table_lock%&#x27;</span>; #表锁定</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;innodb_row_lock%&#x27;</span>; #行锁定</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;%qcache%&#x27;</span>; #查询缓存情况</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;Qcache%&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> STATUS <span class="keyword">LIKE</span> <span class="string">&#x27;Aborted_clients&#x27;</span>; #由于客户没有正确关闭连接已经死掉, 已经放弃的连接数量</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> &quot;%query_cache%&quot;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> &quot;%binlog%&quot;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;%max_connections%&#x27;</span>; <span class="operator">/</span><span class="operator">/</span>查看最大连接数量</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;%timeout%&#x27;</span>; #查看超时时间</span><br><span class="line"></span><br><span class="line"><span class="keyword">SHOW</span> VARIABLES <span class="keyword">LIKE</span> <span class="string">&#x27;log_%&#x27;</span>; #查看日志是否启动</span><br></pre></td></tr></table></figure>
 
-<h3 id="小技巧"><a href="#小技巧" class="headerlink" title="小技巧"></a>小技巧</h3><p>当多行命令输入, 发现错误后, 用\c 结束</p>
-<h2 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h2><h3 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h3><p>事务具有 ACID 特性, A: 原子性（atomicity, 或称不可分割性）、C: 一致性（consistency）、I: 隔离性（isolation, 又称独立性）、D: 持久性（durability）</p>
-<h4 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h4><p>一个事务必须被视为一个不可分割的最小工作单元</p>
-<h4 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h4><p>数据库总是从一个一致性的状态转换到另一个一致性的状态</p>
-<h4 id="隔离性"><a href="#隔离性" class="headerlink" title="隔离性"></a>隔离性</h4><p>通常来说, 一个事务所做的修改在最终提交之前, 对其他事务是不可见的</p>
-<h4 id="持久性"><a href="#持久性" class="headerlink" title="持久性"></a>持久性</h4><p>一旦事务提交, 其所做的修改就会永久保存到数据库中</p>
-<h3 id="数据读取问题"><a href="#数据读取问题" class="headerlink" title="数据读取问题"></a>数据读取问题</h3><h4 id="脏读"><a href="#脏读" class="headerlink" title="脏读"></a>脏读</h4><p>读取未提交数据</p>
-<h4 id="不可重复读"><a href="#不可重复读" class="headerlink" title="不可重复读"></a>不可重复读</h4><p>前后多次读取, 数据内容不一致</p>
-<h4 id="幻读"><a href="#幻读" class="headerlink" title="幻读"></a>幻读</h4><p>前后多次读取, 数据总量不一致</p>
+<h2 id="小技巧"><a href="#小技巧" class="headerlink" title="小技巧"></a>小技巧</h2><p>当多行命令输入, 发现错误后, 用\c 结束</p>
+<h1 id="事务"><a href="#事务" class="headerlink" title="事务"></a>事务</h1><h2 id="特性"><a href="#特性" class="headerlink" title="特性"></a>特性</h2><p>事务具有 ACID 特性, A: 原子性（atomicity, 或称不可分割性）、C: 一致性（consistency）、I: 隔离性（isolation, 又称独立性）、D: 持久性（durability）</p>
+<h3 id="原子性"><a href="#原子性" class="headerlink" title="原子性"></a>原子性</h3><p>一个事务必须被视为一个不可分割的最小工作单元</p>
+<h3 id="一致性"><a href="#一致性" class="headerlink" title="一致性"></a>一致性</h3><p>数据库总是从一个一致性的状态转换到另一个一致性的状态</p>
+<h3 id="隔离性"><a href="#隔离性" class="headerlink" title="隔离性"></a>隔离性</h3><p>通常来说, 一个事务所做的修改在最终提交之前, 对其他事务是不可见的</p>
+<h3 id="持久性"><a href="#持久性" class="headerlink" title="持久性"></a>持久性</h3><p>一旦事务提交, 其所做的修改就会永久保存到数据库中</p>
+<h2 id="数据读取问题"><a href="#数据读取问题" class="headerlink" title="数据读取问题"></a>数据读取问题</h2><h3 id="脏读"><a href="#脏读" class="headerlink" title="脏读"></a>脏读</h3><p>读取未提交数据</p>
+<h3 id="不可重复读"><a href="#不可重复读" class="headerlink" title="不可重复读"></a>不可重复读</h3><p>前后多次读取, 数据内容不一致</p>
+<h3 id="幻读"><a href="#幻读" class="headerlink" title="幻读"></a>幻读</h3><p>前后多次读取, 数据总量不一致</p>
 <p>当某个事务在读取某个范围内的记录时, 另外一个事务又在该范围内插入新的记录, 当之前的事务再次读取该范围的记录时, 会产生幻行</p>
-<h4 id="不可重复读和幻读的区别"><a href="#不可重复读和幻读的区别" class="headerlink" title="不可重复读和幻读的区别"></a>不可重复读和幻读的区别</h4><ol>
+<h3 id="不可重复读和幻读的区别"><a href="#不可重复读和幻读的区别" class="headerlink" title="不可重复读和幻读的区别"></a>不可重复读和幻读的区别</h3><ol>
 <li>不可重复读是读取了其他事务更改的数据, 针对 update 操作</li>
 <li>幻读是读取了其他事务新增的数据, 针对 insert 和 delete 操作</li>
 </ol>
-<h3 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h3><p>数据库事务的隔离级别有 4 种, 由低到高分别为 Read uncommitted 、Read committed 、Repeatable read 、Serializable</p>
-<h4 id="Read-uncommitted"><a href="#Read-uncommitted" class="headerlink" title="Read uncommitted"></a>Read uncommitted</h4><p>读未提交, 顾名思义, 就是一个事务可以读取另一个未提交事务的数据</p>
+<h2 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h2><p>数据库事务的隔离级别有 4 种, 由低到高分别为 Read uncommitted 、Read committed 、Repeatable read 、Serializable</p>
+<h3 id="Read-uncommitted"><a href="#Read-uncommitted" class="headerlink" title="Read uncommitted"></a>Read uncommitted</h3><p>读未提交, 顾名思义, 就是一个事务可以读取另一个未提交事务的数据</p>
 <p>从性能上来说, 该级别不会比其他的级别好太多, 但是缺乏其他级别的很多好处, 所以除非真的有非常必要的理由, 在实际应用中一般很少使用</p>
-<h4 id="Read-committed"><a href="#Read-committed" class="headerlink" title="Read committed"></a>Read committed</h4><p>读提交, 顾名思义, 就是一个事务要等另一个事务提交后才能读取数据</p>
+<h3 id="Read-committed"><a href="#Read-committed" class="headerlink" title="Read committed"></a>Read committed</h3><p>读提交, 顾名思义, 就是一个事务要等另一个事务提交后才能读取数据</p>
 <p>大多数数据库系统的默认隔离级别都是 Read committed（但 MySQL 不是）</p>
-<h4 id="Repeatable-read"><a href="#Repeatable-read" class="headerlink" title="Repeatable read"></a>Repeatable read</h4><p>重复读, 就是在开始读取数据（事务开启）时, 不再允许修改操作, 保证了在同一个事务中多次读取同样记录的结果是一致的</p>
+<h3 id="Repeatable-read"><a href="#Repeatable-read" class="headerlink" title="Repeatable read"></a>Repeatable read</h3><p>重复读, 就是在开始读取数据（事务开启）时, 不再允许修改操作, 保证了在同一个事务中多次读取同样记录的结果是一致的</p>
 <p>Repeatable read 是 MySQL 的默认事务隔离级别</p>
 <p>InnoDB 通过多版本并发控制（MVCC, Multiversion Concurrency Control）<strong>基本</strong>解决了幻读的问题, MVCC 以乐观锁为理论基础, MVCC 的实现没有固定的规范, 每个数据库都会有不同的实现方式</p>
-<h4 id="Serializable"><a href="#Serializable" class="headerlink" title="Serializable"></a>Serializable</h4><p>Serializable 是最高的事务隔离级别, 在该级别下, 事务串行化顺序执行, 可以避免脏读、不可重复读与幻读</p>
-<h2 id="数据库构架设计中-Shared-Everything-和-share-nothing-区别"><a href="#数据库构架设计中-Shared-Everything-和-share-nothing-区别" class="headerlink" title="数据库构架设计中 Shared Everything 和 share-nothing 区别"></a>数据库构架设计中 Shared Everything 和 share-nothing 区别</h2><h3 id="Shared-Everthting"><a href="#Shared-Everthting" class="headerlink" title="Shared Everthting"></a>Shared Everthting</h3><p>一般是针对单个主机, 完全透明共享 CPU&#x2F;MEMORY&#x2F;IO, 并行处理能力是最差的, 典型的代表 SQLServer</p>
-<h3 id="Shared-Disk"><a href="#Shared-Disk" class="headerlink" title="Shared Disk"></a>Shared Disk</h3><p>各个处理单元使用自己的私有 CPU 和 Memory, 共享磁盘系统</p>
+<h3 id="Serializable"><a href="#Serializable" class="headerlink" title="Serializable"></a>Serializable</h3><p>Serializable 是最高的事务隔离级别, 在该级别下, 事务串行化顺序执行, 可以避免脏读、不可重复读与幻读</p>
+<h1 id="数据库构架设计中-Shared-Everything-和-share-nothing-区别"><a href="#数据库构架设计中-Shared-Everything-和-share-nothing-区别" class="headerlink" title="数据库构架设计中 Shared Everything 和 share-nothing 区别"></a>数据库构架设计中 Shared Everything 和 share-nothing 区别</h1><h2 id="Shared-Everthting"><a href="#Shared-Everthting" class="headerlink" title="Shared Everthting"></a>Shared Everthting</h2><p>一般是针对单个主机, 完全透明共享 CPU&#x2F;MEMORY&#x2F;IO, 并行处理能力是最差的, 典型的代表 SQLServer</p>
+<h2 id="Shared-Disk"><a href="#Shared-Disk" class="headerlink" title="Shared Disk"></a>Shared Disk</h2><p>各个处理单元使用自己的私有 CPU 和 Memory, 共享磁盘系统</p>
 <p>典型的代表 Oracle Rac, 它是数据共享, 可通过增加节点来提高并行处理的能力, 扩展能力较好</p>
 <p>其类似于 SMP（对称多处理）模式, 但是当存储器接口达到饱和的时候, 增加节点并不能获得更高的性能</p>
-<h3 id="Shared-Nothing"><a href="#Shared-Nothing" class="headerlink" title="Shared Nothing"></a>Shared Nothing</h3><p>各个处理单元都有自己私有的 CPU&#x2F;内存&#x2F;硬盘等, 不存在共享资源, 类似于 MPP（大规模并行处理）模式, 各处理单元之间通过协议通信, 并行处理和扩展能力更好</p>
+<h2 id="Shared-Nothing"><a href="#Shared-Nothing" class="headerlink" title="Shared Nothing"></a>Shared Nothing</h2><p>各个处理单元都有自己私有的 CPU&#x2F;内存&#x2F;硬盘等, 不存在共享资源, 类似于 MPP（大规模并行处理）模式, 各处理单元之间通过协议通信, 并行处理和扩展能力更好</p>
 <p>典型代表 DB2 DPF 和 hadoop, 各节点相互独立, 各自处理自己的数据, 处理后的结果可能向上层汇总或在节点间流转</p>
 <p>我们常说的 Sharding 其实就是 Share Nothing 架构, 它是把某个表从物理存储上被水平分割, 并分配给多台服务器（或多个实例）, 每台服务器可以独立工作, 具备共同的 schema, 比如 MySQL Proxy 和 Google 的各种架构, 只需增加服务器数就可以增加处理能力和容量</p>
-<h2 id="mysql日志：redo-log、binlog、undo-log-区别与作用"><a href="#mysql日志：redo-log、binlog、undo-log-区别与作用" class="headerlink" title="mysql日志：redo log、binlog、undo log 区别与作用"></a>mysql日志：redo log、binlog、undo log 区别与作用</h2><p><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1888595">https://cloud.tencent.com/developer/article/1888595</a></p>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
-<li>mysql 查看数据库、表的基本命令 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/onsuccessway/p/3552524.html">https://www.cnblogs.com/onsuccessway/p/3552524.html</a></li>
-<li>使用“plugin: auth_socket”更改 MySQL 5.7 中的用户密码 <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41918841/article/details/82997651">https://blog.csdn.net/weixin_41918841/article/details/82997651</a></li>
+<h1 id="mysql-存储结构"><a href="#mysql-存储结构" class="headerlink" title="mysql 存储结构"></a>mysql 存储结构</h1><p><img src="/imgs/mysql/mysql-%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84" alt="mysql-存储结构"></p>
+<h2 id="mysql-buffer-pool"><a href="#mysql-buffer-pool" class="headerlink" title="mysql buffer pool"></a>mysql buffer pool</h2><p>Buffer Pool其实就是一块内存区域，用来缓存表数据与索引数据，把磁盘上的数据加载到缓冲池，避免每次访问都进行磁盘IO，起到加速访问的作用。</p>
+<h1 id="mysql-日志"><a href="#mysql-日志" class="headerlink" title="mysql 日志"></a>mysql 日志</h1><p>mysql常用日志有以下几种：</p>
+<ol>
+<li>错误日志</li>
+<li>查询日志</li>
+<li>慢查询日志</li>
+<li>事务日志【redo log（重做日志）、undo log（回滚日志）】</li>
+<li>二进制日志【bin log】</li>
+</ol>
+<h2 id="redo-log"><a href="#redo-log" class="headerlink" title="redo log"></a>redo log</h2><p><strong>概念</strong>: 重做日志用来实现事务持久性，主要有两部分文件组成，重做日志缓冲（redo log buffer）以及重做日志文件（redo log），前者是在内存中，后者是在磁盘中。</p>
+<p><strong>作用</strong>: 确保事务的持久性。防止在发生故障的时间点，尚有脏页未写入磁盘，在重启 mysql 服务的时候，根据 redo log 进行重做，从而达到事务的持久性这一特性。</p>
+<p><strong>内容</strong>: 物理格式的日志，记录的是物理数据页面的修改的信息，其 redo log 是顺序写入 redo log file 的物理文件中去的。</p>
+<h2 id="binlog"><a href="#binlog" class="headerlink" title="binlog"></a>binlog</h2><p><strong>概念</strong>: 归档日志。记录了所有的DDL和DML语句（除查询语句外），以事件形式记录，是事务安全型。</p>
+<p><strong>作用</strong>: 用于复制，在主从复制中，从库利用主库上的 binlog 进行重播，实现主从同步。用于数据库的基于时间点的还原。</p>
+<p><strong>内容</strong>: 逻辑格式的日志，可以简单认为就是执行过的事务中的 sql 语句。但又不完全是 sql 语句这么简单，而是包括了执行的 sql 语句（增删改）反向的信息，也就意味着 delete 对应着反向的 insert；update 对应着 update 执行前后的版本的信息；insert 对应着 delete 和 insert 本身的信息。</p>
+<h3 id="日志模式"><a href="#日志模式" class="headerlink" title="日志模式"></a>日志模式</h3><h4 id="Statement（基于-SQL-语句的复制）"><a href="#Statement（基于-SQL-语句的复制）" class="headerlink" title="Statement（基于 SQL 语句的复制）"></a>Statement（基于 SQL 语句的复制）</h4><p>优点：不需要记录每一行的变化，减少了binlog日志量，节约了IO，提高性能。</p>
+<p>由于记录的只是执行语句，为了这些语句能在slave上正确运行，因此还必须记录每条语句在执行的时候的一些相关信息，以保证所有语句能在slave得到和在master端执行时候相同 的结果。</p>
+<h4 id="Row（基于行的复制）"><a href="#Row（基于行的复制）" class="headerlink" title="Row（基于行的复制）"></a>Row（基于行的复制）</h4><p>优点：可以不记录执行的sql语句的上下文相关的信息，仅需要记录那一条记录被修改成什么了。所以rowlevel的日志内容会非常清楚的记录下每一行数据修改的细节。而且不会出现某些特定情况下的存储过程，以及trigger的调用和触发无法被正确复制的问题。</p>
+<p>缺点：所有的执行的语句当记录到日志中的时候，都将以每行记录的修改来记录，这样可能会产生大量的日志内容。</p>
+<h4 id="Mixed（混合模式）"><a href="#Mixed（混合模式）" class="headerlink" title="Mixed（混合模式）"></a>Mixed（混合模式）</h4><p>一般的语句修改使用statment格式保存binlog，如一些函数，statement无法完成主从复制的操作，则采用row格式保存binlog,MySQL会根据执行的每一条具体的sql语句来区分对待记录的日志形式，也就是在Statement和Row之间选择一种。</p>
+<h2 id="undo-log"><a href="#undo-log" class="headerlink" title="undo log"></a>undo log</h2><p><strong>概念</strong>: 回滚日志，用来记录数据被修改前的信息。正好跟前面的重做日志进行相反操作。undo log主要记录的是数据的逻辑变化，为了在发生错误时回滚之前的操作，需要将之前的操作都记录下来，然后在发生错误时才可以回滚。</p>
+<p><strong>作用</strong>: 保存了事务发生之前的数据的一个版本，可以用于回滚，同时可以提供多版本并发控制下的读（MVCC），也即非锁定读；</p>
+<p><strong>内容</strong>: 逻辑格式的日志，在执行 undo 的时候，仅仅是将数据从逻辑上恢复至事务之前的状态，而不是从物理页面上操作实现的，这一点是不同于 redo log 的。</p>
+<h2 id="redo-log、binlog、undo-log-区别与作用"><a href="#redo-log、binlog、undo-log-区别与作用" class="headerlink" title="redo log、binlog、undo log 区别与作用"></a>redo log、binlog、undo log 区别与作用</h2><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ol>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/onsuccessway/p/3552524.html">mysql 查看数据库、表的基本命令</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41918841/article/details/82997651">使用“plugin: auth_socket”更改 MySQL 5.7 中的用户密码</a></li>
+<li><a target="_blank" rel="noopener" href="https://cloud.tencent.com/developer/article/1888595">mysql日志：redo log、binlog、undo log 区别与作用</a></li>
 </ol>
 
       
@@ -2524,42 +2958,42 @@ Crash --> [*]</pre>
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>本文详细介绍 xray 部署步骤, 用到的服务器是 Ubuntu 20.04 LTS</p>
-<h2 id="安装-nginx"><a href="#安装-nginx" class="headerlink" title="安装 nginx"></a>安装 nginx</h2><h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>执行以下命令, 通过下面 ppa 方式安装 nginx 能安装到最新稳定版本的 nginx:</p>
+          <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>本文详细介绍 xray 部署步骤, 用到的服务器是 Ubuntu 20.04 LTS</p>
+<h1 id="安装-nginx"><a href="#安装-nginx" class="headerlink" title="安装 nginx"></a>安装 nginx</h1><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>执行以下命令, 通过下面 ppa 方式安装 nginx 能安装到最新稳定版本的 nginx:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">apt install software-properties-common</span><br><span class="line">add-apt-repository ppa:nginx/stable</span><br><span class="line">apt update</span><br><span class="line">apt list nginx</span><br><span class="line">apt install nginx</span><br></pre></td></tr></table></figure>
 
-<h3 id="配置-nginx"><a href="#配置-nginx" class="headerlink" title="配置 nginx"></a>配置 nginx</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> /etc/nginx/sites-available/default</span><br><span class="line"><span class="built_in">rm</span> /etc/nginx/sites-enabled/default</span><br><span class="line"><span class="built_in">touch</span> /etc/nginx/sites-available/xray</span><br><span class="line"><span class="built_in">ln</span> -s /etc/nginx/sites-available/xray /etc/nginx/sites-enabled/xray</span><br><span class="line"><span class="comment"># 配置 nginx</span></span><br><span class="line">vim /etc/nginx/sites-enabled/xray</span><br><span class="line"><span class="comment"># 启动 nginx</span></span><br><span class="line">service nginx restart</span><br></pre></td></tr></table></figure>
+<h2 id="配置-nginx"><a href="#配置-nginx" class="headerlink" title="配置 nginx"></a>配置 nginx</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">rm</span> /etc/nginx/sites-available/default</span><br><span class="line"><span class="built_in">rm</span> /etc/nginx/sites-enabled/default</span><br><span class="line"><span class="built_in">touch</span> /etc/nginx/sites-available/xray</span><br><span class="line"><span class="built_in">ln</span> -s /etc/nginx/sites-available/xray /etc/nginx/sites-enabled/xray</span><br><span class="line"><span class="comment"># 配置 nginx</span></span><br><span class="line">vim /etc/nginx/sites-enabled/xray</span><br><span class="line"><span class="comment"># 启动 nginx</span></span><br><span class="line">service nginx restart</span><br></pre></td></tr></table></figure>
 
 <p><strong>注意</strong></p>
 <p>配置购买的服务器防火墙, 让端口能够被外网访问</p>
 <p><strong>nginx 配置</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># You should look at the following URL&#x27;s in order to grasp a solid understanding</span></span><br><span class="line"><span class="comment"># of Nginx configuration files in order to fully unleash the power of Nginx.</span></span><br><span class="line"><span class="comment"># https://www.nginx.com/resources/wiki/start/</span></span><br><span class="line"><span class="comment"># https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/</span></span><br><span class="line"><span class="comment"># https://wiki.debian.org/Nginx/DirectoryStructure</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># In most cases, administrators will remove this file from sites-enabled/ and</span></span><br><span class="line"><span class="comment"># leave it as reference inside of sites-available where it will continue to be</span></span><br><span class="line"><span class="comment"># updated by the nginx packaging team.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># This file will automatically load configuration files provided by other</span></span><br><span class="line"><span class="comment"># applications, such as Drupal or Wordpress. These applications will be made</span></span><br><span class="line"><span class="comment"># available underneath a path with that package name, such as /drupal8.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Please see /usr/share/doc/nginx-doc/examples/ for more detailed examples.</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Default server configuration</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line">server &#123;</span><br><span class="line">    listen 80 default_server;</span><br><span class="line">    listen [::]:80 default_server;</span><br><span class="line"></span><br><span class="line">    server_name 你的域名;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 注意 最后不能加/</span></span><br><span class="line">    root /home/www-data/你的域名;</span><br><span class="line">    index index.html index.htm index.nginx-debian.html;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="申请域名证书"><a href="#申请域名证书" class="headerlink" title="申请域名证书"></a>申请域名证书</h2><p>通过 acme 实现证书的自动颁发、部署</p>
-<h3 id="安装-acme"><a href="#安装-acme" class="headerlink" title="安装 acme"></a>安装 acme</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /root/</span><br><span class="line">wget -O -  https://get.acme.sh | sh</span><br><span class="line"><span class="comment"># 让 acme.sh 命令生效</span></span><br><span class="line">. .bashrc</span><br></pre></td></tr></table></figure>
+<h1 id="申请域名证书"><a href="#申请域名证书" class="headerlink" title="申请域名证书"></a>申请域名证书</h1><p>通过 acme 实现证书的自动颁发、部署</p>
+<h2 id="安装-acme"><a href="#安装-acme" class="headerlink" title="安装 acme"></a>安装 acme</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /root/</span><br><span class="line">wget -O -  https://get.acme.sh | sh</span><br><span class="line"><span class="comment"># 让 acme.sh 命令生效</span></span><br><span class="line">. .bashrc</span><br></pre></td></tr></table></figure>
 
-<h3 id="设置-acme-自动更新"><a href="#设置-acme-自动更新" class="headerlink" title="设置 acme 自动更新"></a>设置 acme 自动更新</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 开启自动更新</span></span><br><span class="line">acme.sh --upgrade --auto-upgrade</span><br><span class="line"><span class="comment"># 设置获取证书的默认服务器为letsencrypt</span></span><br><span class="line">acme.sh --set-default-ca --server letsencrypt</span><br></pre></td></tr></table></figure>
+<h2 id="设置-acme-自动更新"><a href="#设置-acme-自动更新" class="headerlink" title="设置 acme 自动更新"></a>设置 acme 自动更新</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 开启自动更新</span></span><br><span class="line">acme.sh --upgrade --auto-upgrade</span><br><span class="line"><span class="comment"># 设置获取证书的默认服务器为letsencrypt</span></span><br><span class="line">acme.sh --set-default-ca --server letsencrypt</span><br></pre></td></tr></table></figure>
 
-<h3 id="申请证书"><a href="#申请证书" class="headerlink" title="申请证书"></a>申请证书</h3><p><strong>注意</strong></p>
+<h2 id="申请证书"><a href="#申请证书" class="headerlink" title="申请证书"></a>申请证书</h2><p><strong>注意</strong></p>
 <p>一定要先运行<strong>测试</strong>签发命令, 并且成功之后再运行正式签发命令, 因为正式签发服务器有次数限制</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">mkdir</span> /home/www-data</span><br><span class="line"><span class="built_in">mkdir</span> /home/www-data/xray_cert</span><br><span class="line"><span class="built_in">mkdir</span> /home/www-data/xray_log</span><br><span class="line"><span class="built_in">chown</span> -R www-data:www-data /home/www-data/</span><br><span class="line"><span class="comment"># 运行测试签发命令</span></span><br><span class="line"><span class="comment"># 下面这段过程将会往 /home/www-data/你的域名 创建一个 .well-known 的文件夹,</span></span><br><span class="line"><span class="comment"># 同时 Let’s Encrypt 将会通过你要注册的域名去访问那个文件来确定权限, 它可能会去访问</span></span><br><span class="line"><span class="comment"># http://你的域名/.well-known/ 这个路径。所以需要确保/home/www-data/你的域名</span></span><br><span class="line"><span class="comment"># 在 nginx 上配置成 root 目录, 里面任意文件可以直接域名访问的(由于通过 nginx 反向代理</span></span><br><span class="line"><span class="comment"># 后访问隐藏文件夹(.well-known)会得到 HTTP 4.3 Forbidden 的结果, 故前面选择先配置 nginx)</span></span><br><span class="line">acme.sh --issue --<span class="built_in">test</span> -d 你的域名 -w /home/www-data/你的域名 --keylength ec-256</span><br><span class="line"><span class="comment"># 运行正式签发命令</span></span><br><span class="line">acme.sh --issue -d 你的域名 -w /home/www-data/你的域名 --keylength ec-256 --force</span><br></pre></td></tr></table></figure>
 
-<h3 id="部署证书"><a href="#部署证书" class="headerlink" title="部署证书"></a>部署证书</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --install-cert -d 你的域名 --ecc \</span><br><span class="line">            --fullchain-file /home/www-data/xray_cert/xray.crt \</span><br><span class="line">            --key-file /home/www-data/xray_cert/xray.key</span><br><span class="line"><span class="built_in">chmod</span> +r /home/www-data/xray_cert/*</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置定时部署脚本（代码在下面）</span></span><br><span class="line">vim /home/www-data/xray_cert/xray-cert-renew.sh</span><br><span class="line"><span class="comment"># 添加可执行</span></span><br><span class="line"><span class="built_in">chmod</span> +x /home/www-data/xray_cert/xray-cert-renew.sh</span><br><span class="line"><span class="comment"># 添加定时脚本</span></span><br><span class="line">crontab -e</span><br><span class="line"><span class="comment"># 把下面的内容增加在文件最后, 保存退出即可。</span></span><br><span class="line"><span class="comment"># 1:00am, 1st day each month, run `xray-cert-renew.sh`</span></span><br><span class="line">0 1 1 * *   bash /home/www-data/xray_cert/xray-cert-renew.sh</span><br></pre></td></tr></table></figure>
+<h2 id="部署证书"><a href="#部署证书" class="headerlink" title="部署证书"></a>部署证书</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">acme.sh --install-cert -d 你的域名 --ecc \</span><br><span class="line">            --fullchain-file /home/www-data/xray_cert/xray.crt \</span><br><span class="line">            --key-file /home/www-data/xray_cert/xray.key</span><br><span class="line"><span class="built_in">chmod</span> +r /home/www-data/xray_cert/*</span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置定时部署脚本（代码在下面）</span></span><br><span class="line">vim /home/www-data/xray_cert/xray-cert-renew.sh</span><br><span class="line"><span class="comment"># 添加可执行</span></span><br><span class="line"><span class="built_in">chmod</span> +x /home/www-data/xray_cert/xray-cert-renew.sh</span><br><span class="line"><span class="comment"># 添加定时脚本</span></span><br><span class="line">crontab -e</span><br><span class="line"><span class="comment"># 把下面的内容增加在文件最后, 保存退出即可。</span></span><br><span class="line"><span class="comment"># 1:00am, 1st day each month, run `xray-cert-renew.sh`</span></span><br><span class="line">0 1 1 * *   bash /home/www-data/xray_cert/xray-cert-renew.sh</span><br></pre></td></tr></table></figure>
 
 <p><strong>定时部署脚本代码</strong></p>
 <p>把下面的内容复制进去, 记得替换你的真实域名, 然后保存退出</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">/root/.acme.sh/acme.sh --install-cert -d 你的域名 --ecc --fullchain-file /home/www-data/xray_cert/xray.crt --key-file /home/www-data/xray_cert/xray.key</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Xray Certificates Renewed&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">chmod</span> +r /home/www-data/xray_cert/*</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Read Permission Granted for Private Key&quot;</span></span><br><span class="line"></span><br><span class="line">sudo systemctl restart xray</span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;Xray Restarted&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">chown</span> -R www-data:www-data /home/www-data/</span><br><span class="line"><span class="built_in">chmod</span> +x /home/www-data/xray_cert/xray-cert-renew.sh</span><br></pre></td></tr></table></figure>
 
-<h2 id="安装-xray"><a href="#安装-xray" class="headerlink" title="安装 xray"></a>安装 xray</h2><h3 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /root/</span><br><span class="line">wget https://github.com/XTLS/Xray-install/raw/main/install-release.sh</span><br><span class="line">bash install-release.sh</span><br><span class="line"><span class="built_in">rm</span> ~/install-release.sh</span><br></pre></td></tr></table></figure>
+<h1 id="安装-xray"><a href="#安装-xray" class="headerlink" title="安装 xray"></a>安装 xray</h1><h2 id="安装-1"><a href="#安装-1" class="headerlink" title="安装"></a>安装</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> /root/</span><br><span class="line">wget https://github.com/XTLS/Xray-install/raw/main/install-release.sh</span><br><span class="line">bash install-release.sh</span><br><span class="line"><span class="built_in">rm</span> ~/install-release.sh</span><br></pre></td></tr></table></figure>
 
-<h3 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生成一个合法的 UUID 替换下面配置中的 UUID</span></span><br><span class="line">xray uuid</span><br><span class="line"><span class="comment"># 代码在下面</span></span><br><span class="line">vim /usr/local/etc/xray/config.json</span><br></pre></td></tr></table></figure>
+<h2 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 生成一个合法的 UUID 替换下面配置中的 UUID</span></span><br><span class="line">xray uuid</span><br><span class="line"><span class="comment"># 代码在下面</span></span><br><span class="line">vim /usr/local/etc/xray/config.json</span><br></pre></td></tr></table></figure>
 
 <p><a target="_blank" rel="noopener" href="https://github.com/XTLS/Xray-examples/blob/main/VLESS-TCP-XTLS-WHATEVER/config_server.json">查看服务器配置</a></p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;log&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;loglevel&quot;</span><span class="punctuation">:</span> <span class="string">&quot;warning&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;access&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/home/www-data/xray_log/access.log&quot;</span><span class="punctuation">,</span> <span class="comment">// 访问记录</span></span><br><span class="line">    <span class="attr">&quot;error&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/home/www-data/xray_log/error.log&quot;</span> <span class="comment">// 错误记录</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;inbounds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;port&quot;</span><span class="punctuation">:</span> 你的xray监听端口<span class="punctuation">,</span> <span class="comment">// 默认监听端口 443</span></span><br><span class="line">      <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vless&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;settings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;clients&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你的UUID&quot;</span><span class="punctuation">,</span> <span class="comment">// 填写你的 UUID</span></span><br><span class="line">            <span class="attr">&quot;flow&quot;</span><span class="punctuation">:</span> <span class="string">&quot;xtls-rprx-direct&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;level&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你的email&quot;</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;decryption&quot;</span><span class="punctuation">:</span> <span class="string">&quot;none&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;fallbacks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;dest&quot;</span><span class="punctuation">:</span> <span class="number">1310</span><span class="punctuation">,</span> <span class="comment">// 默认回落到 Xray 的 Trojan 协议</span></span><br><span class="line">            <span class="attr">&quot;xver&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line">          <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/websocket&quot;</span><span class="punctuation">,</span> <span class="comment">// 默认 websocket 必须换成自定义的 PATH</span></span><br><span class="line">            <span class="attr">&quot;dest&quot;</span><span class="punctuation">:</span> <span class="number">1234</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;xver&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line">          <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/vmesstcp&quot;</span><span class="punctuation">,</span> <span class="comment">// 默认 vmesstcp 必须换成自定义的 PATH</span></span><br><span class="line">            <span class="attr">&quot;dest&quot;</span><span class="punctuation">:</span> <span class="number">2345</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;xver&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line">          <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/vmessws&quot;</span><span class="punctuation">,</span> <span class="comment">// 默认 vmessws 必须换成自定义的 PATH</span></span><br><span class="line">            <span class="attr">&quot;dest&quot;</span><span class="punctuation">:</span> <span class="number">3456</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;xver&quot;</span><span class="punctuation">:</span> <span class="number">1</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;streamSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;network&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tcp&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;security&quot;</span><span class="punctuation">:</span> <span class="string">&quot;xtls&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;xtlsSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;alpn&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;http/1.1&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;certificates&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">            <span class="punctuation">&#123;</span></span><br><span class="line">              <span class="attr">&quot;certificateFile&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/home/www-data/xray_cert/xray.crt&quot;</span><span class="punctuation">,</span> <span class="comment">// 换成你的证书, 绝对路径</span></span><br><span class="line">              <span class="attr">&quot;keyFile&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/home/www-data/xray_cert/xray.key&quot;</span> <span class="comment">// 换成你的私钥, 绝对路径</span></span><br><span class="line">            <span class="punctuation">&#125;</span></span><br><span class="line">          <span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;port&quot;</span><span class="punctuation">:</span> <span class="number">1310</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;listen&quot;</span><span class="punctuation">:</span> <span class="string">&quot;127.0.0.1&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;trojan&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;settings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;clients&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;password&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你的密码&quot;</span><span class="punctuation">,</span> <span class="comment">// 填写你的密码</span></span><br><span class="line">            <span class="attr">&quot;level&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你的email&quot;</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;fallbacks&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;dest&quot;</span><span class="punctuation">:</span> <span class="number">8080</span> <span class="comment">// 或者回落到其它也防探测的代理</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;streamSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;network&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tcp&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;security&quot;</span><span class="punctuation">:</span> <span class="string">&quot;none&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;tcpSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;acceptProxyProtocol&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;port&quot;</span><span class="punctuation">:</span> <span class="number">1234</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;listen&quot;</span><span class="punctuation">:</span> <span class="string">&quot;127.0.0.1&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vless&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;settings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;clients&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你的UUID&quot;</span><span class="punctuation">,</span> <span class="comment">// 填写你的 UUID</span></span><br><span class="line">            <span class="attr">&quot;level&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你的email&quot;</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;decryption&quot;</span><span class="punctuation">:</span> <span class="string">&quot;none&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;streamSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;network&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ws&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;security&quot;</span><span class="punctuation">:</span> <span class="string">&quot;none&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;wsSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;acceptProxyProtocol&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span> <span class="comment">// 提醒: 若你用 Nginx/Caddy 等反代 WS, 需要删掉这行</span></span><br><span class="line">          <span class="attr">&quot;path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/websocket&quot;</span> <span class="comment">// 必须换成自定义的 PATH, 需要和分流的一致</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;port&quot;</span><span class="punctuation">:</span> <span class="number">2345</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;listen&quot;</span><span class="punctuation">:</span> <span class="string">&quot;127.0.0.1&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vmess&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;settings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;clients&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你的UUID&quot;</span><span class="punctuation">,</span> <span class="comment">// 填写你的 UUID</span></span><br><span class="line">            <span class="attr">&quot;level&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你的email&quot;</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;streamSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;network&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tcp&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;security&quot;</span><span class="punctuation">:</span> <span class="string">&quot;none&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;tcpSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;acceptProxyProtocol&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;header&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;http&quot;</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;request&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">              <span class="attr">&quot;path&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">                <span class="string">&quot;/vmesstcp&quot;</span> <span class="comment">// 必须换成自定义的 PATH, 需要和分流的一致</span></span><br><span class="line">              <span class="punctuation">]</span></span><br><span class="line">            <span class="punctuation">&#125;</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;port&quot;</span><span class="punctuation">:</span> <span class="number">3456</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;listen&quot;</span><span class="punctuation">:</span> <span class="string">&quot;127.0.0.1&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vmess&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;settings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;clients&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">          <span class="punctuation">&#123;</span></span><br><span class="line">            <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你的UUID&quot;</span><span class="punctuation">,</span> <span class="comment">// 填写你的 UUID</span></span><br><span class="line">            <span class="attr">&quot;level&quot;</span><span class="punctuation">:</span> <span class="number">0</span><span class="punctuation">,</span></span><br><span class="line">            <span class="attr">&quot;email&quot;</span><span class="punctuation">:</span> <span class="string">&quot;你的email&quot;</span></span><br><span class="line">          <span class="punctuation">&#125;</span></span><br><span class="line">        <span class="punctuation">]</span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;streamSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;network&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ws&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;security&quot;</span><span class="punctuation">:</span> <span class="string">&quot;none&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="attr">&quot;wsSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;acceptProxyProtocol&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span> <span class="comment">// 提醒: 若你用 Nginx/Caddy 等反代 WS, 需要删掉这行</span></span><br><span class="line">          <span class="attr">&quot;path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;/vmessws&quot;</span> <span class="comment">// 必须换成自定义的 PATH, 需要和分流的一致</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;outbounds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;freedom&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
 
-<h3 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 以 www-data 用户启动服务 (下面配置两个文件中的 User=nobody 改为 User=www-data)</span></span><br><span class="line">vim /etc/systemd/system/xray.service</span><br><span class="line">vim /etc/systemd/system/xray@.service</span><br><span class="line"><span class="comment"># 新添加 unit 配置文件时需要执行 daemon-reload 子命令</span></span><br><span class="line"><span class="comment"># 有 unit 配置文件发生变化时也需要执行 daemon-reload 子命令</span></span><br><span class="line">systemctl daemon-reload</span><br><span class="line"><span class="comment"># 启动服务</span></span><br><span class="line">service xray restart</span><br></pre></td></tr></table></figure>
+<h2 id="启动"><a href="#启动" class="headerlink" title="启动"></a>启动</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 以 www-data 用户启动服务 (下面配置两个文件中的 User=nobody 改为 User=www-data)</span></span><br><span class="line">vim /etc/systemd/system/xray.service</span><br><span class="line">vim /etc/systemd/system/xray@.service</span><br><span class="line"><span class="comment"># 新添加 unit 配置文件时需要执行 daemon-reload 子命令</span></span><br><span class="line"><span class="comment"># 有 unit 配置文件发生变化时也需要执行 daemon-reload 子命令</span></span><br><span class="line">systemctl daemon-reload</span><br><span class="line"><span class="comment"># 启动服务</span></span><br><span class="line">service xray restart</span><br></pre></td></tr></table></figure>
 
-<h3 id="重新配置-nginx-开启-HTTP-自动跳转-HTTPS"><a href="#重新配置-nginx-开启-HTTP-自动跳转-HTTPS" class="headerlink" title="重新配置 nginx: 开启 HTTP 自动跳转 HTTPS"></a>重新配置 nginx: 开启 HTTP 自动跳转 HTTPS</h3><p>如果不想开启 HTTP 自动跳转 HTTPS</p>
+<h2 id="重新配置-nginx-开启-HTTP-自动跳转-HTTPS"><a href="#重新配置-nginx-开启-HTTP-自动跳转-HTTPS" class="headerlink" title="重新配置 nginx: 开启 HTTP 自动跳转 HTTPS"></a>重新配置 nginx: 开启 HTTP 自动跳转 HTTPS</h2><p>如果不想开启 HTTP 自动跳转 HTTPS</p>
 <p>需要修改 Xray 的回落设置, 将回落从 8080 端口改为 80 端口(找到 “dest”: 8080, 并改成 “dest”: 80)</p>
 <p>原因: 上面的回落端口是 8080, 而之前配置的 nginx 只监听了 80 端口</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 配置nginx</span></span><br><span class="line">vim /etc/nginx/sites-enabled/xray</span><br><span class="line"><span class="comment"># 新建自定义 404 目录</span></span><br><span class="line"><span class="built_in">mkdir</span> /home/www-data/404</span><br><span class="line"><span class="comment"># 上传自定义的 404 html 文件</span></span><br><span class="line"><span class="comment"># 更改文件夹所属</span></span><br><span class="line"><span class="built_in">chown</span> -R www-data:www-data /home/www-data/</span><br><span class="line"><span class="comment"># 启动nginx</span></span><br><span class="line">service nginx restart</span><br></pre></td></tr></table></figure>
@@ -2567,13 +3001,13 @@ Crash --> [*]</pre>
 <p><strong>nginx 配置</strong></p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##</span></span><br><span class="line"><span class="comment"># You should look at the following URL&#x27;s in order to grasp a solid understanding</span></span><br><span class="line"><span class="comment"># of Nginx configuration files in order to fully unleash the power of Nginx.</span></span><br><span class="line"><span class="comment"># https://www.nginx.com/resources/wiki/start/</span></span><br><span class="line"><span class="comment"># https://www.nginx.com/resources/wiki/start/topics/tutorials/config_pitfalls/</span></span><br><span class="line"><span class="comment"># https://wiki.debian.org/Nginx/DirectoryStructure</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># In most cases, administrators will remove this file from sites-enabled/ and</span></span><br><span class="line"><span class="comment"># leave it as reference inside of sites-available where it will continue to be</span></span><br><span class="line"><span class="comment"># updated by the nginx packaging team.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># This file will automatically load configuration files provided by other</span></span><br><span class="line"><span class="comment"># applications, such as Drupal or Wordpress. These applications will be made</span></span><br><span class="line"><span class="comment"># available underneath a path with that package name, such as /drupal8.</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"><span class="comment"># Please see /usr/share/doc/nginx-doc/examples/ for more detailed examples.</span></span><br><span class="line"><span class="comment">##</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># Default server configuration</span></span><br><span class="line"><span class="comment">#</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改监听 80 端口的 server 如下:</span></span><br><span class="line">server &#123;</span><br><span class="line">    listen 80 default_server;</span><br><span class="line">    listen [::]:80 default_server;</span><br><span class="line"></span><br><span class="line">    server_name 你的域名;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">return</span> 301 https://<span class="variable">$http_host</span>:你的xray监听端口<span class="variable">$request_uri</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 新增监听本地 8080 端口的 server 如下:</span></span><br><span class="line">server &#123;</span><br><span class="line">    listen 127.0.0.1:8080;</span><br><span class="line">    listen [::1]:8080;</span><br><span class="line"></span><br><span class="line">    root /home/www-data/你的域名;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># Add index.php to the list if you are using PHP</span></span><br><span class="line">    index index.html index.htm index.nginx-debian.html;</span><br><span class="line"></span><br><span class="line">    location / &#123;</span><br><span class="line">        <span class="comment"># First attempt to serve request as file, then</span></span><br><span class="line">        <span class="comment"># as directory, then fall back to displaying a 404.</span></span><br><span class="line">        try_files <span class="variable">$uri</span> <span class="variable">$uri</span>/ =404;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment"># 定义错误页面码, 如果出现相应的错误页面码, 转发到那里。</span></span><br><span class="line">    error_page  404 403 500 502 503 504  /404.html;</span><br><span class="line">    <span class="comment"># 承接上面的location。</span></span><br><span class="line">    location = /404.html &#123;</span><br><span class="line">        <span class="comment"># 放错误页面的目录路径。当然默认可以在网站目录下, 也可以定义放置错误页面的位置。</span></span><br><span class="line">        root   /home/www-data/404/;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment"># 如果404是和根目录不一致, 并且有css、js等文件, 需要把404.html中的引用加上404前缀, 并定义下面404目录</span></span><br><span class="line">    <span class="comment"># location /404/ &#123;</span></span><br><span class="line">    <span class="comment"># &#125;</span></span><br><span class="line">    location /404/ &#123;</span><br><span class="line">        <span class="comment"># 第一种方式, 访问路径需要在配置的路径后需要加入location路径</span></span><br><span class="line">        <span class="comment"># 若按照这种配置的话, 则访问/404/目录下的文件时, nginx会去/home/www-data/404/目录下找文件</span></span><br><span class="line">        <span class="comment"># root 响应的路径：配置的路径+完整访问路径(完整的 location 配置路径+静态文件)</span></span><br><span class="line">        root   /home/www-data/;</span><br><span class="line"></span><br><span class="line">        <span class="comment"># 第二种方式, 所见即所得, 访问路径从配置的路径直接访问</span></span><br><span class="line">        <span class="comment"># 若按照这种配置的话, 则访问/404/目录下的文件时, nginx会去/home/www-data/404/目录下找文件</span></span><br><span class="line">        <span class="comment"># 注意: 这里的路径后必须加入斜杠 &quot;/&quot;, 否则不能访问, 所以最好所有的路径都加上斜杠 &quot;/&quot;</span></span><br><span class="line">        <span class="comment"># alias 响应的路径：配置路径+静态文件(去除 location 中配置的路径)</span></span><br><span class="line">        <span class="comment"># alias   /home/www-data/404/;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">## HSTS 说明</span></span><br><span class="line">    <span class="comment"># HSTS 生效前, 第一次需要将 301 和 302 重定向到 HTTPS</span></span><br><span class="line">    <span class="comment"># HSTS 响应头在 HTTPS 访问的响应中有效, 在 HTTP 访问的响应中无效</span></span><br><span class="line">    <span class="comment"># 仅对 443 端口有效, 对其他端口无效</span></span><br><span class="line">    <span class="comment"># 仅对域名有效, 对 IP 无效</span></span><br><span class="line">    <span class="comment"># 所以 xray 监听端口不是 443 时, 不能添加下面语句</span></span><br><span class="line">    add_header Strict-Transport-Security <span class="string">&quot;max-age=31536000&quot;</span> always;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h2 id="开启-BBR-加速"><a href="#开启-BBR-加速" class="headerlink" title="开启 BBR 加速"></a>开启 BBR 加速</h2><p>Linux 内核从 4.9 开始, 已经自带 BBR</p>
+<h1 id="开启-BBR-加速"><a href="#开启-BBR-加速" class="headerlink" title="开启 BBR 加速"></a>开启 BBR 加速</h1><p>Linux 内核从 4.9 开始, 已经自带 BBR</p>
 <p>查看内核命令:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">uname</span> -r</span><br></pre></td></tr></table></figure>
 
-<h3 id="开启-BBR"><a href="#开启-BBR" class="headerlink" title="开启 BBR"></a>开启 BBR</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 修改 kernel 参数配置文件 sysctl.conf 并指定开启 BBR</span></span><br><span class="line">vim /etc/sysctl.conf</span><br><span class="line"><span class="comment"># 2. 把下面的内容添加进去</span></span><br><span class="line">net.core.default_qdisc=fq</span><br><span class="line">net.ipv4.tcp_congestion_control=bbr</span><br><span class="line"><span class="comment"># 3. 重启VPS、使内核更新和BBR设置都生效</span></span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
+<h2 id="开启-BBR"><a href="#开启-BBR" class="headerlink" title="开启 BBR"></a>开启 BBR</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 1. 修改 kernel 参数配置文件 sysctl.conf 并指定开启 BBR</span></span><br><span class="line">vim /etc/sysctl.conf</span><br><span class="line"><span class="comment"># 2. 把下面的内容添加进去</span></span><br><span class="line">net.core.default_qdisc=fq</span><br><span class="line">net.ipv4.tcp_congestion_control=bbr</span><br><span class="line"><span class="comment"># 3. 重启VPS、使内核更新和BBR设置都生效</span></span><br><span class="line">reboot</span><br></pre></td></tr></table></figure>
 
-<h3 id="确认-BBR-开启"><a href="#确认-BBR-开启" class="headerlink" title="确认 BBR 开启"></a>确认 BBR 开启</h3><p>如果你想确认 BBR 是否正确开启, 可以使用下面的命令:</p>
+<h2 id="确认-BBR-开启"><a href="#确认-BBR-开启" class="headerlink" title="确认 BBR 开启"></a>确认 BBR 开启</h2><p>如果你想确认 BBR 是否正确开启, 可以使用下面的命令:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lsmod | grep bbr</span><br></pre></td></tr></table></figure>
 
 <p>此时应该返回这样的结果:</p>
@@ -2585,7 +3019,61 @@ Crash --> [*]</pre>
 <p>此时应该返回这样的结果:</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sch_fq</span><br></pre></td></tr></table></figure>
 
-<p>参考: <a target="_blank" rel="noopener" href="https://www.zybuluo.com/xiaoyixy/note/1055898#c1">https://www.zybuluo.com/xiaoyixy/note/1055898#c1</a></p>
+<h1 id="指定流量转发"><a href="#指定流量转发" class="headerlink" title="指定流量转发"></a>指定流量转发</h1><p>这里示例是 netflix 转发</p>
+<h2 id="本地转发"><a href="#本地转发" class="headerlink" title="本地转发"></a>本地转发</h2><ol>
+<li>inbounds 增加 sniffing</li>
+<li>outbounds 增加 tag</li>
+<li>增加 routing</li>
+</ol>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;inbounds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="comment">// 控制回落模块的最上面增加 sniffing</span></span><br><span class="line">    <span class="attr">&quot;sniffing&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;destOverride&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;http&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;tls&quot;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="comment">// ...... 省略代码</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="comment">// ...... 省略代码</span></span><br><span class="line"><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;outbounds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;freedom&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="comment">// 增加下面这个tag</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;tag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;netflix_proxy&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;socks&quot;</span><span class="punctuation">,</span>    <span class="comment">// 配置本地代理 netflix 的端口协议</span></span><br><span class="line">    <span class="attr">&quot;settings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;servers&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;127.0.0.1&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;port&quot;</span><span class="punctuation">:</span> <span class="number">40000</span>    <span class="comment">// 配置本地代理 netflix 的端口</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"><span class="comment">// 增加下面路由</span></span><br><span class="line"><span class="attr">&quot;routing&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;rules&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;field&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;outboundTag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;netflix_proxy&quot;</span><span class="punctuation">,</span>    <span class="comment">// 上面定义的tag</span></span><br><span class="line">      <span class="attr">&quot;domain&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;geosite:netflix&quot;</span>    <span class="comment">// 按照域名路由</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;field&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;outboundTag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;direct&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;network&quot;</span><span class="punctuation">:</span> <span class="string">&quot;udp,tcp&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="网络转发"><a href="#网络转发" class="headerlink" title="网络转发"></a>网络转发</h2><p>这个直接配置的是 GoNetflix, 虽然本人没用过几次, 但还是感谢大佬的无私奉献(现已经不能使用)<br>网址: <a target="_blank" rel="noopener" href="https://gonetflix.xyz/">https://gonetflix.xyz/</a></p>
+<ol>
+<li>inbounds 增加 sniffing</li>
+<li>outbounds 增加 tag</li>
+<li>增加 routing</li>
+</ol>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;inbounds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="comment">// 控制回落模块的最上面增加 sniffing</span></span><br><span class="line">    <span class="attr">&quot;sniffing&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;destOverride&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;http&quot;</span><span class="punctuation">,</span></span><br><span class="line">        <span class="string">&quot;tls&quot;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="comment">// ...... 省略代码</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="comment">// ...... 省略代码</span></span><br><span class="line"><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"><span class="attr">&quot;outbounds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;freedom&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="comment">// 增加下面这个tag</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;tag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;GoNetflix&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;vmess&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;streamSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;network&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ws&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;security&quot;</span><span class="punctuation">:</span> <span class="string">&quot;tls&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;tlsSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;allowInsecure&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">false</span></span></span><br><span class="line">      <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;wsSettings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">        <span class="attr">&quot;path&quot;</span><span class="punctuation">:</span> <span class="string">&quot;ws&quot;</span></span><br><span class="line">      <span class="punctuation">&#125;</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;mux&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;enabled&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;concurrency&quot;</span><span class="punctuation">:</span> <span class="number">8</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="attr">&quot;settings&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;vnext&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="punctuation">&#123;</span></span><br><span class="line">          <span class="attr">&quot;address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;free-sg-01.gonetflix.xyz&quot;</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;port&quot;</span><span class="punctuation">:</span> <span class="number">443</span><span class="punctuation">,</span></span><br><span class="line">          <span class="attr">&quot;users&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">            <span class="punctuation">&#123;</span></span><br><span class="line">              <span class="attr">&quot;id&quot;</span><span class="punctuation">:</span> <span class="string">&quot;402d7490-6d4b-42d4-80ed-e681b0e6f1f9&quot;</span><span class="punctuation">,</span></span><br><span class="line">              <span class="attr">&quot;security&quot;</span><span class="punctuation">:</span> <span class="string">&quot;auto&quot;</span><span class="punctuation">,</span></span><br><span class="line">              <span class="attr">&quot;alterId&quot;</span><span class="punctuation">:</span> <span class="number">0</span></span><br><span class="line">            <span class="punctuation">&#125;</span></span><br><span class="line">          <span class="punctuation">]</span></span><br><span class="line">        <span class="punctuation">&#125;</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"><span class="comment">// 增加下面路由</span></span><br><span class="line"><span class="attr">&quot;routing&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;rules&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;field&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;outboundTag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;GoNetflix&quot;</span><span class="punctuation">,</span>    <span class="comment">// 上面定义的tag</span></span><br><span class="line">      <span class="attr">&quot;domain&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;geosite:netflix&quot;</span>    <span class="comment">// 按照域名路由</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;type&quot;</span><span class="punctuation">:</span> <span class="string">&quot;field&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;outboundTag&quot;</span><span class="punctuation">:</span> <span class="string">&quot;direct&quot;</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;network&quot;</span><span class="punctuation">:</span> <span class="string">&quot;udp,tcp&quot;</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="dns-转发"><a href="#dns-转发" class="headerlink" title="dns 转发"></a>dns 转发</h2><p>这个配置没有验证过，也不推荐 dns 转发</p>
+<ol>
+<li>增加 dns 转发</li>
+</ol>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">&quot;outbounds&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">  <span class="punctuation">&#123;</span></span><br><span class="line">    <span class="attr">&quot;protocol&quot;</span><span class="punctuation">:</span> <span class="string">&quot;freedom&quot;</span></span><br><span class="line">  <span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">]</span><span class="punctuation">,</span></span><br><span class="line"><span class="comment">// 增加 dns</span></span><br><span class="line"><span class="attr">&quot;dns&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;servers&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">    <span class="string">&quot;1.1.1.1&quot;</span><span class="punctuation">,</span>    <span class="comment">// 正常 dns</span></span><br><span class="line">    <span class="string">&quot;8.8.8.8&quot;</span><span class="punctuation">,</span></span><br><span class="line">    <span class="punctuation">&#123;</span></span><br><span class="line">      <span class="attr">&quot;address&quot;</span><span class="punctuation">:</span> <span class="string">&quot;1.0.0.1&quot;</span><span class="punctuation">,</span>    <span class="comment">// netflix 转发的 dns</span></span><br><span class="line">      <span class="attr">&quot;port&quot;</span><span class="punctuation">:</span> <span class="number">53</span><span class="punctuation">,</span></span><br><span class="line">      <span class="attr">&quot;domains&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span></span><br><span class="line">        <span class="string">&quot;geosite:netflix&quot;</span>    <span class="comment">// 按照域名路由</span></span><br><span class="line">      <span class="punctuation">]</span></span><br><span class="line">    <span class="punctuation">&#125;</span></span><br><span class="line">  <span class="punctuation">]</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="netflix-解锁"><a href="#netflix-解锁" class="headerlink" title="netflix 解锁"></a>netflix 解锁</h1><h2 id="检测解锁状态"><a href="#检测解锁状态" class="headerlink" title="检测解锁状态"></a>检测解锁状态</h2><p>检测本机是否解锁 netflix</p>
+<p>使用 <code>nf</code> 脚本: <a target="_blank" rel="noopener" href="https://github.com/sjlleo/netflix-verify">https://github.com/sjlleo/netflix-verify</a></p>
+<h3 id="更新脚本"><a href="#更新脚本" class="headerlink" title="更新脚本"></a>更新脚本</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo -u nobody wget -O nf https://github.com/sjlleo/netflix-verify/releases/download/v3.1.0/nf_linux_amd64 &amp;&amp; <span class="built_in">chmod</span> +x nf &amp;&amp; clear</span><br></pre></td></tr></table></figure>
+
+<h3 id="检测命令"><a href="#检测命令" class="headerlink" title="检测命令"></a>检测命令</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">Usage of ./nf:</span><br><span class="line">  -address string</span><br><span class="line">        本机网卡的IP</span><br><span class="line">  -custom string</span><br><span class="line">        自定义测试NF影片ID</span><br><span class="line">        绝命毒师的ID是70143836</span><br><span class="line">  -proxy string</span><br><span class="line">        代理地址</span><br><span class="line"></span><br><span class="line">sudo -u nobody ./nf</span><br><span class="line"></span><br><span class="line">sudo -u nobody ./nf -proxy socks5://127.0.0.1:40000</span><br></pre></td></tr></table></figure>
+
+<h2 id="warp"><a href="#warp" class="headerlink" title="warp"></a>warp</h2><p>部署 warp</p>
+<p>使用 warp 一键脚本: <a target="_blank" rel="noopener" href="https://github.com/fscarmen/warp">https://github.com/fscarmen/warp</a></p>
+<h3 id="安装-2"><a href="#安装-2" class="headerlink" title="安装"></a>安装</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget -N https://raw.githubusercontent.com/fscarmen/warp/main/menu.sh &amp;&amp; bash menu.sh</span><br></pre></td></tr></table></figure>
+
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><p>后续直接使用 <code>warp</code> 命令即可呼出菜单</p>
+<p>这里使用 wireproxy 模式, 默认账号, ip4, 默认端口 40000</p>
+<h2 id="监控解锁状态"><a href="#监控解锁状态" class="headerlink" title="监控解锁状态"></a>监控解锁状态</h2><h3 id="一键脚本"><a href="#一键脚本" class="headerlink" title="一键脚本"></a>一键脚本</h3><p>上面 warp 脚本带有该功能, 使用 <code>warp i 地区码</code> 命令可以刷ip, 该作者有另一个脚本也可以实现: <a target="_blank" rel="noopener" href="https://github.com/fscarmen/warp_unlock">https://github.com/fscarmen/warp_unlock</a></p>
+<p>简单介绍一下命令:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">### warp 自带功能</span></span><br><span class="line"><span class="comment"># nohup 放进后台运行</span></span><br><span class="line"><span class="built_in">nohup</span> warp i sg &gt; warp.log 2&gt;&amp;1 &amp;</span><br><span class="line"><span class="comment"># 看后台任务</span></span><br><span class="line"><span class="built_in">jobs</span> -l | grep warp</span><br><span class="line"><span class="comment"># 结束进程</span></span><br><span class="line"><span class="built_in">kill</span> -9 $(<span class="built_in">jobs</span> -l | grep warp | awk <span class="string">&#x27;&#123;print $2&#125;&#x27;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment">### 另一个脚本功能</span></span><br><span class="line"><span class="comment"># 呼出菜单</span></span><br><span class="line">bash &lt;(curl -sSL https://raw.githubusercontent.com/fscarmen/warp_unlock/main/unlock.sh)</span><br><span class="line"><span class="comment"># 卸载</span></span><br><span class="line">bash &lt;(curl -sSL https://raw.githubusercontent.com/fscarmen/warp_unlock/main/unlock.sh) -C -U</span><br><span class="line"><span class="comment"># 运行 (中文,刷新加坡ip,socks5模式,解锁netflix,每5分钟检测一次,tg机器人接收消息)</span></span><br><span class="line">bash &lt;(curl -sSL https://raw.githubusercontent.com/fscarmen/warp_unlock/main/unlock.sh) -C -A sg -S -N n -M 5 -T Token@ID@Name</span><br></pre></td></tr></table></figure>
+
+<h3 id="自定义脚本"><a href="#自定义脚本" class="headerlink" title="自定义脚本"></a>自定义脚本</h3><p>使用一键脚本从来没有刷到过能用的 ip, 但是用 <code>nf</code> 脚本发现 ip 可用, 所以基于 <code>nf</code> 和 <code>warp</code> 实现自定义检测脚本</p>
+<p><strong>注意</strong></p>
+<p>如果 <code>nf</code> 和 <code>warp</code> 脚本更新后命令有调整, 监控脚本的命令也需要调整</p>
+<p><strong>原理</strong></p>
+<p>使用 <code>warp y</code> 命令断线重连, 使用 <code>nf</code> 监控</p>
+<p><strong>脚本</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"></span><br><span class="line">BASE_NAME=$(<span class="built_in">basename</span> <span class="variable">$0</span>)</span><br><span class="line">CHECK_STR=<span class="string">&quot;完整解锁&quot;</span></span><br><span class="line">CHECK_CMD=<span class="string">&quot;sudo -u nobody ./nf -proxy socks5://127.0.0.1:40000&quot;</span></span><br><span class="line">WARP_CMD=<span class="string">&quot;warp y&quot;</span></span><br><span class="line">WARP_STR=<span class="string">&quot;断开&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;BASE_PID: $$&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;BASE_NAME: <span class="variable">$BASE_NAME</span>&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;CHECK_STR: <span class="variable">$CHECK_STR</span>&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;CHECK_CMD: <span class="variable">$CHECK_CMD</span>&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;WARP_CMD: <span class="variable">$WARP_CMD</span>&quot;</span></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;WARP_STR: <span class="variable">$WARP_STR</span>&quot;</span></span><br><span class="line"></span><br><span class="line">run_num=$(ps aux | grep <span class="variable">$BASE_NAME</span> | grep -v <span class="string">&quot;grep&quot;</span> | grep -v $$ | <span class="built_in">wc</span> -l)</span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;run_num: <span class="variable">$run_num</span>&quot;</span></span><br><span class="line"><span class="keyword">if</span> [[ <span class="variable">$run_num</span> &gt; 1 ]]; <span class="keyword">then</span></span><br><span class="line">   <span class="built_in">exit</span> -1</span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line">change_count=0</span><br><span class="line">status=$(<span class="variable">$CHECK_CMD</span>)</span><br><span class="line"><span class="built_in">echo</span> -e <span class="string">&quot;status: \n<span class="variable">$status</span>&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#if [[ $status =~ $CHECK_STR ]]</span></span><br><span class="line"><span class="comment">#then</span></span><br><span class="line"><span class="comment">#    echo &quot;unlock netflix normal.&quot;</span></span><br><span class="line"><span class="comment">#else</span></span><br><span class="line"><span class="comment">#    echo &quot;unlock netflix exception!!!&quot;</span></span><br><span class="line"><span class="comment">#fi</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">while</span> [[ ! <span class="variable">$status</span> =~ <span class="variable">$CHECK_STR</span> ]]</span><br><span class="line"><span class="keyword">do</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;unlock netflix exception!!!&quot;</span></span><br><span class="line">    warp_status=$(<span class="variable">$WARP_CMD</span>)</span><br><span class="line">    <span class="built_in">sleep</span> 3</span><br><span class="line">    <span class="built_in">echo</span> -e <span class="string">&quot;warp_status: \n<span class="variable">$warp_status</span>&quot;</span></span><br><span class="line">    <span class="keyword">if</span> [[ <span class="variable">$warp_status</span> =~ <span class="variable">$WARP_STR</span> ]]; <span class="keyword">then</span></span><br><span class="line">        warp_status=$(<span class="variable">$WARP_CMD</span>)</span><br><span class="line">        <span class="built_in">sleep</span> 3</span><br><span class="line">        <span class="built_in">echo</span> -e <span class="string">&quot;warp_status: \n<span class="variable">$warp_status</span>&quot;</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line">    status=$(<span class="variable">$CHECK_CMD</span>)</span><br><span class="line">    <span class="built_in">echo</span> -e <span class="string">&quot;status: \n<span class="variable">$status</span>&quot;</span></span><br><span class="line">    ((change_count++))</span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;change_count: <span class="variable">$change_count</span>&quot;</span></span><br><span class="line"><span class="keyword">done</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">echo</span> <span class="string">&quot;&gt;&gt;&gt;&gt;&gt;&gt; unlock netflix normal.&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p><strong>crontab</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 每 3 分钟运行 1 次</span></span><br><span class="line">*/3 * * * *   bash /root/netflix/warp_nf_monitor.sh &gt;&gt; /root/netflix/warp_nf_monitor.log 2&gt;&amp;1</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.zybuluo.com/xiaoyixy/note/1055898">nginx 使用 acme.sh 配置支持 HTTPS 访问</a></li>
+<li><a target="_blank" rel="noopener" href="https://bulianglin.com/archives/netflix-unlock.html">奈飞解锁方式大全</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/sjlleo/netflix-verify">netflix-verify</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/fscarmen/warp_unlock">warp</a></li>
+</ol>
 
       
     </div>
@@ -2979,336 +3467,6 @@ Crash --> [*]</pre>
 <li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/tuyang1129/p/12878549.html">浅析Spring中AOP的实现原理——动态代理</a></li>
 <li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/tanghaorong/p/13364634.html">Spring详解（三）—-认识IoC控制反转&#x2F;DI依赖注入</a></li>
 <li><a target="_blank" rel="noopener" href="https://blog.csdn.net/shijianjinghun/article/details/111923736">Spring循环依赖及三级缓存源码解析</a></li>
-</ol>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2020/06/25/java-%E5%8E%9F%E7%94%9F%E9%98%9F%E5%88%97/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Apomelo">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Apomelo - 追逐">
-      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Apomelo - 追逐">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/posts/2020/06/25/java-%E5%8E%9F%E7%94%9F%E9%98%9F%E5%88%97/" class="post-title-link" itemprop="url">java原生队列</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">发表于</span>
-
-      <time title="创建时间：2020-06-25 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-25T00:00:00+08:00">2020-06-25</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-folder"></i>
-      </span>
-      <span class="post-meta-item-text">分类于</span>
-        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
-        </span>
-    </span>
-
-  
-    <span id="/posts/2020/06/25/java-%E5%8E%9F%E7%94%9F%E9%98%9F%E5%88%97/" class="post-meta-item leancloud_visitors" data-flag-title="java原生队列" title="阅读次数">
-      <span class="post-meta-item-icon">
-        <i class="far fa-eye"></i>
-      </span>
-      <span class="post-meta-item-text">阅读次数：</span>
-      <span class="leancloud-visitors-count"></span>
-    </span>
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <h2 id="队列简介"><a href="#队列简介" class="headerlink" title="队列简介"></a>队列简介</h2><p>先进先出（FIFO），生产者往队列里发布事件，消费者获得通知消费事件；如果队列中没有事件时，消费者堵塞，直到生产者发布了新事件。</p>
-<p>Queue接口与List、Set同一级别，都是继承了Collection接口。LinkedList实现了Deque接口。</p>
-<h2 id="Java-内置队列"><a href="#Java-内置队列" class="headerlink" title="Java 内置队列"></a>Java 内置队列</h2><table>
-<thead>
-<tr>
-<th>队列</th>
-<th>有界性</th>
-<th>锁</th>
-<th>阻塞</th>
-<th>数据结构</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>ArrayBlockingQueue</td>
-<td>bounded</td>
-<td>加锁</td>
-<td>是</td>
-<td>arraylist</td>
-</tr>
-<tr>
-<td>LinkedBlockingQueue</td>
-<td>optionally-bounded</td>
-<td>加锁</td>
-<td>是</td>
-<td>linkedlist</td>
-</tr>
-<tr>
-<td>ConcurrentLinkedQueue</td>
-<td>unbounded</td>
-<td>CAS</td>
-<td>否</td>
-<td>linkedlist</td>
-</tr>
-<tr>
-<td>LinkedTransferQueue</td>
-<td>unbounded</td>
-<td>CAS</td>
-<td>是</td>
-<td>linkedlist</td>
-</tr>
-<tr>
-<td>PriorityBlockingQueue</td>
-<td>unbounded</td>
-<td>加锁</td>
-<td>是</td>
-<td>heap</td>
-</tr>
-<tr>
-<td>DelayQueue</td>
-<td>unbounded</td>
-<td>加锁</td>
-<td>是</td>
-<td>heap</td>
-</tr>
-<tr>
-<td>SynchronizedQueue</td>
-<td>synchronized</td>
-<td>CAS</td>
-<td>是</td>
-<td>linkedlist</td>
-</tr>
-</tbody></table>
-<h2 id="队列加锁性能"><a href="#队列加锁性能" class="headerlink" title="队列加锁性能"></a>队列加锁性能</h2><p>现实编程过程中，加锁通常会严重地影响性能。线程会因为竞争不到锁而被挂起，等锁被释放的时候，线程又会被恢复，这个过程中存在着很大的开销，并且通常会有较长时间的中断，因为当一个线程正在等待锁时，它不能做任何其他事情。如果一个线程在持有锁的情况下被延迟执行，例如发生了缺页错误、调度延迟或者其它类似情况，那么所有需要这个锁的线程都无法执行下去。如果被阻塞线程的优先级较高，而持有锁的线程优先级较低，就会发生优先级反转。</p>
-<p>Disruptor论文中讲述了一个实验：</p>
-<ul>
-<li>这个测试程序调用了一个函数，该函数会对一个64位的计数器循环自增5亿次。</li>
-<li>机器环境：2.4G 6核</li>
-<li>运算： 64位的计数器累加5亿次</li>
-</ul>
-<table>
-<thead>
-<tr>
-<th>Method</th>
-<th>Time (ms)</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Single thread</td>
-<td>300</td>
-</tr>
-<tr>
-<td>Single thread with CAS</td>
-<td>5,700</td>
-</tr>
-<tr>
-<td>Single thread with lock</td>
-<td>10,000</td>
-</tr>
-<tr>
-<td>Single thread with volatile write</td>
-<td>4,700</td>
-</tr>
-<tr>
-<td>Two threads with CAS</td>
-<td>30,000</td>
-</tr>
-<tr>
-<td>Two threads with lock</td>
-<td>224,000</td>
-</tr>
-</tbody></table>
-<p>CAS操作比单线程无锁慢了1个数量级；有锁且多线程并发的情况下，速度比单线程无锁慢3个数量级。可见无锁速度最快。</p>
-<p><strong>单线程</strong>情况下，不加锁的性能 &gt; CAS操作的性能 &gt; 加锁的性能。</p>
-<p><strong>多线程</strong>情况下，为了保证线程安全，必须使用CAS或锁，这种情况下，CAS的性能超过锁的性能，前者大约是后者的8倍。</p>
-<p>综上可知，加锁的性能是最差的。</p>
-<h2 id="ArrayBlockingQueue"><a href="#ArrayBlockingQueue" class="headerlink" title="ArrayBlockingQueue"></a>ArrayBlockingQueue</h2><p>ArrayBlockingQueue 是 BlockingQueue 接口的有界队列实现类，底层采用数组来实现。</p>
-<p>ArrayBlockingQueue 必须指定长度，且一旦创建，容量不能改变。</p>
-<p>ArrayBlockingQueue 采用ReentrantLock来控制并发，不管是插入操作还是读取操作，都需要获取到锁才能进行操作。当队列容量满时，尝试将元素放入队列将导致操作阻塞；尝试从一个空队列中取一个元素也会同样阻塞。</p>
-<p>ArrayBlockingQueue 默认是非公平队列。</p>
-<p>ArrayBlockingQueue 用Object[]存储对象。</p>
-<ol>
-<li>线程安全是指：ArrayBlockingQueue内部通过“互斥锁”保护竞争资源，实现了多线程对竞争资源的互斥访问。</li>
-<li>有界是指：ArrayBlockingQueue对应的数组是有界限的。</li>
-<li>阻塞：是指多线程访问竞争资源时，当竞争资源已被某线程获取时，其它要获取该资源的线程需要阻塞等待。</li>
-<li>所谓公平的访问队列是指阻塞的线程，可以按照阻塞的先后顺序访问队列，先阻塞的线程先访问ArrayBlockingQueue队列。非公平性是对先等待的线程是非公平的，当队列可用时，阻塞的线程都可以争夺访问队列的资格，有可能先阻塞的线程最后才能够访问队列。然而为了保证公平性，通常会降低吞吐量。</li>
-</ol>
-<h2 id="LinkedBlockingQueue"><a href="#LinkedBlockingQueue" class="headerlink" title="LinkedBlockingQueue"></a>LinkedBlockingQueue</h2><p>LinkedBlockingQueue是一个基于链表实现的阻塞队列，默认情况下，该阻塞队列的大小为Integer.MAX_VALUE，由于这个数值特别大，因此在很多地方称LinkedBlockingQueue是一个无界队列。在LinkedBlockingQueue进行初始化时，可以手动指定队列的大小，这样LinkedBlockingQueue就是一个有界队列了。所以说LinkedBlockingQueue是一个可选择的有界队列。</p>
-<p>LinkedBlockingQueue 采用ReentrantLock来控制并发。但是和ArrayBlockingQueue不同的是，LinkedBlockingQueue对队头和队尾各自使用了一把锁来做并发控制。LinkedBlockingQueue采用的是wait-notify机制实现的，不过没有用Object提供的，用java.util.concurrent.locks.Condition中的await()和signal()配合锁实现。</p>
-<p>在put()方法中, 关键点在于搞清楚下面俩点:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span> <span class="keyword">if</span> (c + <span class="number">1</span> &lt; capacity) notFull.signal();</span><br><span class="line"><span class="number">2.</span> <span class="keyword">if</span> (c == <span class="number">0</span>) signalNotEmpty();</span><br></pre></td></tr></table></figure>
-<ol>
-<li>语句1 是判断在多线程的环境下起到作用, 假设现在有4个线程都在await()处阻塞, take()取出一个数据, 现在唤醒了一个线程, 那么当该线程继续put的时候, 通过该判断, 如果队列非满则将阻塞在await()出的线程继续唤醒, 直到队列满了或者全部唤醒。</li>
-<li>语句2 是由于前边是调用的count.getAndIncrement(), 如果c为0, 那么现在队列里就有了一个元素, 唤醒阻塞在出列的await()处的线程, 可以继续出列, 取数据了.</li>
-</ol>
-<p>LinkedBlockingQueue 用Node存储对象。</p>
-<p><strong>总结</strong></p>
-<ol>
-<li>LinkedBlockingQueue是通过锁分离的方式进行控制，减少了take和put之间的锁竞争。</li>
-<li>LinkedBlockingQueue是通过链表的方式实现，所以进行锁分离时不会冲突，因为入队和出队分别作用于队尾和队首。</li>
-<li>内部采用了原子操作类（CAS）进行控制链表长度。</li>
-<li>入队后，如果之前队列为空时，会通知take方法，队列已有数据可进行take，反之，出队后，队列之前已满，则通知put方法，队列已有空闲位置可进行put操作。</li>
-</ol>
-<h3 id="tip（wait-notify机制）"><a href="#tip（wait-notify机制）" class="headerlink" title="tip（wait-notify机制）"></a>tip（wait-notify机制）</h3><p>从整体上来看Object的wait和notify&#x2F;notify是与对象监视器配合完成线程间的等待&#x2F;通知机制，而Condition与Lock配合完成等待通知机制，前者是java底层级别的，后者是语言级别的，具有更高的可控制性和扩展性。两者除了在使用方式上不同外，在功能特性上还是有很多的不同：</p>
-<ol>
-<li>Condition能够支持不响应中断，而通过使用Object方式不支持；</li>
-<li>Condition能够支持多个等待队列（new 多个Condition对象），而Object方式只能支持一个；</li>
-<li>Condition能够支持超时时间的设置，而Object不支持。</li>
-</ol>
-<p>Condition详细原理参见<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/28387056eeb4">TODO</a></p>
-<h2 id="ConcurrentLinkedQueue"><a href="#ConcurrentLinkedQueue" class="headerlink" title="ConcurrentLinkedQueue"></a>ConcurrentLinkedQueue</h2><p>它是一个采用双向链表实现的无界并发非阻塞队列，它属于 LinkedQueue 的安全版本。ConcurrentLinkedQueue 内部采用 CAS 操作保证线程安全，这是非阻塞队列实现的基础，相比 ArrayBlockingQueue、LinkedBlockingQueue 具备较高的性能。</p>
-<p>ConcurrentLinkedQueue使用约定：</p>
-<ol>
-<li>不允许null入列</li>
-<li>在入队的最后一个元素的next为null</li>
-<li>队列中所有未删除的节点的item都不能为null且都能从head节点遍历到</li>
-<li>删除节点是将item设置为null, 队列迭代时跳过item为null节点</li>
-<li>head节点跟tail不一定指向头节点或尾节点，可能存在滞后性</li>
-</ol>
-<p><strong>注意</strong></p>
-<p>ConcurrentLinkedQueue 中的tail节点不一定是最后一个节点，他可能是倒数第二个。所以ConcurrentLinkedQueue判断队尾条件是节点的next为null。</p>
-<h3 id="HOPS-延迟更新的策略-的设计"><a href="#HOPS-延迟更新的策略-的设计" class="headerlink" title="HOPS(延迟更新的策略)的设计"></a>HOPS(延迟更新的策略)的设计</h3><p>tail和head是延迟更新的，两者更新触发时机为： </p>
-<ul>
-<li>tail更新触发时机：当tail指向的节点的下一个节点不为null的时候，会执行定位队列真正的队尾节点的操作，找到队尾节点后完成插入之后才会通过casTail进行tail更新；当tail指向的节点的下一个节点为null的时候，只插入节点不更新tail。 </li>
-<li>head更新触发时机：当head指向的节点的item域为null的时候，会执行定位队列真正的队头节点的操作，找到队头节点后完成删除之后才会通过updateHead进行head更新；当head指向的节点的item域不为null的时候，只删除节点不更新head。</li>
-</ul>
-<h2 id="LinkedTransferQueue"><a href="#LinkedTransferQueue" class="headerlink" title="LinkedTransferQueue"></a>LinkedTransferQueue</h2><p>LinkedTransferQueue是在JDK1.7时，J.U.C包新增的一种比较特殊的阻塞队列，它除了具备阻塞队列的常用功能外，还有一个比较特殊的transfer方法。</p>
-<p>LinkedTransferQueue提供了两种构造器，也没有参数设置队列初始容量，所以是一种无界队列</p>
-<p><strong>注意</strong></p>
-<p>LinkedTransferQueue的单向链表中一定会有至少一个Node节点，既是LinkedTransferQueue队列集合通过默认的构造函数进行实例化时构建的“虚”节点，该节点的isData属性被标识为true，并且和该节点item属性实际引用数据对象的情况冲突（item属性为null），这样一来无论xfer操作进行的是入队操作还是出队操作，这个虚拟节点都会被排除在操作逻辑以外。并且因为q &#x3D; p.next和p &#x3D; q两个操作语句的缘故，代表当前正在处理的p引用会向单向链表的后续结点移动。</p>
-<h3 id="常用方法"><a href="#常用方法" class="headerlink" title="常用方法"></a>常用方法</h3><h4 id="transfer-方法"><a href="#transfer-方法" class="headerlink" title="transfer 方法"></a>transfer 方法</h4><p>用于将指定元素e传递给消费者线程(调用take&#x2F;poll方法)。如果有消费者线程正在阻塞等待，则调用transfer方法的线程会直接将元素传递给它；如果没有消费者线程等待获取元素，则调用transfer方法的线程会将元素插入到队尾，然后阻塞等待，直到出现一个消费者线程获取元素。</p>
-<p>在普通阻塞队列中，当队列为空时，消费者线程（调用take或poll方法的线程）一般会阻塞等待生产者线程往队列中存入元素。而LinkedTransferQueue的transfer方法则比较特殊：</p>
-<ol>
-<li>当有消费者线程阻塞等待时，调用transfer方法的生产者线程不会将元素存入队列，而是直接将元素传递给消费者。</li>
-<li>如果调用transfer方法的生产者线程发现没有正在等待的消费者线程，则会将元素入队，然后会阻塞等待，直到有一个消费者线程来获取该元素。</li>
-</ol>
-<p>TransferQueue还提供了两个变种方法：tryTransfer(E e)、tryTransfer(E e, long timeout, TimeUnit unit)。</p>
-<h4 id="tryTransfer-E-e"><a href="#tryTransfer-E-e" class="headerlink" title="tryTransfer(E e)"></a>tryTransfer(E e)</h4><p>当生产者线程调用tryTransfer方法时，如果没有消费者等待接收元素，则会立即返回false。该方法和transfer方法的区别就是tryTransfer方法无论消费者是否接收，方法立即返回，而transfer方法必须等到消费者消费后才返回。</p>
-<h4 id="tryTransfer-E-e-long-timeout-TimeUnit-unit"><a href="#tryTransfer-E-e-long-timeout-TimeUnit-unit" class="headerlink" title="tryTransfer(E e, long timeout, TimeUnit unit)"></a>tryTransfer(E e, long timeout, TimeUnit unit)</h4><p>tryTransfer（E e，long timeout，TimeUnit unit）方法则是加上了限时等待功能，如果没有消费者消费该元素，则等待指定的时间再返回；如果超时还没消费元素，则返回false，如果在超时时间内消费了元素，则返回true。</p>
-<h4 id="xfer方法"><a href="#xfer方法" class="headerlink" title="xfer方法"></a>xfer方法</h4><p>xfer方法从字面上可以直译为“传送”，它是指通过多种操作模式，利用LinkedTransferQueue队列内置的单向链表，使数据对象在生产者和消费者间进行传递。JDK 9+开始，xfer操作的逻辑做了一次较大的改造，处理逻辑变得更加高效。</p>
-<p>xfer方法是LinkedTransferQueue队列最核心的操作方法之一，其支撑了诸如offer、add、put、transfer、tryTransfer、take、poll等方法的内部实现。</p>
-<h5 id="xfer方法参数"><a href="#xfer方法参数" class="headerlink" title="xfer方法参数"></a>xfer方法参数</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> E <span class="title function_">xfer</span><span class="params">(E e, <span class="type">boolean</span> haveData, <span class="type">int</span> how, <span class="type">long</span> nanos)</span> &#123;</span><br><span class="line">    <span class="comment">// ......</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ol>
-<li>e：该参数就是本次进行传输的数据对象，如果当前xfer方法被消费者线程端调用，则e为null。</li>
-<li>haveData：该参数指示本次xfer方法的调用是否有数据对象通过上一个e参数进行传入，也就是说e和haveData这两个参数是配对使用的。当e为null时，haveData应该为false；反之当e不为nul时，haveData应该为true。</li>
-<li>how：本次xfer方法的操作模式。一共有四种: NOW, ASYNC, SYNC, TIMED。</li>
-<li>nanos：本次xfer方法的操作超时时间（单位纳秒），当本次操作的操作模式为TIMED时（限时&#x2F;超时模式），需要通过该参数指定本次操作的超时时间。</li>
-</ol>
-<h5 id="xfer工作模式"><a href="#xfer工作模式" class="headerlink" title="xfer工作模式"></a>xfer工作模式</h5><p>xfer的调用方式主要分为四种工作模式，在xfer方法的入参中表现为四个不同的数值：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * xfer方法的入参, 不同类型的方法内部调用xfer方法时入参不同.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">NOW</span> <span class="operator">=</span> <span class="number">0</span>;   <span class="comment">// for untimed poll, tryTransfer</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">ASYNC</span> <span class="operator">=</span> <span class="number">1</span>; <span class="comment">// for offer, put, add</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">SYNC</span> <span class="operator">=</span> <span class="number">2</span>; <span class="comment">// for transfer, take</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">TIMED</span> <span class="operator">=</span> <span class="number">3</span>; <span class="comment">// for timed poll, tryTransfer</span></span><br></pre></td></tr></table></figure>
-
-<p>这四个常量值，作为xfer方法的入参，用于标识不同操作类型。其实从常量的命名也可以看出它们对应的操作含义：</p>
-<h6 id="NOW"><a href="#NOW" class="headerlink" title="NOW"></a>NOW</h6><p>表示即时操作（可能失败），即不会阻塞调用线程：</p>
-<ul>
-<li>poll（获取并移除队首元素，如果队列为空，直接返回null）；</li>
-<li>tryTransfer（尝试将元素传递给消费者，如果没有等待的消费者，则立即返回false，也不会将元素入队）</li>
-</ul>
-<h6 id="ASYNC"><a href="#ASYNC" class="headerlink" title="ASYNC"></a>ASYNC</h6><p>表示异步操作（必然成功）：</p>
-<ul>
-<li>offer（插入指定元素至队尾，由于是无界队列，所以会立即返回true）；</li>
-<li>put（插入指定元素至队尾，由于是无界队列，所以会立即返回）；add（插入指定元素至队尾，由于是无界队列，所以会立即返回true）</li>
-</ul>
-<h6 id="SYNC"><a href="#SYNC" class="headerlink" title="SYNC"></a>SYNC</h6><p>表示同步操作（阻塞调用线程）：</p>
-<ul>
-<li>transfer（阻塞直到出现一个消费者线程）；</li>
-<li>take（从队首移除一个元素，如果队列为空，则阻塞线程）</li>
-</ul>
-<h6 id="TIMED"><a href="#TIMED" class="headerlink" title="TIMED"></a>TIMED</h6><p>表示限时同步操作（限时阻塞调用线程）：</p>
-<ul>
-<li>poll(long timeout, TimeUnit unit)；</li>
-<li>tryTransfer(E e, long timeout, TimeUnit unit)</li>
-</ul>
-<h5 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ......</span></span><br><span class="line"><span class="keyword">private</span> E <span class="title function_">xfer</span><span class="params">(E e, <span class="type">boolean</span> haveData, <span class="type">int</span> how, <span class="type">long</span> nanos)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (haveData &amp;&amp; (e == <span class="literal">null</span>)) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NullPointerException</span>();</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// 最外层的for循环，遵循cas操作思想，只要操作不符合预期，就不停的重新操作</span></span><br><span class="line">  <span class="comment">// 直到操作结果符合预期为止</span></span><br><span class="line">  restart: <span class="keyword">for</span> (<span class="type">Node</span> <span class="variable">s</span> <span class="operator">=</span> <span class="literal">null</span>, t = <span class="literal">null</span>, h = <span class="literal">null</span>;;) &#123;</span><br><span class="line">    <span class="comment">// 这是初始化是决定当前p的位置是依据当前单向链表的head节点进行引用还是依据当前单向链表的tail节点进行引用</span></span><br><span class="line">    <span class="comment">// 其本质判断是当前操作是入队操作还是出队操作</span></span><br><span class="line">    <span class="comment">// 其最本质的判定是当前xfer操作的性质（haveData）和当前链表tail引用位置所描述的操作性质（t.isData）是否一致</span></span><br><span class="line">    <span class="comment">// 如果操作性质一致，当前xfer操作就是从tail引用位置开始判定和进行的入队操作</span></span><br><span class="line">    <span class="comment">// 如果操作性质不一致，当前xfer操作就是从head引用位置开始判定和进行的出队操作</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="type">Node</span> <span class="variable">p</span> <span class="operator">=</span> (t != (t = tail) &amp;&amp; t.isData == haveData) ? t : (h = head);; ) &#123;</span><br><span class="line">      <span class="keyword">final</span> Node q; <span class="keyword">final</span> Object item;</span><br><span class="line">      <span class="comment">// 出队操作的场景，其处理策略在此代码段落 </span></span><br><span class="line">      <span class="comment">// 只有当前处理节点p的isData标识和入参的haveData标识一致 </span></span><br><span class="line">      <span class="comment">// 且当前处理节点p真实的数据对象存在情况和入参的haveData标识一致 </span></span><br><span class="line">      <span class="keyword">if</span> (p.isData != haveData &amp;&amp; haveData == ((item = p.item) == <span class="literal">null</span>)) &#123;</span><br><span class="line">        <span class="comment">// 将局部变量h引用与当前单向链表的head位置</span></span><br><span class="line">        <span class="comment">// 避免在多线程情况下head引用被改变引起的处理错误</span></span><br><span class="line">        <span class="keyword">if</span> (h == <span class="literal">null</span>) &#123;</span><br><span class="line">          h = head;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 对当前节点进行原子性赋值：</span></span><br><span class="line">        <span class="comment">// 如果是生产者任务从队列中取出，那么赋值成功后，当前节点p的item属性将为e（不会为null）</span></span><br><span class="line">        <span class="comment">// 如果是消费者任务从队列中取出，那么赋值成功后，当前节点p的item属性将为null</span></span><br><span class="line">        <span class="keyword">if</span> (p.tryMatch(item, e)) &#123;</span><br><span class="line">          <span class="comment">// 在双跳队列进行数据取数操作时，当前处理节点p可能和h不一致，但一定是在h代表的节点“附近”</span></span><br><span class="line">          <span class="comment">// 所以，如果条件成立，就要进行以h代表的节点为基准的链表清理操作</span></span><br><span class="line">          <span class="keyword">if</span> (h != p) &#123;</span><br><span class="line">            skipDeadNodesNearHead(h, p);</span><br><span class="line">          &#125;</span><br><span class="line">          <span class="keyword">return</span> (E) item;</span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 入队操作的场景，其处理策略在此代码段落</span></span><br><span class="line">      <span class="comment">// 加入队列的可能是消费者任务，也可能是生产者任务</span></span><br><span class="line">      <span class="comment">// 根据之前对单向链表tail引用位置的描述，tail引用的位置不一定是单向链表的最后一个节点</span></span><br><span class="line">      <span class="comment">// 所以首先将p节点移动到链表的最后一个节点，否则就不进行业务逻辑处理</span></span><br><span class="line">      <span class="keyword">if</span> ((q = p.next) == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="comment">// 操作方式为NOW的入队操作，将会被忽略</span></span><br><span class="line">        <span class="keyword">if</span> (how == NOW) &#123;</span><br><span class="line">          <span class="keyword">return</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 入队操作需要生成一个新的Node节点</span></span><br><span class="line">        <span class="keyword">if</span> (s == <span class="literal">null</span>) &#123;</span><br><span class="line">          s = <span class="keyword">new</span> <span class="title class_">Node</span>(e);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 使用原子操作，将当前操作s结点引用到当前p结点的item属性</span></span><br><span class="line">        <span class="comment">// 如果操作失败，说明p结点的next操作已经被其它线程中的操作所引用，</span></span><br><span class="line">        <span class="comment">// 那么通过内层的for循环继续进行操作</span></span><br><span class="line">        <span class="keyword">if</span> (!p.casNext(<span class="literal">null</span>, s)) &#123;</span><br><span class="line">          <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 当前p节点引用的位置和t节点引用的可能是单向链表tail处的位置可能不一样</span></span><br><span class="line">        <span class="comment">// 引起这个的原因可能有很多：</span></span><br><span class="line">        <span class="comment">// a、当前xfer操作在中为p节点关联next属性的操作：p.casNext(null, s)不停失败，</span></span><br><span class="line">        <span class="comment">// 不停的在第二层for循环中做q = p.next 和 p == (p = q) 操作</span></span><br><span class="line">        <span class="comment">// b、虽然xfer操作成功了，但是当前线程连续进行了两次xfer调用操作（不好理解？后文将进行图例化讲解）</span></span><br><span class="line">        <span class="keyword">if</span> (p != t) &#123;</span><br><span class="line">          casTail(t, s);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (how == ASYNC) &#123;</span><br><span class="line">          <span class="keyword">return</span> e;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> awaitMatch(s, p, e, (how == TIMED), nanos);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="comment">// 让p引用指向当前节点的下一个节点</span></span><br><span class="line">      <span class="comment">// 如果当前节点的next属性指向自己，说明当前节点已经被移除队列</span></span><br><span class="line">      <span class="comment">// 按照cas的思路，本次xfer操作需要重来</span></span><br><span class="line">      <span class="keyword">if</span> (p == (p = q)) &#123;</span><br><span class="line">        <span class="keyword">continue</span> restart;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line"><span class="comment">// ......</span></span><br><span class="line"><span class="comment">/** Tries to CAS-match this node; if successful, wakes waiter. */</span></span><br><span class="line"><span class="comment">// 这是LinkedTransferQueue.Node类中的方法</span></span><br><span class="line"><span class="comment">// 方法尝试如果当前Node对象的item属性值为cmp的情况下，重新赋值为val</span></span><br><span class="line"><span class="comment">// 如果设置成功，则解除当前Node所代表的等待线程的阻塞状态</span></span><br><span class="line"><span class="comment">// 这个阻塞状态的线程可能是生产者，也可能是生产者。</span></span><br><span class="line"><span class="keyword">final</span> <span class="type">boolean</span> <span class="title function_">tryMatch</span><span class="params">(Object cmp, Object val)</span> &#123;</span><br><span class="line">  <span class="keyword">if</span> (casItem(cmp, val)) &#123;</span><br><span class="line">    LockSupport.unpark(waiter);</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 这是LinkedTransferQueue.Node类中的方法</span></span><br><span class="line"><span class="comment">// 该方法尝试如果当前Node对象的item属性值为cmp的情况下，重新赋值为val，并返回true</span></span><br><span class="line"><span class="comment">// 否则就返回false</span></span><br><span class="line"><span class="keyword">final</span> <span class="type">boolean</span> <span class="title function_">casItem</span><span class="params">(Object cmp, Object val)</span> &#123;</span><br><span class="line">  <span class="comment">// assert isData == (cmp != null);</span></span><br><span class="line">  <span class="comment">// assert isData == (val == null);</span></span><br><span class="line">  <span class="comment">// assert !(cmp instanceof Node);</span></span><br><span class="line">  <span class="keyword">return</span> ITEM.compareAndSet(<span class="built_in">this</span>, cmp, val);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// ......</span></span><br></pre></td></tr></table></figure>
-
-<h2 id="PriorityBlockingQueue"><a href="#PriorityBlockingQueue" class="headerlink" title="PriorityBlockingQueue"></a>PriorityBlockingQueue</h2><p>PriorityBlockingQueue是一个基于堆的无界并发安全的优先级队列，每次出队都返回优先级最高的元素，数据结构是一个二叉树最小堆算法维护的数组，这个数组是可扩容的，直接遍历队列元素是无序的。</p>
-<p>PriorityBlockingQueue可以理解为public操作都加锁的PriorityQueue，通过排他锁保证了操作的线程安全。PriorityBlockingQueue扩容时，因为增加堆数组的长度并不影响队列中元素的出队操作，因而使用自旋CAS操作实现的锁来控制扩容操作，仅在数组引用替换和拷贝元素时才加锁，从而减少了扩容对出队操作的影响。</p>
-<p>PriorityBlockingQueue不允许null值，不允许未实现Comparable接口的对象。</p>
-<p><strong>PriorityQueue特点</strong></p>
-<ol>
-<li>PriorityQueue是基于优先堆的一个无界队列，这个优先队列中的元素可以默认自然排序或者通过提供的Comparator（比较器）在队列实例化的时排序。</li>
-<li>PriorityQueue不允许 null 值，而且不支持 non-comparable（不可比较）的对象，比如用户自定义的类。优先队列要求使用Java Comparable和Comparator接口给对象排序，并且在排序时会按照优先级处理其中的元素。</li>
-<li>PriorityQueue的头是基于自然排序或者Comparator排序的最小元素。如果有多个对象拥有同样的排序，那么就可能随机地取其中任意一个。当我们获取队列时，返回队列的头对象。</li>
-<li>PriorityQueue的大小是不受限制的，所以<strong>put永远不会被阻塞</strong>。但在创建时可以指定初始大小，当我们向优先队列增加元素的时候，队列大小会<strong>自动增加</strong>。</li>
-<li>PriorityQueue是非线程安全的，所以Java提供了PriorityBlockingQueue（实现BlockingQueue接口）用于Java多线程环境。</li>
-</ol>
-<h2 id="DelayQueue"><a href="#DelayQueue" class="headerlink" title="DelayQueue"></a>DelayQueue</h2><p>DelayQueue是一个无界的BlockingQueue，用于放置实现了Delayed接口的对象，其中的对象只能在其到期时才能从队列中取走。这种队列是有序的，即队头对象的延迟到期时间<strong>最短</strong>。</p>
-<p>DelayQueue不允许null值。</p>
-<h3 id="内部结构"><a href="#内部结构" class="headerlink" title="内部结构"></a>内部结构</h3><ul>
-<li>可重入锁</li>
-<li>用于根据delay时间排序的优先级队列</li>
-<li>用于优化阻塞通知的线程元素leader</li>
-<li>用于实现阻塞和通知的Condition对象</li>
-</ul>
-<h2 id="SynchronizedQueue"><a href="#SynchronizedQueue" class="headerlink" title="SynchronizedQueue"></a>SynchronizedQueue</h2><p>经典的生产者-消费者模式，操作流程是这样的：</p>
-<ul>
-<li>有多个生产者，可以并发生产产品，把产品置入队列中，如果队列满了，生产者就会阻塞；</li>
-<li>有多个消费者，并发从队列中获取产品，如果队列空了，消费者就会阻塞；</li>
-</ul>
-<p>SynchronousQueue 也是一个队列来的，但它的特别之处在于它内部没有容器，一个生产线程，当它生产产品（即put的时候），如果当前没有人想要消费产品(即当前没有线程执行take)，此生产线程必须阻塞，等待一个消费线程调用take操作，take操作将会唤醒该生产线程，同时消费线程会获取生产线程的产品（即数据传递）</p>
-<ol>
-<li>SynchronousQueue没有容量。与其他BlockingQueue不同，SynchronousQueue是一个不存储元素的BlockingQueue。每一个put操作必须要等待一个take操作，否则不能继续添加元素，反之亦然。</li>
-<li>因为没有容量，所以对应 peek, contains, clear, isEmpty … 等方法其实是无效的。例如clear是不执行任何操作的，contains始终返回false,peek始终返回null。</li>
-<li>SynchronousQueue分为公平和非公平，默认情况下采用非公平性访问策略，当然也可以通过构造函数来设置为公平性访问策略（为true即可）。</li>
-<li>SynchronousQueue底层有两种数据结构：队列（TransferQueue，实现公平策略）和栈（TransferStack，实现非公平策略）</li>
-<li>若使用 TransferQueue, 则队列中永远会存在一个 dummy node。</li>
-</ol>
-<p>参考资料:</p>
-<ol>
-<li><a target="_blank" rel="noopener" href="https://tech.meituan.com/2016/11/18/disruptor.html">https://tech.meituan.com/2016/11/18/disruptor.html</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/28387056eeb4">https://www.jianshu.com/p/28387056eeb4</a></li>
-<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6970336648710062093">https://juejin.cn/post/6970336648710062093</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/af6f83c78506">https://www.jianshu.com/p/af6f83c78506</a></li>
-<li><a target="_blank" rel="noopener" href="https://pdai.tech/md/java/thread/java-thread-x-juc-collection-ConcurrentLinkedQueue.html">https://pdai.tech/md/java/thread/java-thread-x-juc-collection-ConcurrentLinkedQueue.html</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/yinwenjie/article/details/106796799">https://blog.csdn.net/yinwenjie/article/details/106796799</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/myseries/p/10944211.html">https://www.cnblogs.com/myseries/p/10944211.html</a></li>
 </ol>
 
       

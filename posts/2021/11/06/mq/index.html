@@ -46,7 +46,7 @@
 <script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.cc/posts/2021/11/06/mq/","path":"posts/2021/11/06/mq/","title":"消息队列"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>消息队列 | Apomelo - 追逐</title><meta name="robots" content="noindex">
+<title>消息队列 | Apomelo - 追逐</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false}</script>
@@ -149,7 +149,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E9%9C%80%E6%B1%82"><span class="nav-number">2.1.</span> <span class="nav-text">设计需求</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E8%80%A6"><span class="nav-number">2.1.1.</span> <span class="nav-text">解耦</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">2.1.2.</span> <span class="nav-text">最终一致性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E6%92%AD"><span class="nav-number">2.1.3.</span> <span class="nav-text">广播</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E5%B3%B0%E4%B8%8E%E6%B5%81%E6%8E%A7"><span class="nav-number">2.1.4.</span> <span class="nav-text">错峰与流控</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">2.1.5.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">2.1.6.</span> <span class="nav-text">实现一个消息队列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%B0%E6%9C%89%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">现有模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JMS%EF%BC%88Java-Message-Service%EF%BC%89"><span class="nav-number">2.2.1.</span> <span class="nav-text">JMS（Java Message Service）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AMQP%EF%BC%88Advanced-Message-Queuing-Protocol%EF%BC%89"><span class="nav-number">2.2.2.</span> <span class="nav-text">AMQP（Advanced Message Queuing Protocol）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">设计思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.2.3.</span> <span class="nav-text">架构模型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Publisher%EF%BC%88%E5%8F%91%E5%B8%83%E8%80%85%EF%BC%89"><span class="nav-number">2.2.2.3.1.</span> <span class="nav-text">Publisher（发布者）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Consumer%EF%BC%88%E6%B6%88%E8%B4%B9%E8%80%85%EF%BC%89"><span class="nav-number">2.2.2.3.2.</span> <span class="nav-text">Consumer（消费者）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Message%EF%BC%88%E6%B6%88%E6%81%AF%EF%BC%89"><span class="nav-number">2.2.2.3.3.</span> <span class="nav-text">Message（消息）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Exchange%EF%BC%88%E4%BA%A4%E6%8D%A2%E5%99%A8%EF%BC%89"><span class="nav-number">2.2.2.3.4.</span> <span class="nav-text">Exchange（交换器）</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Direct-Exchange"><span class="nav-number">2.2.2.3.4.1.</span> <span class="nav-text">Direct Exchange</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Fanout-Exchange"><span class="nav-number">2.2.2.3.4.2.</span> <span class="nav-text">Fanout Exchange</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Topic-Exchange"><span class="nav-number">2.2.2.3.4.3.</span> <span class="nav-text">Topic Exchange</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Headers-Exchange"><span class="nav-number">2.2.2.3.4.4.</span> <span class="nav-text">Headers Exchange</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#BindingKey-%E7%BB%91%E5%AE%9A%E9%94%AE%EF%BC%89"><span class="nav-number">2.2.2.3.5.</span> <span class="nav-text">BindingKey (绑定键）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Routingkey%EF%BC%88%E8%B7%AF%E7%94%B1%E9%94%AE%EF%BC%89"><span class="nav-number">2.2.2.3.6.</span> <span class="nav-text">Routingkey（路由键）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Queue%EF%BC%88%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%89"><span class="nav-number">2.2.2.3.7.</span> <span class="nav-text">Queue（消息队列）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Connection%EF%BC%88%E8%BF%9E%E6%8E%A5%EF%BC%89"><span class="nav-number">2.2.2.3.8.</span> <span class="nav-text">Connection（连接）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Channel%EF%BC%88%E4%BF%A1%E9%81%93%EF%BC%89"><span class="nav-number">2.2.2.3.9.</span> <span class="nav-text">Channel（信道）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Virtual-Host%EF%BC%88%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA%EF%BC%89"><span class="nav-number">2.2.2.3.10.</span> <span class="nav-text">Virtual Host（虚拟主机）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AMQP-%E5%92%8C-JMS-%E5%B7%AE%E5%BC%82"><span class="nav-number">2.2.3.</span> <span class="nav-text">AMQP 和 JMS 差异</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">3.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E9%9C%80%E6%B1%82"><span class="nav-number">2.1.</span> <span class="nav-text">设计需求</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E8%80%A6"><span class="nav-number">2.1.1.</span> <span class="nav-text">解耦</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%80%E7%BB%88%E4%B8%80%E8%87%B4%E6%80%A7"><span class="nav-number">2.1.2.</span> <span class="nav-text">最终一致性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B9%BF%E6%92%AD"><span class="nav-number">2.1.3.</span> <span class="nav-text">广播</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E5%B3%B0%E4%B8%8E%E6%B5%81%E6%8E%A7"><span class="nav-number">2.1.4.</span> <span class="nav-text">错峰与流控</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BB%BC%E8%BF%B0"><span class="nav-number">2.1.5.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97"><span class="nav-number">2.1.6.</span> <span class="nav-text">实现一个消息队列</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%B0%E6%9C%89%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.</span> <span class="nav-text">现有模型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#JMS%EF%BC%88Java-Message-Service%EF%BC%89"><span class="nav-number">2.2.1.</span> <span class="nav-text">JMS（Java Message Service）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AMQP%EF%BC%88Advanced-Message-Queuing-Protocol%EF%BC%89"><span class="nav-number">2.2.2.</span> <span class="nav-text">AMQP（Advanced Message Queuing Protocol）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8D%8F%E8%AE%AE"><span class="nav-number">2.2.2.1.</span> <span class="nav-text">协议</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E6%80%9D%E8%B7%AF"><span class="nav-number">2.2.2.2.</span> <span class="nav-text">设计思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9E%B6%E6%9E%84%E6%A8%A1%E5%9E%8B"><span class="nav-number">2.2.2.3.</span> <span class="nav-text">架构模型</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#Publisher%EF%BC%88%E5%8F%91%E5%B8%83%E8%80%85%EF%BC%89"><span class="nav-number">2.2.2.3.1.</span> <span class="nav-text">Publisher（发布者）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Consumer%EF%BC%88%E6%B6%88%E8%B4%B9%E8%80%85%EF%BC%89"><span class="nav-number">2.2.2.3.2.</span> <span class="nav-text">Consumer（消费者）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Message%EF%BC%88%E6%B6%88%E6%81%AF%EF%BC%89"><span class="nav-number">2.2.2.3.3.</span> <span class="nav-text">Message（消息）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Exchange%EF%BC%88%E4%BA%A4%E6%8D%A2%E5%99%A8%EF%BC%89"><span class="nav-number">2.2.2.3.4.</span> <span class="nav-text">Exchange（交换器）</span></a><ol class="nav-child"><li class="nav-item nav-level-6"><a class="nav-link" href="#Direct-Exchange"><span class="nav-number">2.2.2.3.4.1.</span> <span class="nav-text">Direct Exchange</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Fanout-Exchange"><span class="nav-number">2.2.2.3.4.2.</span> <span class="nav-text">Fanout Exchange</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Topic-Exchange"><span class="nav-number">2.2.2.3.4.3.</span> <span class="nav-text">Topic Exchange</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#Headers-Exchange"><span class="nav-number">2.2.2.3.4.4.</span> <span class="nav-text">Headers Exchange</span></a></li></ol></li><li class="nav-item nav-level-5"><a class="nav-link" href="#BindingKey-%E7%BB%91%E5%AE%9A%E9%94%AE%EF%BC%89"><span class="nav-number">2.2.2.3.5.</span> <span class="nav-text">BindingKey (绑定键）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Routingkey%EF%BC%88%E8%B7%AF%E7%94%B1%E9%94%AE%EF%BC%89"><span class="nav-number">2.2.2.3.6.</span> <span class="nav-text">Routingkey（路由键）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Queue%EF%BC%88%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%EF%BC%89"><span class="nav-number">2.2.2.3.7.</span> <span class="nav-text">Queue（消息队列）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Connection%EF%BC%88%E8%BF%9E%E6%8E%A5%EF%BC%89"><span class="nav-number">2.2.2.3.8.</span> <span class="nav-text">Connection（连接）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Channel%EF%BC%88%E4%BF%A1%E9%81%93%EF%BC%89"><span class="nav-number">2.2.2.3.9.</span> <span class="nav-text">Channel（信道）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Virtual-Host%EF%BC%88%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA%EF%BC%89"><span class="nav-number">2.2.2.3.10.</span> <span class="nav-text">Virtual Host（虚拟主机）</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AMQP-%E5%92%8C-JMS-%E5%B7%AE%E5%BC%82"><span class="nav-number">2.2.3.</span> <span class="nav-text">AMQP 和 JMS 差异</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-number">3.</span> <span class="nav-text">问题</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MQ%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">3.1.</span> <span class="nav-text">MQ怎么解决重复消费的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQ%E6%B6%88%E6%81%AF%E7%A7%AF%E5%8E%8B%E6%80%8E%E4%B9%88%E8%A7%A3%E5%86%B3"><span class="nav-number">3.2.</span> <span class="nav-text">MQ消息积压怎么解决</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MQ%E5%A6%82%E4%BD%95%E9%80%89%E6%8B%A9"><span class="nav-number">3.3.</span> <span class="nav-text">MQ如何选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%A0%E7%A7%8Dmq%E5%AF%B9%E6%AF%94"><span class="nav-number">3.3.1.</span> <span class="nav-text">几种mq对比</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97%E6%80%8E%E4%B9%88%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.4.</span> <span class="nav-text">延迟队列怎么实现</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -162,18 +162,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">23</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">9</span>
+        <span class="site-state-item-count">10</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">40</span>
+        <span class="site-state-item-count">43</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -289,7 +289,7 @@
 <p>业界有一些为“最终一致性”而生的消息队列，如 Notify（阿里）、QMQ（去哪儿）等，其设计初衷，就是为了交易系统中的高可靠通知。</p>
 <p>所有跨 VM 的一致性问题，从技术的角度讲通用的解决方案是：</p>
 <ol>
-<li>强一致性<br>分布式事务，但落地太难且成本太高，后文会具体提到。</li>
+<li>强一致性<br>分布式事务，但落地太难且成本太高。</li>
 <li>最终一致性<br>主要是用“记录”和“补偿”的方式。在做所有的不确定的事情之前，先把事情记录下来，然后去做不确定的事情，结果可能是：成功、失败或是不确定，“不确定”（例如超时等）可以等价为失败。成功就可以把记录的东西清理掉了，对于失败和不确定，可以依靠定时任务等方式把所有失败的事情重新搞一遍，直到成功为止。</li>
 </ol>
 <p>最终一致性不是消息队列的必备特性，但确实可以依靠消息队列来做最终一致性的事情。另外，所有不保证理论上 100%不丢消息的消息队列 (排除系统严重故障和 bug)，理论上无法实现最终一致性。像 Kafka 一类的设计，在设计层面上就有丢消息的可能（比如定时刷盘，如果掉电就会丢消息）。哪怕只丢千分之一的消息，业务也必须用其他的手段来保证结果正确。</p>
@@ -430,10 +430,89 @@
 
 # kafka
 
+# pulsar
+
 # rabbitmq
 
 # activemq -->
 
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><h2 id="MQ怎么解决重复消费的问题"><a href="#MQ怎么解决重复消费的问题" class="headerlink" title="MQ怎么解决重复消费的问题"></a>MQ怎么解决重复消费的问题</h2><p>关键是解决消费的幂等性。每条生产消息都应该配置一个全局唯一D和消费状态，存放在mysqli或edis中。在消费端的业务代码中可以通过中间件或拦截器检查消息表中的状态是否已经被消费过。</p>
+<h2 id="MQ消息积压怎么解决"><a href="#MQ消息积压怎么解决" class="headerlink" title="MQ消息积压怎么解决"></a>MQ消息积压怎么解决</h2><ol>
+<li>优先解决线上问题，临时扩容消费端</li>
+<li>通过日志排查，为何会积压消息</li>
+<li>优化业务逻辑，或根据实际情况选择扩容</li>
+</ol>
+<h2 id="MQ如何选择"><a href="#MQ如何选择" class="headerlink" title="MQ如何选择"></a>MQ如何选择</h2><p>kafka,只做消息持久化，不删消息，消费端需要维护offset,特点是高并发高吞吐，适合日志队列<br>rabbitmg,数据安全可靠，支持事务等，队列模型多样，适合各种业务场景<br>rocketmq,数据可靠，阿里维护，比较成熟</p>
+<h3 id="几种mq对比"><a href="#几种mq对比" class="headerlink" title="几种mq对比"></a>几种mq对比</h3><table>
+<thead>
+<tr>
+<th>特性</th>
+<th>ActiveMQ</th>
+<th>RabbitMQ</th>
+<th>RocketMQ</th>
+<th>Kafka</th>
+<th>Pulsar</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>单机吞吐量</td>
+<td>万级，比RocketMQ、Kafka低一个数量级</td>
+<td>同ActiveMQ</td>
+<td>10w+&#x2F;s，支撑高吞吐，支持强一致，强一致性下吞吐量稍低</td>
+<td>10w+&#x2F;s，高吞吐，一般配合大数据类的系统来进行实时数据计算、日志采集等场景</td>
+<td>14w+&#x2F;s，高吞吐，支持强一致</td>
+</tr>
+<tr>
+<td>topic数量对吞吐量的影响</td>
+<td></td>
+<td></td>
+<td>topic可以达到几百&#x2F;几千的级别，吞吐量会有较小幅度的下降，这是RocketMQ的一大优势，在同等机器下，可以支撑大量的topic</td>
+<td>topic从几十到几百个时候，吞吐量会大幅度下降，在同等机器下，Kafka尽量保证topic数量不要过多，如果要支撑大规模的topic，需要增加更多的机器资源</td>
+<td>Pulsar采用存算分离的架构，数据采用bookeeper存储。上层broker是无状态代理， 两层可以独立扩容，因此topic个数对吞吐量不会产生显著的影响，</td>
+</tr>
+<tr>
+<td>时效性</td>
+<td>ms级</td>
+<td>ms级</td>
+<td>ms级</td>
+<td>延迟在ms级以内</td>
+<td>ms级</td>
+</tr>
+<tr>
+<td>可用性</td>
+<td>高，基于主从架构实现高可用</td>
+<td>同ActiveMQ</td>
+<td>非常高，分布式架构（分为4.5版本后的Dledger架构和普通master-slave架构两种，但普通主从架构不支持故障自动切换，运维不太友好）</td>
+<td>非常高，分布式，一个数据多个副本，少数机器宕机，不会丢失数据，不会导致不可用</td>
+<td>非常高，broker层是无状态代理，动态扩容，数据存储层bookeeper采用segment-oriented存储机制，无写入不可用风险</td>
+</tr>
+<tr>
+<td>消息可靠性</td>
+<td>有较低的概率丢失数据</td>
+<td>基本不丢</td>
+<td>经过参数优化配置，可以做到0丢失</td>
+<td>经过参数优化配置，可以做到 最小概率不丢失</td>
+<td>经过参数配置后，可以做到0丢失</td>
+</tr>
+<tr>
+<td>功能支持</td>
+<td>MQ领域的功能极其完备</td>
+<td>基于erlang开发，并发能力很强，性能极好，延时很低</td>
+<td>MQ功能较为完善，还是分布式的，扩展性好，社区和kafka相比，并不是太活跃</td>
+<td>功能较为简单易用、生态完善、绝大部分场景都可使用，在大数据领域的实时计算以及日志采集被大规模使用</td>
+<td>云原生时代的新一代消息中间件，社区活跃、支持多租户、强一致、跨域部署等诸多特性</td>
+</tr>
+</tbody></table>
+<h2 id="延迟队列怎么实现"><a href="#延迟队列怎么实现" class="headerlink" title="延迟队列怎么实现"></a>延迟队列怎么实现</h2><p><strong>场景</strong></p>
+<ol>
+<li>订单成功后，在30分钟内没有支付，自动取消订单</li>
+<li>如果订单一直处于某一个未完结状态时，及时处理关单，并退还库存</li>
+<li>支付成功后，2秒后查询支付结果</li>
+<li><strong>方案</strong></li>
+<li>rabbitmg TTL+死消息队列：基本原理是对消息设置过期时间，过期的消息会放置到死消息队列，专门处理死消息队列视作延迟队列</li>
+<li>redis有序集合数据安全不太可靠，集合中的数据量大时，影响速度。基本原理是插入时间戳为score的消息，让zSet按时间自动排序。消费时判断时间戳，到时间则处理，没到时间则轮询等待。</li>
+<li>kfka时间轮：原理比较复杂，基本原理使用一个数组模拟时间钟，键作为秒针，把消息任务存放在某个键值内，程序定时取该数组键值执行然后。</li>
+</ol>
 <h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
 <li><a target="_blank" rel="noopener" href="https://tech.meituan.com/2016/07/01/mq-design.html">消息队列设计精要</a></li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/99791229">消息队列漫谈：什么是消息模型？</a></li>
@@ -442,7 +521,7 @@
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/147675691">AMQP 协议学习</a></li>
 <li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904039193280526">RabbitMQ 核心概念详解</a></li>
 </ol>
-<!-- flag of hidden posts -->
+
     </div>
 
     
@@ -457,6 +536,18 @@
 
         
 
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2021/08/13/Github%20Page%20%E9%83%A8%E7%BD%B2/" rel="prev" title="Github Page 部署">
+                  <i class="fa fa-chevron-left"></i> Github Page 部署
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2022/01/09/netty%E7%AC%94%E8%AE%B0/" rel="next" title="netty笔记">
+                  netty笔记 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
     </footer>
   </article>
 </div>
