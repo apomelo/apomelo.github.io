@@ -275,37 +275,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>欢迎来到我的博客，这是我第一篇自己写的博客，也是第一次用markdown语法来写，怀着有些激动的心写下这篇博客。<br></p>
-<p>在工作中接触到了IAX2协议，找遍了网上只找到了一些中文的论文。没有协议文档的具体翻译，最后只能自己看英文文档：<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5456">《RFC 5456》</a>。后因需要整理IAX2文档，就开始整理一个简短的文档，但发现还有所不足，后就开始着手进行翻译，也是为之后需要中文文档的人提供一些帮助，完整的文档地址：<a target="_blank" rel="noopener" href="https://download.csdn.net/download/nosecure/10410387">IAX2协议文档（RFC 5456）中文翻译</a>。建议英文水平好的看原英文文档。<br></p>
-<p>下面为大家简单介绍一下IAX2协议：<br></p>
-<p>IAX 是 Inter-Asterisk eXchange 的缩写，也就是 Asterisk 内部交换协议。IAX最初用在Asterisk上。</p>
-<p>IAX优点：</p>
-<ol>
-<li>只用一个UDP端口：4569，来传输通信数据，包括控制信令和媒体数据等。</li>
-<li>媒体数据并不需要额外的RTP流，所以可以轻易穿越NAT。</li>
-<li>媒体数据会用一个迷你帧来发送，迷你帧帧头只有4字节，不携带控制或信令数据，有效载荷比较大。迷你帧是不可靠传输，但由于语音通话通常是实时发送的，因此丢失的帧太旧而无法重新集成到音频流中，以至于无法重新传输，所以几乎没有影响，而且每65.536秒需要重置时间标志。</li>
-<li>用二进制编码。</li>
-</ol>
-<p>IAX缺点:</p>
-<ol>
-<li>因为只用一个端口，所以容易被攻击。</li>
-<li>编解码器定义由内部定义的32位掩码控制，因此编解码器必须在协议中定义，同时编解码器的最大数量受到限制。</li>
-<li>实施问题（如果资源较少没有非常完善的库算的话）。</li>
-<li>用二进制编码。</li>
-</ol>
-<p>协议里每个字段的具体含义及详细介绍请参见：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5456">英文文档《RFC 5456》</a></li>
-<li><a target="_blank" rel="noopener" href="https://download.csdn.net/download/nosecure/10410387">IAX2协议文档（RFC 5456）中文翻译</a></li>
-</ul>
-<p>这里给大家推荐几个iax Java库：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://code.google.com/archive/p/njiax/downloads">njiax</a><br>  实现的比较简陋，但是层次相对清晰，需要增加信令、完善交互流程等，线程创建数量较多，需要用线程池替代。</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/misternerd/djiax">djiax</a><br>  实现相对完善，也需要增加信令、完善交互流程编码等，线程复用，但是限制了电话的并发数，应该用线程池替代。</li>
-<li><a target="_blank" rel="noopener" href="https://github.com/apomelo/njiax-a">njiax-a</a><br>  本人fork了njiax库，在此基础上增加部分信令、完善交互流程、增加G711和G729等编码方式、增加DTFMFrame处理、添加了简单的注册拨打示例等，详细信息见github。</li>
-</ul>
-<p align="right">可以转载，但请标明出处</p>
-
+          <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>在工作中接触到了IAX2协议，找遍了网上只找到了一些中文的论文。没有协议文档的具体翻译，最后只能自己看英文文档：<a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5456">《RFC 5456》</a>。后因需要整理IAX2文档，就开始整理一个简短的文档，但发现还有所不足，后就开始着手进行翻译，也是为之后需要中文文档的人提供一些帮助，完整的文档地址：<a target="_blank" rel="noopener" href="https://download.csdn.net/download/nosecure/10410387">IAX2协议文档（RFC 5456）中文翻译</a>。建议英文水平好的看原英文文档。<br></p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/2018/05/12/voip-iax2/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -396,36 +374,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h2 id="URL"><a href="#URL" class="headerlink" title="URL"></a>URL</h2><h3 id="前端访问后端地址，带有小数点导致参数不全"><a href="#前端访问后端地址，带有小数点导致参数不全" class="headerlink" title="前端访问后端地址，带有小数点导致参数不全"></a>前端访问后端地址，带有小数点导致参数不全</h3><p>例：</p>
-<ol>
-<li><a target="_blank" rel="noopener" href="https://localhost:3000/download/voice.wav">https://localhost:3000/download/voice.wav</a></li>
-<li><a target="_blank" rel="noopener" href="https://localhost:3000/download/voice.wav?parameter=1">https://localhost:3000/download/voice.wav?parameter=1</a></li>
-</ol>
-<p>会忽略小数点之后的内容。<br>原因：url中含有小数点，浏览器会认为是访问的文件<br>解决办法：</p>
-<ol>
-<li>访问API时，url的末尾加  &#x2F;， 如：<a target="_blank" rel="noopener" href="https://localhost:3000/download/voice.wav/">https://localhost:3000/download/voice.wav/</a></li>
-<li>把带小数点的路径前移， 如：<a target="_blank" rel="noopener" href="https://localhost:3000/voice.wav/download">https://localhost:3000/voice.wav/download</a><br>在后端中，如果需要接收voice.wav这个参数，Spring可以用：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(/&#123;fileName&#125;/download)</span></span><br><span class="line"><span class="keyword">public</span> ResponseEntity&lt;<span class="type">byte</span>[]&gt; download(<span class="meta">@RathVariable(&quot;fileName&quot;)</span> String fileName) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h2 id="JS"><a href="#JS" class="headerlink" title="JS"></a>JS</h2><h3 id="1-函数"><a href="#1-函数" class="headerlink" title="1.函数"></a>1.函数</h3><p>js中有三种：函数声明、函数表达式、匿名函数</p>
-<p><strong>函数声明</strong>： <code>function fnName() &#123;...&#125;</code> ；<br>使用 function 关键字声明一个函数，再执行一个函数名，叫函数声明。</p>
-<p><strong>函数表达式</strong>： <code>var fnName = function() &#123; ... &#125;</code> ；<br>使用 function 关键字声明一个函数，但未给函数命名，最后将匿名函数赋予一个变量，叫函数表达式，这是最常见的函数表达式语法形式。</p>
-<p><strong>匿名函数</strong>： <code>function() &#123; ... &#125;</code> ；<br>使用 function 关键字声明一个函数，但未给函数命名，所以叫匿名函数，匿名函数属于函数表达式，匿名函数有很多作用，赋予一个变量则创建函数，赋予一个事件则成为事件处理程序或创建闭包等等。</p>
-<p><strong>函数声明和函数表达式不同之处在于</strong><br/><br>1、JavaScript 引擎在解析 JavaScript 代码时会“函数声明提升”当前执行环境(作用域)上的函数声明，而函数表达式必须等到 JavaScript 引擎执行到它所在行时，才会从上而下一行一行地解析函数表达式。</p>
-<p>2、函数表达式后面可以加括号立即调用该函数，函数声明不可以，只能以 fnName() 形式调用。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">(function(a) &#123;</span><br><span class="line">  console.log(a);  //使用()运算符，打印出123</span><br><span class="line">&#125;)(123);</span><br><span class="line"></span><br><span class="line">(function(a) &#123;</span><br><span class="line">  console.log(a);  //使用()运算符，打印出1234</span><br><span class="line">&#125;(1234));</span><br><span class="line"></span><br><span class="line">!function(a) &#123;</span><br><span class="line">  console.log(a);  //使用!运算符，打印出12345</span><br><span class="line">&#125;(12345);</span><br><span class="line"></span><br><span class="line">+function(a) &#123;</span><br><span class="line">  console.log(a);  //使用+运算符，打印出123456</span><br><span class="line">&#125;(123456);</span><br><span class="line"></span><br><span class="line">-function(a) &#123;</span><br><span class="line">  console.log(a);  //使用-运算符，打印出1234567</span><br><span class="line">&#125;(1234567);</span><br><span class="line"></span><br><span class="line">var fn = function(a) &#123;</span><br><span class="line">  console.log(a);  //使用=运算符，打印出12345678</span><br><span class="line">&#125;(12345678);</span><br></pre></td></tr></table></figure>
-
-<p>可以看到输出结果，在 function 前面加 ! 、+ 、- 甚至是逗号等都可以起到函数定以后立即执行的效果，而 () 、! 、+ 、- 、&#x3D; 等运算符，都将函数声明转换成函数表达式，消除了 javascript 引擎识别函数表达式和函数声明的歧义，告诉 javascript 引擎这是一个函数表达式，不是函数声明，可以在后面加括号，并立即执行函数的代码。</p>
-<p>加括号是最安全的做法，因为 ! 、+ 、- 等运算符还会和函数的返回值进行运算，有时造成不必要的麻烦。</p>
-<p><strong>立即执行函数作用</strong>：创建一个独立的作用域。<br>不过这样的写法有什么用呢？</p>
-<p>javascript 中没有私有作用域的概念，如果在多人开发的项目上，你在全局或局部作用域中声明了一些变量，可能会被其他人不小心用同名的变量给覆盖掉，根据 javascript 函数作用域链的特性，可以使用这种技术可以模仿一个私有作用域，用匿名函数作为一个“容器”，“容器”内部可以访问外部的变量，而外部环境不能访问“容器”内部的变量，所以 (function(){ … })() 内部定义的变量不会和外部的变量发生冲突，俗称“匿名包裹器”或“命名空间”。</p>
-<p>jQuery 使用的就是这种方法，将 jQuery 代码包裹在 (function(window,undefined){ …jquery代码…})(window) 中，在全局作用域中调用 jQuery 代码时，可以达到保护 jQuery 内部变量的作用。</p>
-<p>参考资料：<a target="_blank" rel="noopener" href="http://www.css88.com/archives/7052">10道典型的JavaScript面试题</a></p>
-<h3 id="splice-数组元素的插入删除与替换"><a href="#splice-数组元素的插入删除与替换" class="headerlink" title="splice()数组元素的插入删除与替换"></a>splice()数组元素的插入删除与替换</h3><p>面试的时候如果主考官让你使用JavaScript来实现对数组元素进行插入、删除、替换操作。如果不知道Array.prototype.splice的使用的方法那很有可能就要被扣分了。使用javascript数组类型内置的splice方法仅需一行代码即可轻松实现对数组元素进行插入、删除、替换操作。</p>
-<p>方法名：Array.prototype.splice(index,count[,elm1,elm2…n])</p>
-<p>使用Array类型的splice方法可以对数组元素进行插入、替换、删除。该方法讲直接影响当前的数组对象(与.slice(index1,index2)方法不同)并返回被删除的数组项。</p>
-<p>参数：</p>
-<p>index ：数组中元素的起始下标。<br>count ：需要要被删除或替换的元素个数。<br>elems ：需要插入到数组中的项。<br>返回值 ：返回从素组中被移除的项。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;script type=<span class="string">&quot;text/javascript&quot;</span>&gt;</span><br><span class="line"><span class="keyword">var</span> items =[<span class="string">&quot;a&quot;</span>,<span class="string">&quot;b&quot;</span>,<span class="string">&quot;c&quot;</span>,<span class="string">&quot;d&quot;</span>,<span class="string">&quot;e&quot;</span>];</span><br><span class="line"></span><br><span class="line"><span class="comment">//删除元素</span></span><br><span class="line">result = items.<span class="title function_">splice</span>(<span class="number">1</span>,<span class="number">2</span>)</span><br><span class="line"><span class="comment">//这个操作删除了示例中items数组中的元素[&quot;b&quot;，&quot;c&quot;],并返回[&quot;b&quot;，&quot;c&quot;]给result.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//替换元素</span></span><br><span class="line">result = items.<span class="title function_">splice</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="string">&quot;x&quot;</span>,<span class="string">&quot;y&quot;</span>)</span><br><span class="line"><span class="comment">//这个操作使用元素&quot;x&quot;,&quot;y&quot;替换了示例中items数组中的元素[&quot;b&quot;，&quot;c&quot;],并返回[&quot;b&quot;，&quot;c&quot;] 给 result.</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//插入元素</span></span><br><span class="line">result = items.<span class="title function_">splice</span>(<span class="number">1</span>,<span class="number">0</span>,<span class="string">&quot;x&quot;</span>,<span class="string">&quot;y&quot;</span>)</span><br><span class="line"><span class="comment">//这个操作的结果是在示例中items数组的的&quot;b&quot;元素后插入[&quot;x&quot;,&quot;y&quot;],返回值为空。</span></span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+          <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>随手记</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/2018/11/26/%E5%89%8D%E7%AB%AF%E7%AC%94%E8%AE%B0/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -516,96 +473,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h3 id="方法详解"><a href="#方法详解" class="headerlink" title="方法详解"></a>方法详解</h3><ol>
-<li>jbyte * GetByteArrayElements(jbyteArray array, jboolean *isCopy);<br>用于获取传递进去的jbyteArray的数据，返回值为 jbyte *, 对 jbyte * 进行修改，不会影响原数据值。</li>
-<li>void ReleaseByteArrayElements(jbyteArray array, jbyte *elems, jint mode);<br>用于把GetByteArrayElements得到数据后做的修改同步到原数据。</li>
-<li>jmethodID GetMethodID(jclass clazz, const char *name, const char *sig);<br>clazz是jclass，name是方法名称，sig是签名。<br>签名形式：()V，括号里面是参数的签名，后面是返回值签名。<br>例：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">要回调的java程序：</span><br><span class="line"><span class="keyword">public</span> <span class="type">byte</span>[] onTestMixed(<span class="type">byte</span>[] bytes, <span class="type">boolean</span> isBoolean, String s) &#123;</span><br><span class="line">    logger.info(<span class="string">&quot;This is onTestMixed callback function. Message: [bytes=&#123;&#125;, isBoolean=&#123;&#125;, s=&#123;&#125;]&quot;</span>, bytes, isBoolean, s);</span><br><span class="line">    <span class="keyword">return</span> bytes;</span><br><span class="line">&#125;</span><br><span class="line">回调示例：</span><br><span class="line"><span class="type">jclass</span> <span class="variable">javaClass</span> <span class="operator">=</span> (*env).FindClass(<span class="string">&quot;com/jnitest/jni/JniTest&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> (javaClass == <span class="number">0</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">jmethodID</span> <span class="variable">javaCallbackId</span> <span class="operator">=</span> (*env).GetMethodID(javaClass, <span class="string">&quot;onTestMixed&quot;</span>, <span class="string">&quot;([BZLjava/lang/String;)[B&quot;</span>);</span><br><span class="line"><span class="keyword">if</span> (javaCallbackId == NULL) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">jbyteArray</span> <span class="variable">arg1</span> <span class="operator">=</span> env-&gt;NewByteArray(<span class="number">3</span>);</span><br><span class="line">signed <span class="type">char</span> chs[<span class="number">3</span>] = &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>&#125;;</span><br><span class="line">jbyte* jbs = chs;</span><br><span class="line">env-&gt;SetByteArrayRegion(arg1, <span class="number">0</span>, <span class="number">3</span>, jbs);</span><br><span class="line"></span><br><span class="line"><span class="type">jboolean</span> <span class="variable">arg2</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line"><span class="type">jstring</span> <span class="variable">arg3</span> <span class="operator">=</span> (*env).NewStringUTF(<span class="string">&quot;3&quot;</span>);</span><br><span class="line"></span><br><span class="line">(*env).CallVoidMethod(jobj, javaCallbackId, arg1, arg2, arg3);</span><br></pre></td></tr></table></figure>
-其他完整示例见：<a target="_blank" rel="noopener" href="https://github.com/apomelo/java-jni">java-jni程序</a></li>
-</ol>
-<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><p>C++回调java函数，只能回调该Jni文件的函数，寻找该类有两种方法：<br>对应的C++方法：</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">JNIEXPORT <span class="type">void</span> JNICALL <span class="title">Java_com_jnitest_jni_JniTest_testVoid</span></span></span><br><span class="line"><span class="function">  <span class="params">(JNIEnv *env, jobject jobj)</span> </span>&#123;</span><br><span class="line">      <span class="comment">// 下方的方法一和二</span></span><br><span class="line">      <span class="comment">// 调用env中的方法有两种形式，env-&gt;和(*env).，示例见方法一和二</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<p>1. </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//直接用GetObjectClass找到Class, 也就是JniTest.class.</span><br><span class="line">jclass javaClass = env-&gt;GetObjectClass(jobj);</span><br></pre></td></tr></table></figure>
-<p>2. </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//直接用findClass找到Class, 也就是JniTest.class.</span><br><span class="line">jclass javaClass = (*env).FindClass(&quot;com/jnitest/jni/JniTest&quot;);</span><br></pre></td></tr></table></figure>
-<p>3.<br>java类型与签名表</p>
-<table>
-<thead>
-<tr>
-<th align="center">java类型</th>
-<th align="left">对应的签名</th>
-<th align="left">C++对应类型</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="center">void</td>
-<td align="left">V</td>
-<td align="left">void</td>
-</tr>
-<tr>
-<td align="center">boolean</td>
-<td align="left">Z</td>
-<td align="left">jboolean</td>
-</tr>
-<tr>
-<td align="center">char</td>
-<td align="left">C</td>
-<td align="left">jchar</td>
-</tr>
-<tr>
-<td align="center">byte</td>
-<td align="left">B</td>
-<td align="left">jbyte</td>
-</tr>
-<tr>
-<td align="center">short</td>
-<td align="left">S</td>
-<td align="left">jshort</td>
-</tr>
-<tr>
-<td align="center">int</td>
-<td align="left">I</td>
-<td align="left">jint</td>
-</tr>
-<tr>
-<td align="center">long</td>
-<td align="left">J</td>
-<td align="left">jlong</td>
-</tr>
-<tr>
-<td align="center">float</td>
-<td align="left">F</td>
-<td align="left">jfloat</td>
-</tr>
-<tr>
-<td align="center">double</td>
-<td align="left">D</td>
-<td align="left">jdouble</td>
-</tr>
-<tr>
-<td align="center">string</td>
-<td align="left">Ljava&#x2F;lang&#x2F;String;</td>
-<td align="left">jstring</td>
-</tr>
-<tr>
-<td align="center">byte[]</td>
-<td align="left">[B</td>
-<td align="left">jbyteArray</td>
-</tr>
-</tbody></table>
-<h3 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h3><ol>
-<li><p>Jni和C++类型相互转换问题，即C++对应的类型与C++原生类型(或由原生类型定义出来的其他类型)相互转换问题：<br>jstring &lt;-&gt; char *<br>jbyteArray &lt;-&gt; BYTE *</p>
-</li>
-<li><p>由多线程引起的问题<br>问题：在java第一次调用C++库时，把<br>JNIEnv <em>env; 和 jobject jobj;<br>保存为全局静态变量。<br>C++库中有线程在接收数据，之后通过保存的env和jobj回调java方法，接着就会报出异常、结束程序、生成core以及其他错误文件。<br>原因：<br>JNI文档上说,JNI接口的指针JNIEnv</em>不能在c++的线程间共享。<br>解决办法：<br>JNI接口指针不可为多个线程共用，但是java虚拟机的JavaVM指针是整个jvm公用的。<br>声明JavaVM *和jobject为全局变量：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">static JavaVM *gs_jvm = NULL;   // Returns “0” on success; returns a negative value on failure.</span><br><span class="line">static jobject gs_jobj = NULL;  // 不可以直接保存obj到全局变量，应该调用该函数</span><br></pre></td></tr></table></figure>
-<p>在第一次调用C++库时，保存gs_jvm和gs_jobj：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int retJvm = env-&gt;GetJavaVM(&amp;gs_jvm);</span><br><span class="line">gs_jobj = env-&gt;NewGlobalRef(jobj);</span><br></pre></td></tr></table></figure>
-<p>jobject指针也不能在多个线程中共享，就是说 不能直接在保存一个线程中的jobject指针到全局变量中 然后在另外一个线程中使用它。所以需要用上面的方法来保存。<br>调用方式：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">在方法中调用：</span><br><span class="line">JNIEnv *env;</span><br><span class="line">gs_jvm-&gt;AttachCurrentThread((void **) &amp;env, NULL):</span><br><span class="line">jclass javaClass = env-&gt;GetObjectClass(gs_jobj);</span><br></pre></td></tr></table></figure></li>
-</ol>
-<h3 id="测试程序"><a href="#测试程序" class="headerlink" title="测试程序"></a>测试程序</h3><p><a target="_blank" rel="noopener" href="https://github.com/apomelo/java-jni">java-jni程序</a></p>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><p><a target="_blank" rel="noopener" href="http://www.cocos.com/docs/native/v2/sdk-integration/android-jni/zh.html">http://www.cocos.com/docs/native/v2/sdk-integration/android-jni/zh.html</a><br><a target="_blank" rel="noopener" href="https://blog.csdn.net/popop123/article/details/1511180">https://blog.csdn.net/popop123/article/details/1511180</a><br><a target="_blank" rel="noopener" href="http://files.cnblogs.com/luxiaofeng54/JNI_Docs.rar">JNI 文档下载</a></p>
-
+          <h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>本文简单介绍 jni 的使用以及使用过程中遇到的问题</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/2018/10/25/java-jni/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 
@@ -696,55 +572,15 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <h4 id="H323库、Gungk、FreeSwitch安装遇到的问题"><a href="#H323库、Gungk、FreeSwitch安装遇到的问题" class="headerlink" title="H323库、Gungk、FreeSwitch安装遇到的问题"></a>H323库、Gungk、FreeSwitch安装遇到的问题</h4><p><strong>安装环境</strong><br>&amp;emsp;CentOS Linux release 7.3.1611 (Core)</p>
-<h5 id="ptlib-2-10-9-2"><a href="#ptlib-2-10-9-2" class="headerlink" title="ptlib-2_10_9_2"></a>ptlib-2_10_9_2</h5><p>安装教程：<a target="_blank" rel="noopener" href="http://wiki.opalvoip.org/index.php?n=Main.BuildingPTLibUnix#Install">http://wiki.opalvoip.org/index.php?n=Main.BuildingPTLibUnix#Install</a></p>
-<ol>
-<li>configure: error: PTLib needs the GNU Project fast lexical analyzer generator flex<br>解决方案：<br>yum install flex</li>
-<li>configure: error: PTLib needs the GNU Project parser generator bison<br>解决方案：<br>yum install bison</li>
-</ol>
-<h5 id="h323plus-1-27-0"><a href="#h323plus-1-27-0" class="headerlink" title="h323plus-1_27_0"></a>h323plus-1_27_0</h5><p>安装参考：<a target="_blank" rel="noopener" href="http://wiki.opalvoip.org/index.php?n=Main.BuildingOpalUnix">http://wiki.opalvoip.org/index.php?n=Main.BuildingOpalUnix</a></p>
-<h5 id="gnugk-4-7"><a href="#gnugk-4-7" class="headerlink" title="gnugk-4.7"></a>gnugk-4.7</h5><p>安装参考：<a target="_blank" rel="noopener" href="https://freeswitch.org/confluence/display/FREESWITCH/CentOS+7+and+RHEL+7">https://freeswitch.org/confluence/display/FREESWITCH/CentOS+7+and+RHEL+7</a></p>
-<p><strong>错误一</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">make -C /usr/local/src opt</span><br><span class="line">make[2]: Entering directory `/usr/local/src&#x27;</span><br><span class="line">make[2]: *** No rule to make target `opt&#x27;.  Stop.</span><br><span class="line">make[2]: Leaving directory `/usr/local/src&#x27;</span><br><span class="line">make[1]: *** [/usr/local/lib/libh323_linux_x86_64__s.a] Error 2</span><br><span class="line">make[1]: Leaving directory `/root/freeswitch/gnugk-4.7&#x27;</span><br><span class="line">make: *** [optnoshared] Error 2</span><br></pre></td></tr></table></figure>
-<p>解决方案：<br>cp (原文件目录)&#x2F;lib&#x2F;libh323_linux_x86_64__s.a &#x2F;usr&#x2F;local&#x2F;lib&#x2F;</p>
-<p><strong>错误二</strong><br>make: *** No rule to make target <code>/usr/local/share/ptlib//lib_linux_x86_64/libpt.so&#39;, needed by </code>versionts.h’.  Stop.<br>解决方案：<br>ln -s &#x2F;usr&#x2F;local&#x2F;lib&#x2F;libpt.so &#x2F;usr&#x2F;local&#x2F;share&#x2F;ptlib&#x2F;&#x2F;lib_linux_x86_64&#x2F;</p>
-<h5 id="freeswitch-1-8-2"><a href="#freeswitch-1-8-2" class="headerlink" title="freeswitch-1.8.2"></a>freeswitch-1.8.2</h5><p>安装参考：<a target="_blank" rel="noopener" href="https://freeswitch.org/confluence/display/FREESWITCH/CentOS+7+and+RHEL+7">https://freeswitch.org/confluence/display/FREESWITCH/CentOS+7+and+RHEL+7</a></p>
-<p>安装前：</p>
-<ol>
-<li>yum install -y <a target="_blank" rel="noopener" href="http://files.freeswitch.org/freeswitch-release-1-6.noarch.rpm">http://files.freeswitch.org/freeswitch-release-1-6.noarch.rpm</a> epel-release</li>
-<li>yum install -y alsa-lib-devel autoconf automake bison broadvoice-devel bzip2 curl-devel db-devel e2fsprogs-devel flite-devel g722_1-devel gcc-c++ gdbm-devel gnutls-devel ilbc2-devel ldns-devel libcodec2-devel libcurl-devel libedit-devel libidn-devel libjpeg-devel libmemcached-devel libogg-devel libsilk-devel libsndfile-devel libtheora-devel libtiff-devel libtool libuuid-devel libvorbis-devel libxml2-devel lua-devel lzo-devel mongo-c-driver-devel ncurses-devel net-snmp-devel openssl-devel opus-devel pcre-devel perl perl-ExtUtils-Embed pkgconfig portaudio-devel postgresql-devel python26-devel python-devel soundtouch-devel speex-devel sqlite-devel unbound-devel unixODBC-devel wget which yasm zlib-devel</li>
-</ol>
-<p><strong>错误一</strong></p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">making all mod_h323</span><br><span class="line">make[4]: Entering directory `/root/freeswitch/freeswitch-1.8.2/src/mod/endpoints/mod_h323&#x27;</span><br><span class="line">  CXX      mod_h323_la-mod_h323.lo</span><br><span class="line">In file included from mod_h323.cpp:40:0:</span><br><span class="line">mod_h323.h:43:18: fatal error: h323.h: No such file or directory</span><br><span class="line"> #include &lt;h323.h&gt;</span><br><span class="line">                  ^</span><br><span class="line">compilation terminated.</span><br><span class="line">make[4]: *** [mod_h323_la-mod_h323.lo] Error 1</span><br><span class="line">make[4]: Leaving directory `/root/freeswitch/freeswitch-1.8.2/src/mod/endpoints/mod_h323&#x27;</span><br><span class="line">make[3]: *** [mod_h323-all] Error 1</span><br><span class="line">make[3]: Leaving directory `/root/freeswitch/freeswitch-1.8.2/src/mod&#x27;</span><br><span class="line">make[2]: *** [all-recursive] Error 1</span><br><span class="line">make[2]: Leaving directory `/root/freeswitch/freeswitch-1.8.2/src&#x27;</span><br><span class="line">make[1]: *** [all-recursive] Error 1</span><br><span class="line">make[1]: Leaving directory `/root/freeswitch/freeswitch-1.8.2&#x27;</span><br><span class="line">make: *** [all] Error 2</span><br></pre></td></tr></table></figure>
-<p>解决方案：<br>ln -s &#x2F;usr&#x2F;local&#x2F;include&#x2F;openh323 &#x2F;usr&#x2F;include&#x2F;openh323</p>
-<h4 id="H323Plus中的simple"><a href="#H323Plus中的simple" class="headerlink" title="H323Plus中的simple"></a>H323Plus中的simple</h4><p><strong>simple框架</strong><br><img src="/imgs/voip-h323/h323-simpledemo.jpg" alt="voip-h323"></p>
-<h4 id="编译可供java调用的动态库"><a href="#编译可供java调用的动态库" class="headerlink" title="编译可供java调用的动态库"></a>编译可供java调用的动态库</h4><p>需要自己进行接口封装，需要注意的有以下几点：</p>
-<ol>
-<li>java生成.h头文件</li>
-<li>C++根据生成的.h头文件编写.cxx文件</li>
-<li>C++回调java的接口形式</li>
-<li>因为库不需要main函数作为入口了，所以没有实现PProcess，启动时会报错，有两点解决方案：<blockquote>
-<ol>
-<li>重写void _init(void);函数</li>
-<li>自己找出哪儿调用的PProcess，重写或修改该逻辑</li>
-</ol>
-</blockquote>
-</li>
-</ol>
-<p>  我采用的是第1个方案，下面介绍一下该函数：<br>  _init和_fini函数用在装载和卸载某个模块(注释14)时分别控制该模块的构造器和析构器(或构造函数和析构函数)。他们的C语言原型如下：<br>    &amp;emsp;void _init(void);<br>    &amp;emsp;void _fini(void);<br>  当一个库通过dlopen()动态打开或以共享库的形式打开时，如果_init在该库中存在且被输出出来，则_init函数会被调用。如果一个库通过dlclose()动态关闭或因为没有应用程序引用其符号而被卸载时，_fini函数会在库卸载前被调用。<br>  当使用自己的_init和_fini函数时，需要注意<strong>不要与系统启动文件一起链接</strong>。可以使用GCC选项 -nostartfiles 做到这一点。<br>  重写该函数有3种方法：</p>
-<ol>
-<li>直接重写_init(void);函数 加上-nostartfiles选项，如：gcc … -nostartfiles</li>
-<li>重写为_myinit(void);函数 加上-Wl,-init&#x3D;myinit选项，如：gcc … -Wl,-init&#x3D;myinit</li>
-<li>  <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">void</span> __attribute__((constructor)) <span class="built_in">x_init</span>(<span class="type">void</span>);</span><br><span class="line"><span class="type">void</span> __attribute__((destructor))  <span class="built_in">x_fini</span>(<span class="type">void</span>);</span><br><span class="line">例：</span><br><span class="line">__attribute__((constructor)) <span class="function"><span class="type">void</span> <span class="title">myinit</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  cout &lt;&lt; <span class="string">&quot;myinit method! &quot;</span> &lt;&lt; <span class="string">&quot;\n&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-  本人对于c++不甚熟悉，以上3中方法如有错误，请指出，不胜感激。</li>
-</ol>
-<h4 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h4><ol>
-<li><a target="_blank" rel="noopener" href="http://www.docin.com/p-1416512075.html">h323协议简介和呼叫流程</a></li>
-<li><a target="_blank" rel="noopener" href="https://wenku.baidu.com/view/659f6960ddccda38376bafb9.html">H.323协议手册</a></li>
-<li><a target="_blank" rel="noopener" href="https://wenku.baidu.com/view/e4efb3b95022aaea998f0fc1.html">如何成功的运用+OPENH323+来开发商业的H.323+协议栈</a></li>
-<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_41501825/article/details/81067203">h323plus 的 simple</a></li>
-</ol>
-
+          <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>本文主要介绍 h323 库使用过程遇到的问题和简单例子</p>
+          <!--noindex-->
+            <div class="post-button">
+              <a class="btn" href="/posts/2018/10/17/voip-h323/#more" rel="contents">
+                阅读全文 &raquo;
+              </a>
+            </div>
+          <!--/noindex-->
+        
       
     </div>
 

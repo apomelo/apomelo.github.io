@@ -20,12 +20,12 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="队列简介先进先出（FIFO），生产者往队列里发布事件，消费者获得通知消费事件；如果队列中没有事件时，消费者堵塞，直到生产者发布了新事件。 Queue接口与List、Set同一级别，都是继承了Collection接口。LinkedList实现了Deque接口。 Java 内置队列   队列 有界性 锁 阻塞 数据结构    ArrayBlockingQueue bounded 加锁 是 arrayl">
+    <meta name="description" content="队列简介先进先出（FIFO），生产者往队列里发布事件，消费者获得通知消费事件；如果队列中没有事件时，消费者堵塞，直到生产者发布了新事件。 Queue接口与List、Set同一级别，都是继承了Collection接口。LinkedList实现了Deque接口。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="java原生队列">
 <meta property="og:url" content="https://apomelo.cc/posts/2020/06/25/java-%E5%8E%9F%E7%94%9F%E9%98%9F%E5%88%97/index.html">
 <meta property="og:site_name" content="Apomelo - 追逐">
-<meta property="og:description" content="队列简介先进先出（FIFO），生产者往队列里发布事件，消费者获得通知消费事件；如果队列中没有事件时，消费者堵塞，直到生产者发布了新事件。 Queue接口与List、Set同一级别，都是继承了Collection接口。LinkedList实现了Deque接口。 Java 内置队列   队列 有界性 锁 阻塞 数据结构    ArrayBlockingQueue bounded 加锁 是 arrayl">
+<meta property="og:description" content="队列简介先进先出（FIFO），生产者往队列里发布事件，消费者获得通知消费事件；如果队列中没有事件时，消费者堵塞，直到生产者发布了新事件。 Queue接口与List、Set同一级别，都是继承了Collection接口。LinkedList实现了Deque接口。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2020-06-24T16:00:00.000Z">
 <meta property="article:modified_time" content="2020-06-24T16:00:00.000Z">
@@ -276,6 +276,8 @@
     <div class="post-body" itemprop="articleBody">
         <h2 id="队列简介"><a href="#队列简介" class="headerlink" title="队列简介"></a>队列简介</h2><p>先进先出（FIFO），生产者往队列里发布事件，消费者获得通知消费事件；如果队列中没有事件时，消费者堵塞，直到生产者发布了新事件。</p>
 <p>Queue接口与List、Set同一级别，都是继承了Collection接口。LinkedList实现了Deque接口。</p>
+<span id="more"></span>
+
 <h2 id="Java-内置队列"><a href="#Java-内置队列" class="headerlink" title="Java 内置队列"></a>Java 内置队列</h2><table>
 <thead>
 <tr>
