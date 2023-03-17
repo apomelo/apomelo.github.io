@@ -20,29 +20,30 @@
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
 
-    <meta name="description" content="proto">
+    <meta name="description" content="简介protobuf(Google Protocol Buffers), 官方文档对 protobuf 的定义: protocol buffers 是一种语言无关、平台无关、可扩展的序列化结构数据的方法, 可用于数据通信协议和数据存储等, 它是 Google 提供的一个具有高效协议数据交换格式工具库, 是一种灵活、高效和自动化机制的结构数据序列化方法。 相比 XML, 有编码后体积更小, 编解码速">
 <meta property="og:type" content="article">
-<meta property="og:title" content="protobuf使用详解">
-<meta property="og:url" content="https://apomelo.cc/posts/2019/05/28/protobuf%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:title" content="protobuf 使用详解">
+<meta property="og:url" content="https://apomelo.cc/posts/2019/05/28/serialize-protobuf/index.html">
 <meta property="og:site_name" content="Apomelo - 追逐">
-<meta property="og:description" content="proto">
+<meta property="og:description" content="简介protobuf(Google Protocol Buffers), 官方文档对 protobuf 的定义: protocol buffers 是一种语言无关、平台无关、可扩展的序列化结构数据的方法, 可用于数据通信协议和数据存储等, 它是 Google 提供的一个具有高效协议数据交换格式工具库, 是一种灵活、高效和自动化机制的结构数据序列化方法。 相比 XML, 有编码后体积更小, 编解码速">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2019-05-27T16:00:00.000Z">
 <meta property="article:modified_time" content="2019-06-27T16:00:00.000Z">
 <meta property="article:author" content="Apomelo">
+<meta property="article:tag" content="serialize">
 <meta property="article:tag" content="protobuf">
 <meta property="article:tag" content="build">
 <meta name="twitter:card" content="summary">
 
 
-<link rel="canonical" href="https://apomelo.cc/posts/2019/05/28/protobuf%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/">
+<link rel="canonical" href="https://apomelo.cc/posts/2019/05/28/serialize-protobuf/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.cc/posts/2019/05/28/protobuf%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/","path":"posts/2019/05/28/protobuf使用详解/","title":"protobuf使用详解"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.cc/posts/2019/05/28/serialize-protobuf/","path":"posts/2019/05/28/serialize-protobuf/","title":"protobuf 使用详解"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>protobuf使用详解 | Apomelo - 追逐</title>
+<title>protobuf 使用详解 | Apomelo - 追逐</title>
   
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
   <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false}</script>
@@ -145,7 +146,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#proto"><span class="nav-number">1.</span> <span class="nav-text">proto</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%89%88%E6%9C%AC"><span class="nav-number">1.0.1.</span> <span class="nav-text">版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">1.0.2.</span> <span class="nav-text">语法</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E5%9F%9F%E7%B1%BB%E5%9E%8B%EF%BC%88Specifying-Field-Rules%EF%BC%89"><span class="nav-number">1.0.2.1.</span> <span class="nav-text">字段域类型（Specifying Field Rules）</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E5%80%BC%E7%B1%BB%E5%9E%8B%EF%BC%88Scalar-Value-Types%EF%BC%89"><span class="nav-number">1.0.2.2.</span> <span class="nav-text">字段值类型（Scalar Value Types）</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E4%BD%93"><span class="nav-number">1.0.3.</span> <span class="nav-text">消息体</span></a></li></ol></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#protobuf-%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">protobuf 优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E7%82%B9"><span class="nav-number">2.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9"><span class="nav-number">2.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#proto-%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">proto 文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#proto-%E7%89%88%E6%9C%AC"><span class="nav-number">3.1.</span> <span class="nav-text">proto 版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E4%BD%93"><span class="nav-number">3.2.</span> <span class="nav-text">消息体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.2.1.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">3.2.2.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E5%9F%9F%E7%B1%BB%E5%9E%8B%EF%BC%88Specifying-Field-Rules%EF%BC%89"><span class="nav-number">3.3.1.</span> <span class="nav-text">字段域类型（Specifying Field Rules）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E5%80%BC%E7%B1%BB%E5%9E%8B%EF%BC%88Scalar-Value-Types%EF%BC%89"><span class="nav-number">3.3.2.</span> <span class="nav-text">字段值类型（Scalar Value Types）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proto2-%E5%92%8C-proto-%E5%8C%BA%E5%88%AB"><span class="nav-number">3.4.</span> <span class="nav-text">proto2 和 proto 区别</span></a></li></ol></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -158,18 +159,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">25</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-count">12</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">44</span>
+        <span class="site-state-item-count">47</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -216,7 +217,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2019/05/28/protobuf%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2019/05/28/serialize-protobuf/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -229,12 +230,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="protobuf使用详解 | Apomelo - 追逐">
+      <meta itemprop="name" content="protobuf 使用详解 | Apomelo - 追逐">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          protobuf使用详解
+          protobuf 使用详解
         </h1>
 
         <div class="post-meta-container">
@@ -260,12 +261,12 @@
       </span>
       <span class="post-meta-item-text">分类于</span>
         <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-          <a href="/categories/protocol/" itemprop="url" rel="index"><span itemprop="name">protocol</span></a>
+          <a href="/categories/serialize/" itemprop="url" rel="index"><span itemprop="name">serialize</span></a>
         </span>
     </span>
 
   
-    <span id="/posts/2019/05/28/protobuf%E4%BD%BF%E7%94%A8%E8%AF%A6%E8%A7%A3/" class="post-meta-item leancloud_visitors" data-flag-title="protobuf使用详解" title="阅读次数">
+    <span id="/posts/2019/05/28/serialize-protobuf/" class="post-meta-item leancloud_visitors" data-flag-title="protobuf 使用详解" title="阅读次数">
       <span class="post-meta-item-icon">
         <i class="far fa-eye"></i>
       </span>
@@ -281,17 +282,62 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <h2 id="proto"><a href="#proto" class="headerlink" title="proto"></a>proto</h2><span id="more"></span>
+        <h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>protobuf(Google Protocol Buffers), 官方文档对 protobuf 的定义: protocol buffers 是一种语言无关、平台无关、可扩展的序列化结构数据的方法, 可用于数据通信协议和数据存储等, 它是 Google 提供的一个具有高效协议数据交换格式工具库, 是一种灵活、高效和自动化机制的结构数据序列化方法。 相比 XML, 有编码后体积更小, 编解码速度更快的优势；相比于 Json, Protobuf 有更高的转化效率, 时间效率和空间效率都是 JSON 的 3-5 倍。</p>
+<span id="more"></span>
 
-<h4 id="版本"><a href="#版本" class="headerlink" title="版本"></a>版本</h4><p>proto2</p>
-<h4 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h4><h5 id="字段域类型（Specifying-Field-Rules）"><a href="#字段域类型（Specifying-Field-Rules）" class="headerlink" title="字段域类型（Specifying Field Rules）"></a>字段域类型（Specifying Field Rules）</h5><p>You specify that message fields are one of the following:</p>
+<h1 id="protobuf-优缺点"><a href="#protobuf-优缺点" class="headerlink" title="protobuf 优缺点"></a>protobuf 优缺点</h1><h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><ol>
+<li>性能好, 效率高<ul>
+<li>时间和空间开销更优</li>
+</ul>
+</li>
+<li>有代码生成机制<ul>
+<li>编写 proto 文件, 可以通过编译器生成对应语言的类</li>
+</ul>
+</li>
+<li>支持向后兼容和向前兼容<ul>
+<li>当客户端和服务器同时使用一个协议时, 服务器在协议中增加一个字节, 并不会影响客户端的使用</li>
+</ul>
+</li>
+<li>支持多种编程语言<ul>
+<li>在 Google 官方发布的源代码中包含了</li>
+<li>C++</li>
+<li>C#</li>
+<li>Dart</li>
+<li>Go</li>
+<li>Java</li>
+<li>Kotlin</li>
+<li>Python</li>
+</ul>
+</li>
+<li>二进制格式让信息读取有门槛</li>
+</ol>
+<h2 id="缺点"><a href="#缺点" class="headerlink" title="缺点"></a>缺点</h2><ol>
+<li>二进制格式导致可读性差</li>
+<li>缺乏自描述</li>
+<li>通用性相比 json 和 XML 差一点</li>
+</ol>
+<h1 id="proto-文件"><a href="#proto-文件" class="headerlink" title="proto 文件"></a>proto 文件</h1><h2 id="proto-版本"><a href="#proto-版本" class="headerlink" title="proto 版本"></a>proto 版本</h2><p>proto 有 proto2 和 proto3 两个版本, 有些语言不支持 proto3, 如: lua</p>
+<p>proto2 和 proto3 在语法和使用上有些许不同。 总的来说, proto3 比 proto2 支持更多语言但更简洁。 去掉了一些复杂的语法和特性, 更强调约定而弱化语法。</p>
+<h2 id="消息体"><a href="#消息体" class="headerlink" title="消息体"></a>消息体</h2><h3 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h3><figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">message </span><span class="title class_">SearchRequest</span> &#123;</span><br><span class="line">    <span class="keyword">required</span> <span class="type">string</span> query = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">optional</span> <span class="type">int32</span> pageNumber = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">optional</span> <span class="type">int32</span> resultPerPage = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum </span><span class="title class_">Corpus</span> &#123;</span><br><span class="line">    UNIVERSAL = <span class="number">0</span>;</span><br><span class="line">    WEB = <span class="number">1</span>;</span><br><span class="line">    IMAGES = <span class="number">2</span>;</span><br><span class="line">    LOCAL = <span class="number">3</span>;</span><br><span class="line">    NEWS = <span class="number">4</span>;</span><br><span class="line">    PRODUCTS = <span class="number">5</span>;</span><br><span class="line">    VIDEO = <span class="number">6</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>enum 可以定义在 message 中, 也可以定义在外面。</p>
+<p>proto 文件批量编译</p>
+<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="variable">%%i</span> <span class="keyword">in</span> (*.proto) <span class="keyword">do</span> (</span><br><span class="line">    .\protoc.exe --java_out=.\java\ <span class="variable">%%i</span></span><br><span class="line">)</span><br><span class="line"><span class="built_in">pause</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h3><ol>
+<li>syntax &#x3D; “proto2” 表示用的是 proto2, syntax &#x3D; “proto3” 表示用的是 proto3</li>
+<li>package 表示在的包目录</li>
+<li>option java_outer_classname 表示生成的 java 文件名</li>
+<li>message 中引用自定义的 message 类型, 被引用的 message 需要放在上方<br>原因: 某些语言是顺序读取, 不支持乱序读取, 如: lua</li>
+</ol>
+<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><h3 id="字段域类型（Specifying-Field-Rules）"><a href="#字段域类型（Specifying-Field-Rules）" class="headerlink" title="字段域类型（Specifying Field Rules）"></a>字段域类型（Specifying Field Rules）</h3><p>You specify that message fields are one of the following:</p>
 <ol>
 <li><strong>required</strong>: a well-formed message must have exactly one of this field.</li>
 <li><strong>optional</strong>: a well-formed message can have zero or one of this field (but not more than one).</li>
 <li><strong>repeated</strong>: this field can be repeated any number of times (including zero) in a well-formed message. The order of the repeated values will be preserved.</li>
 </ol>
 <p>也可以用<strong>map</strong>: map&lt;string, int32&gt; param &#x3D; 1;</p>
-<h5 id="字段值类型（Scalar-Value-Types）"><a href="#字段值类型（Scalar-Value-Types）" class="headerlink" title="字段值类型（Scalar Value Types）"></a>字段值类型（Scalar Value Types）</h5><table>
+<h3 id="字段值类型（Scalar-Value-Types）"><a href="#字段值类型（Scalar-Value-Types）" class="headerlink" title="字段值类型（Scalar Value Types）"></a>字段值类型（Scalar Value Types）</h3><table>
 <thead>
 <tr>
 <th align="left">.proto Type</th>
@@ -431,19 +477,16 @@
 </li>
 <li><div id="refer-anchor-3">[3] 64-bit or unsigned 32-bit integers are always represented as long when decoded, but can be an int if an int is given when setting the field. In all cases, the value must fit in the type represented when set. See [2].</div></li>
 </ul>
-<h4 id="消息体"><a href="#消息体" class="headerlink" title="消息体"></a>消息体</h4><p><strong>示例</strong></p>
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">message </span><span class="title class_">SearchRequest</span> &#123;</span><br><span class="line">    <span class="keyword">required</span> <span class="type">string</span> query = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">optional</span> <span class="type">int32</span> pageNumber = <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">optional</span> <span class="type">int32</span> resultPerPage = <span class="number">3</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">enum </span><span class="title class_">Corpus</span> &#123;</span><br><span class="line">    UNIVERSAL = <span class="number">0</span>;</span><br><span class="line">    WEB = <span class="number">1</span>;</span><br><span class="line">    IMAGES = <span class="number">2</span>;</span><br><span class="line">    LOCAL = <span class="number">3</span>;</span><br><span class="line">    NEWS = <span class="number">4</span>;</span><br><span class="line">    PRODUCTS = <span class="number">5</span>;</span><br><span class="line">    VIDEO = <span class="number">6</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>enum可以定义在message中, 也可以定义在外面。</p>
-<p>proto文件批量编译</p>
-<figure class="highlight bat"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="variable">%%i</span> <span class="keyword">in</span> (*.proto) <span class="keyword">do</span> (</span><br><span class="line">    .\protoc.exe --java_out=.\java\ <span class="variable">%%i</span></span><br><span class="line">)</span><br><span class="line"><span class="built_in">pause</span></span><br></pre></td></tr></table></figure>
-
-<p><strong>注意事项</strong></p>
-<ol>
-<li>syntax &#x3D; “proto2”表示用的是proto2, 不声明默认proto3<br> 原因: 某些语言不支持proto3，如：lua</li>
-<li>package表示在的包目录</li>
-<li>option java_outer_classname表示生成的java文件名</li>
-<li>message中引用自定义的message类型, 被引用的message需要放在上方<br> 原因: 某些语言是顺序读取, 不支持乱序读取，如：lua</li>
+<h2 id="proto2-和-proto-区别"><a href="#proto2-和-proto-区别" class="headerlink" title="proto2 和 proto 区别"></a>proto2 和 proto 区别</h2><ol>
+<li>该文件的第一行指定您正在使用 proto3 语法: 如果您不这样做, protocol buffer 编译器将假定您使用的是 proto2。 这必须是文件的第一个非空、非注释行。</li>
+<li>proto3 取消了 proto2 的 required, 而 proto3 的 singular 就是 proto2 的 optional</li>
+<li>proto3 repeated 标量数值类型默认 packed, 而 proto2 默认不开启。</li>
+<li>proto3 增加了 Kotlin, Ruby, Objective-C, C#, Dart 的支持</li>
+<li>proto2 可以选填 default, 而 proto3 只能使用系统默认的。 也就是说, 默认值全部是约定好的, 而不再提供指定默认值的语法。</li>
+<li>在字段被设置为默认值的时候, 该字段不会被序列化。 这样可以节省空间, 提高效率。 但这样就无法区分某字段是根本没赋值, 还是赋值了默认值。 这在 proto3 中问题不大, 但在 proto2 中会有问题。<br>比如, 在更新协议的时候使用 default 选项为某个字段指定了一个与原来不同的默认值, 旧代码获取到的该字段的值会与新代码不一样。</li>
+<li>枚举类型的第一个字段必须为 0 。</li>
+<li>proto3 在 3.5 版本之前会丢弃未知字段。 但在 3.5 版本中, 重新引入了未知字段的保留以匹配 proto2 行为。 在 3.5 及更高版本中, 未知字段在解析过程中保留并包含在序列化输出中。<br>移除了对扩展的支持, 新增了 Any 类型；</li>
+<li>proto3 移除了 proto2 的扩展, 新增了 Any（仍在开发中）和 JSON 映射。</li>
 </ol>
 <!-- #### 程序中请求定义
 
@@ -459,6 +502,65 @@
 <li>编译proto<br> 工具: src&#x2F;main&#x2F;resources&#x2F;proto&#x2F;build.bat<br> 命令: 直接运行（根据需求自己修改生成的目录）</li>
 <li>复制proto文件并提交到项目的proto文件夹中<br> 工具: src&#x2F;main&#x2F;resources&#x2F;proto&#x2F;copy.bat<br> 命令: 直接运行（根据需求自己修改复制的目录） –&gt;</li>
 </ol>
+<h1 id="编码方式"><a href="#编码方式" class="headerlink" title="编码方式"></a>编码方式</h1><p>消息经过序列化后会成为一个二进制数据流，该流中的数据为一系列的 Key-Value 对，定义好结构体的优势就是不用多余的数据来分隔不同的键值对。Key 用来标识具体的 field，在解包的时候，Protocol Buffer 根据 Key 就可以知道相应的 Value 应该对应于消息中的哪一个 field。</p>
+<p>Key 定义：<code>(field_number &lt;&lt; 3) | wire_type</code></p>
+<p>field_number 代表在 .proto 中定义的编号，1<del>15 用一个字节，16</del>2047 用两个字节，结合公式 (field_number &lt;&lt; 3) | wire_type ，如果 filed_number 大于等于 16，两个字节共 16 位，去掉移位的 3 位，去掉两个字节中第一个比特位(msb, most significant bit: 最高有效位)，总共 16 个比特位只有 16-5&#x3D;11 个比特位用来表示 Key，所以 Key 的 filed_number 要小于 2^11&#x3D;&#x3D; 2048。</p>
+<p>更大的以此类推，主要就是看一个字节的 msb 是否为 1，最大可以为 2^29 - 1。</p>
+<p>wire_type 表示该数据的类型，有 Vaint、64-bit、Length-delimi、Start group、End group、32-bit共 6 中类型，具体可查看 <a target="_blank" rel="noopener" href="https://protobuf.dev/programming-guides/encoding/#order">官方文档</a></p>
+<h2 id="Varint"><a href="#Varint" class="headerlink" title="Varint"></a>Varint</h2><p>了解 protobuf 首先就要了解 Varint，是它的一大核心，变长整数存储。长整数存储多的位数，短整数存储少的位数，来减少空间的浪费。除了最后一字节外每字节第一位都是 most significant big(msb)，表示是否后面是否还有字节表示该整数。例如：</p>
+<p>0000 0001 就表示 1</p>
+<p>1010 1100 0000 0010 第一个字节第一位为 1 表示后面还有数据，直到字节第一位为 0（这里就是第二个字节 0000 0010），将字节顺序逆向，变为 0000 0010 010 1100：100101100(300)</p>
+<h2 id="ZigZag"><a href="#ZigZag" class="headerlink" title="ZigZag"></a>ZigZag</h2><p>有符号整数则使用 ZigZag 编码方式，用无符号的整数同时代表正负两种数：</p>
+<table>
+<thead>
+<tr>
+<th>Signed Original</th>
+<th>Encoded As</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>-1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>1</td>
+<td>2</td>
+</tr>
+<tr>
+<td>-2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>2147483647</td>
+<td>4294967294</td>
+</tr>
+<tr>
+<td>-2147483648</td>
+<td>4294967295</td>
+</tr>
+</tbody></table>
+<p>这样就大大减少了占用的位数，算法使用：</p>
+<p>(n &lt;&lt; 1) ^ (n &gt;&gt; 31) sint32<br>(n &lt;&lt; 1) ^ (n &gt;&gt; 63) sint64</p>
+<h2 id="float-double"><a href="#float-double" class="headerlink" title="float double"></a>float double</h2><p>不压缩，多少位就多少位存储。</p>
+<h2 id="string"><a href="#string" class="headerlink" title="string"></a>string</h2><p>string 则是在 Value 中多加了一个或多个字节表示长度（msb标识），剩下的内容才是真正的值。</p>
+<h2 id="repeated"><a href="#repeated" class="headerlink" title="repeated"></a>repeated</h2><p>这里介绍压缩率更高的 Packed Repeated Fields。</p>
+<p>在 2.1.0 版本以后，protocol buffers 引入了该种类型，其与 repeated 字段一样，只是在末尾声明了 <code>[packed=true]</code>。类似 repeated 字段却又不同。在 proto3 中 Repeated 字段默认就是以这种方式处理。</p>
+<p>例如有如下 message 类型：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">message Test4 &#123;  </span><br><span class="line">    repeated int32 d = 4 [packed=true];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>构造一个 Test4 字段，并且设置 repeated 字段 d 3 个值：3，270 和 86942，编码后：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">22 // tag 0010 0010(field number 010 0 = 4, wire type 010 = 2)</span><br><span class="line"></span><br><span class="line">06 // payload size (设置的length = 6 bytes)</span><br><span class="line"></span><br><span class="line">03 // first element (varint 3)</span><br><span class="line"></span><br><span class="line">8E 02 // second element (varint 270)</span><br><span class="line"></span><br><span class="line">9E A7 05 // third element (varint 86942)</span><br></pre></td></tr></table></figure>
+
+<p>形成了 Tag - Length - Value - Value - Value …… ，增加了压缩率。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/ymzhu385/article/details/122307593">【超详细】Protobuf（Protocol Buffers）proto3 与 proto2 的区别</a></li>
+<li><a target="_blank" rel="noopener" href="https://1016990109.github.io/2018/06/20/kryo-vs-avro-vs-protobuf-vs-thrift-vs-jce/">kryo vs avro vs protobuf vs thrift vs jce</a></li>
+<li><a target="_blank" rel="noopener" href="https://protobuf.dev/programming-guides/encoding/">Programming Guides &#x2F; Encoding</a></li>
+</ol>
 
     </div>
 
@@ -468,6 +570,7 @@
 
     <footer class="post-footer">
           <div class="post-tags">
+              <a href="/tags/serialize/" rel="tag"># serialize</a>
               <a href="/tags/protobuf/" rel="tag"># protobuf</a>
               <a href="/tags/build/" rel="tag"># build</a>
           </div>
@@ -504,7 +607,7 @@
 
 <div class="copyright">
   &copy; 
-  <span itemprop="copyrightYear">2022</span>
+  <span itemprop="copyrightYear">2023</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

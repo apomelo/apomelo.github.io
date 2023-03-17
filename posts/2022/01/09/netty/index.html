@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css" integrity="sha256-xejo6yLi6vGtAjcMIsY8BHdKsLg7QynVlFMzdQgUuy8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.12.3","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"A3LWYBODE0","apiKey":"c40595ca0a82310430032a8bc32214a2","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="netty 简介Netty 是一个高性能、异步事件驱动的 NIO 网络应用框架, 它提供了对 TCP、UDP 和文件传输的支持。基于 Netty, 可以快速的开发和部署高性能、 高可用的网络服务端和客户端应用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="netty笔记">
+<meta property="og:url" content="https://apomelo.cc/posts/2022/01/09/netty/index.html">
+<meta property="og:site_name" content="Apomelo - 追逐">
+<meta property="og:description" content="netty 简介Netty 是一个高性能、异步事件驱动的 NIO 网络应用框架, 它提供了对 TCP、UDP 和文件传输的支持。基于 Netty, 可以快速的开发和部署高性能、 高可用的网络服务端和客户端应用。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://apomelo.cc/imgs/netty/ResourceLeakDetector-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/netty/DefaultResourceLeak-%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png">
+<meta property="og:image" content="https://apomelo.cc/imgs/netty/LeakAwareByteBuf-%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png">
+<meta property="article:published_time" content="2022-01-08T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-01-08T16:00:00.000Z">
+<meta property="article:author" content="Apomelo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="netty">
+<meta property="article:tag" content="io">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://apomelo.cc/imgs/netty/ResourceLeakDetector-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.jpg">
+
+
+<link rel="canonical" href="https://apomelo.cc/posts/2022/01/09/netty/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.cc/posts/2022/01/09/netty/","path":"posts/2022/01/09/netty/","title":"netty笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>netty笔记 | Apomelo - 追逐</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#netty-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">netty 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#netty-%E4%BC%98%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">netty 优点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8E-mina-%E5%AF%B9%E6%AF%94"><span class="nav-number">2.1.</span> <span class="nav-text">与 mina 对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#NIO-%E7%AE%80%E4%BB%8B"><span class="nav-number">3.</span> <span class="nav-text">NIO 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO-%E4%B8%8E-IO-%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">3.1.</span> <span class="nav-text">NIO 与 IO 的区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#netty-%E6%A0%B8%E5%BF%83%E7%BB%84%E4%BB%B6"><span class="nav-number">4.</span> <span class="nav-text">netty 核心组件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Bootstrap-or-ServerBootstrap"><span class="nav-number">4.1.</span> <span class="nav-text">Bootstrap or ServerBootstrap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EventLoop"><span class="nav-number">4.2.</span> <span class="nav-text">EventLoop</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EventLoopGroup"><span class="nav-number">4.3.</span> <span class="nav-text">EventLoopGroup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ChannelPipeline"><span class="nav-number">4.4.</span> <span class="nav-text">ChannelPipeline</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Channel"><span class="nav-number">4.5.</span> <span class="nav-text">Channel</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Future-or-ChannelFuture"><span class="nav-number">4.6.</span> <span class="nav-text">Future or ChannelFuture</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#netty-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86"><span class="nav-number">5.</span> <span class="nav-text">netty 内存管理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#netty-%E7%9A%84%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%8A%80%E6%9C%AF"><span class="nav-number">5.1.</span> <span class="nav-text">netty 的零拷贝技术</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#netty-%E6%B3%84%E6%BC%8F%E6%A3%80%E6%B5%8B"><span class="nav-number">5.2.</span> <span class="nav-text">netty 泄漏检测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ResourceLeakDetector-%E7%AE%80%E4%BB%8B"><span class="nav-number">5.2.1.</span> <span class="nav-text">ResourceLeakDetector 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ResourceLeakDetector-%E5%A4%A7%E8%87%B4%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-number">5.2.2.</span> <span class="nav-text">ResourceLeakDetector 大致工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A3%80%E6%B5%8B%E7%AD%89%E7%BA%A7"><span class="nav-number">5.2.3.</span> <span class="nav-text">检测等级</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">5.2.4.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#DefaultResourceLeak"><span class="nav-number">5.2.4.1.</span> <span class="nav-text">DefaultResourceLeak</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#TraceRecord"><span class="nav-number">5.2.4.2.</span> <span class="nav-text">TraceRecord</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ResourceLeakDetector"><span class="nav-number">5.2.4.3.</span> <span class="nav-text">ResourceLeakDetector</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%80%E5%8D%95%E6%A3%80%E6%B5%8B%E5%92%8C%E9%AB%98%E7%BA%A7%E6%A3%80%E6%B5%8B"><span class="nav-number">5.2.5.</span> <span class="nav-text">简单检测和高级检测</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%84%E6%BC%8F%E6%80%BB%E7%BB%93"><span class="nav-number">5.2.6.</span> <span class="nav-text">泄漏总结</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">12</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">47</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author site-overview-item animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2022/01/09/netty/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="netty笔记 | Apomelo - 追逐">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          netty笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-01-09 00:00:00" itemprop="dateCreated datePublished" datetime="2022-01-09T00:00:00+08:00">2022-01-09</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2022/01/09/netty/" class="post-meta-item leancloud_visitors" data-flag-title="netty笔记" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="netty-简介"><a href="#netty-简介" class="headerlink" title="netty 简介"></a>netty 简介</h1><p>Netty 是一个高性能、异步事件驱动的 NIO 网络应用框架, 它提供了对 TCP、UDP 和文件传输的支持。基于 Netty, 可以快速的开发和部署高性能、 高可用的网络服务端和客户端应用。</p>
+<span id="more"></span>
+
+<h1 id="netty-优点"><a href="#netty-优点" class="headerlink" title="netty 优点"></a>netty 优点</h1><ol>
+<li>API 使用简单, 开发门槛低;</li>
+<li>功能强大, 预置了多种编解码功能, 支持多种主流协议;</li>
+<li>定制能力强, 可以通过 ChannelHandler 对通信框架进行灵活地扩展;</li>
+<li>性能高, 通过与其他业界主流的 NIO 框架对比, Netty 的综合性能最优;</li>
+<li>成熟、稳定, Netty 修复了已经发现的所有 JDK NIO BUG, 业务开发人员不需要再为 NIO 的 BUG 而烦恼;</li>
+<li>社区活跃, 版本迭代周期短, 发现的 BUG 可以被及时修复, 同时, 更多的新功能会加入;</li>
+<li>经历了大规模的商业应用考验, 质量得到验证。在互联网、大数据、网络游戏、企业应用、电信软件等众多行业得到成功商用, 证明了它已经完全能够满足不同行业的商业应用了。</li>
+</ol>
+<h2 id="与-mina-对比"><a href="#与-mina-对比" class="headerlink" title="与 mina 对比"></a>与 mina 对比</h2><ol>
+<li>都是 Trustin Lee 的作品, Netty 更晚, 也更成熟;</li>
+<li>Mina 将内核和一些特性的联系过于紧密, 使得用户在不需要这些特性的时候无法脱离, 相比下性能会有所下降, Netty 解决了这个设计问题;</li>
+<li>Netty 的文档更清晰, 很多 Mina 的特性在 Netty 里都有;</li>
+<li>Netty 更新周期更短, 新版本的发布比较快;</li>
+<li>它们的架构差别不大, Mina 靠 apache 生存, 而 Netty 靠 jboss, 和 jboss 的结合度非常高, Netty 有对 google protocal buf 的支持, 有更完整的 ioc 容器支持(spring,guice,jbossmc 和 osgi);</li>
+<li>Netty 和 Mina 在处理 UDP 时有一些不同, Netty 将 UDP 无连接的特性暴露出来; 而 Mina 对 UDP 进行了高级层次的抽象, 可以把 UDP 当成”面向连接”的协议, 而要 Netty 做到这一点比较困难。</li>
+</ol>
+<h1 id="NIO-简介"><a href="#NIO-简介" class="headerlink" title="NIO 简介"></a>NIO 简介</h1><p>NIO 主要有三大核心部分: Channel(通道), Buffer(缓冲区), Selector。</p>
+<p>传统 IO 基于字节流和字符流进行操作, 而 NIO 基于 Channel 和 Buffer(缓冲区)进行操作, 数据总是从通道读取到缓冲区中, 或者从缓冲区写入到通道中。</p>
+<p>Selector(选择区)用于监听多个通道的事件（比如: 连接打开, 数据到达）。因此, 单个线程可以监听多个数据通道</p>
+<p>NIO 详细介绍参考: <a href="/posts/2022/01/09/IO%E6%B5%81/" title="[io流]">[io流]</a></p>
+<h2 id="NIO-与-IO-的区别"><a href="#NIO-与-IO-的区别" class="headerlink" title="NIO 与 IO 的区别"></a>NIO 与 IO 的区别</h2><ul>
+<li>IO 是面向流的, NIO 是面向缓冲区的</li>
+<li>IO 流是阻塞的, NIO 流是不阻塞的</li>
+<li>NIO 有选择器, 而 IO 没有</li>
+</ul>
+<h1 id="netty-核心组件"><a href="#netty-核心组件" class="headerlink" title="netty 核心组件"></a>netty 核心组件</h1><p>一个 netty 应用的核心组件:</p>
+<ul>
+<li>Bootstrap or ServerBootstrap</li>
+<li>EventLoop</li>
+<li>EventLoopGroup</li>
+<li>ChannelPipeline</li>
+<li>Channel</li>
+<li>Future or ChannelFuture</li>
+</ul>
+<h2 id="Bootstrap-or-ServerBootstrap"><a href="#Bootstrap-or-ServerBootstrap" class="headerlink" title="Bootstrap or ServerBootstrap"></a>Bootstrap or ServerBootstrap</h2><h2 id="EventLoop"><a href="#EventLoop" class="headerlink" title="EventLoop"></a>EventLoop</h2><h2 id="EventLoopGroup"><a href="#EventLoopGroup" class="headerlink" title="EventLoopGroup"></a>EventLoopGroup</h2><h2 id="ChannelPipeline"><a href="#ChannelPipeline" class="headerlink" title="ChannelPipeline"></a>ChannelPipeline</h2><h2 id="Channel"><a href="#Channel" class="headerlink" title="Channel"></a>Channel</h2><h2 id="Future-or-ChannelFuture"><a href="#Future-or-ChannelFuture" class="headerlink" title="Future or ChannelFuture"></a>Future or ChannelFuture</h2><h1 id="netty-内存管理"><a href="#netty-内存管理" class="headerlink" title="netty 内存管理"></a>netty 内存管理</h1><p>为了减轻 GC 的压力、以及避免频繁向 OS 申请和释放内存, Netty 基于 JeMalloc 思想自己实现了一套内存管理方案。不管是堆内存还是直接内存, 都可以交给 Netty 来统一管理, 这带来了两个好处, 一是可以减轻 GC 的压力, 二是可以避免向 OS 频繁申请和释放内存, Netty 一次性申请一大块内存, 然后按需分配。</p>
+<p><strong>注意: ByteBuf 不等于内存, ByteBuf 是 Java 对象, 它工作需要内存做支撑。ByteBuf 本身通过 Recycler 来实现回收重用, 内存通过 JeMalloc 来进行管理复用。</strong></p>
+<p>以 ByteBuf 为例, 网络 IO 的每次读写都需要 ByteBuf 支撑, 为了避免频繁的创建和销毁 ByteBuf, Netty 通过 Recycler 来回收对象进行重用。同时为了避免频繁的申请和释放内存, Netty 通过 JeMalloc 技术来管理内存。</p>
+<h2 id="netty-的零拷贝技术"><a href="#netty-的零拷贝技术" class="headerlink" title="netty 的零拷贝技术"></a>netty 的零拷贝技术</h2><p>介绍完传统 Linux 的零拷贝技术之后, 我们再来学习下 Netty 中的零拷贝如何实现。Netty 中的零拷贝和传统 Linux 的零拷贝不太一样。Netty 中的零拷贝技术除了操作系统级别的功能封装, 更多的是面向用户态的数据操作优化, 主要体现在以下 5 个方面:</p>
+<ol>
+<li>堆外内存, 避免 JVM 堆内存到堆外内存的数据拷贝。</li>
+<li>CompositeByteBuf 类, 可以组合多个 Buffer 对象合并成一个逻辑上的对象, 避免通过传统内存拷贝的方式将几个 Buffer 合并成一个大的 Buffer。</li>
+<li>通过 Unpooled.wrappedBuffer 可以将 byte 数组包装成 ByteBuf 对象, 包装过程中不会产生内存拷贝。</li>
+<li>ByteBuf.slice 操作与 Unpooled.wrappedBuffer 相反, slice 操作可以将一个 ByteBuf 对象切分成多个 ByteBuf 对象, 切分过程中不会产生内存拷贝, 底层共享一个 byte 数组的存储空间。</li>
+<li>Netty 使用 FileRegion 实现文件传输, FileRegion 底层封装了 FileChannel#transferTo() 方法, 可以将文件缓冲区的数据直接传输到目标 Channel, 避免内核缓冲区和用户态缓冲区之间的数据拷贝, 这属于操作系统级别的零拷贝。</li>
+</ol>
+<h2 id="netty-泄漏检测"><a href="#netty-泄漏检测" class="headerlink" title="netty 泄漏检测"></a>netty 泄漏检测</h2><p>Netty 统一管理内存在减轻 GC 的压力, 避免向 OS 频繁申请和释放内存的同时, 也带来一个坏处, 就是开发者使用完毕后, 必须及时释放掉资源, 否则会导致内存泄漏。</p>
+<p>自己管理内存会带来更好的性能, 但是也增大了内存泄漏的可能性。为了尽量避免内存泄漏, Netty 提供了 ResourceLeakDetector 资源泄漏探测器, 它会对分配的资源进行检测, 一旦发生泄漏, 它会进行报告, 让开发者能及时发现并进行修正。​</p>
+<h3 id="ResourceLeakDetector-简介"><a href="#ResourceLeakDetector-简介" class="headerlink" title="ResourceLeakDetector 简介"></a>ResourceLeakDetector 简介</h3><p>当 Channel 有数据可读时, Netty 默认会通过 PooledByteBufAllocator 创建一个 ByteBuf, 并将数据写入到 ByteBuf, 然后通过 Pipeline 将 ChannelRead 事件传播出去。如下, 是一个简单的使用示例:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LeakDemo</span> &#123;</span><br><span class="line">    <span class="comment">// VM Args:-Dio.netty.leakDetection.level=PARANOID 100%采样检测</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">        <span class="type">ByteBuf</span> <span class="variable">buf</span> <span class="operator">=</span> PooledByteBufAllocator.DEFAULT.buffer(<span class="number">1024</span>);</span><br><span class="line">        buf = <span class="literal">null</span>;</span><br><span class="line">        System.gc();</span><br><span class="line">        Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        <span class="comment">// 再申请一次, 此时会检测到泄漏并报告</span></span><br><span class="line">        PooledByteBufAllocator.DEFAULT.buffer(<span class="number">1024</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">finalize</span><span class="params">()</span> <span class="keyword">throws</span> Throwable &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;finalize...&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行程序, 控制台会报告资源泄漏的情况, 输出如下:</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">161610.021 pid:test_project thread:main ERROR [ResourceLeakDetector] LEAK: ByteBuf.release() was not called before it<span class="string">&#x27;s garbage-collected. See https://netty.io/wiki/reference-counted-objects.html for more information.</span></span><br><span class="line"><span class="string">Recent access records:</span></span><br><span class="line"><span class="string">Created at:</span></span><br><span class="line"><span class="string">    io.netty.buffer.PooledByteBufAllocator.newDirectBuffer(PooledByteBufAllocator.java:403)</span></span><br><span class="line"><span class="string">    io.netty.buffer.AbstractByteBufAllocator.directBuffer(AbstractByteBufAllocator.java:188)</span></span><br><span class="line"><span class="string">    io.netty.buffer.AbstractByteBufAllocator.directBuffer(AbstractByteBufAllocator.java:179)</span></span><br><span class="line"><span class="string">    io.netty.buffer.AbstractByteBufAllocator.buffer(AbstractByteBufAllocator.java:116)</span></span><br><span class="line"><span class="string">    test.io.netty.demo.LeakDemo.main(LeakDemo.java:9)</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="ResourceLeakDetector-大致工作流程"><a href="#ResourceLeakDetector-大致工作流程" class="headerlink" title="ResourceLeakDetector 大致工作流程"></a>ResourceLeakDetector 大致工作流程</h3><p><img src="/imgs/netty/ResourceLeakDetector-%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.jpg" alt="ResourceLeakDetector-工作流程"></p>
+<h3 id="检测等级"><a href="#检测等级" class="headerlink" title="检测等级"></a>检测等级</h3><p>Netty 提供了 4 个检测等级, 不同的级别采样率不同, 开销也不一样, 用户可以根据实际情况选择合适的级别</p>
+<table>
+<thead>
+<tr>
+<th><strong>检测等级</strong></th>
+<th><strong>说明</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>DISABLED</td>
+<td>禁用检测</td>
+</tr>
+<tr>
+<td>SIMPLE</td>
+<td>简单检测, 少量的采样, 不报告泄漏的位置</td>
+</tr>
+<tr>
+<td>ADVANCED</td>
+<td>高级检测, 少量的采样, 会报告泄漏的位置</td>
+</tr>
+<tr>
+<td>PARANOID</td>
+<td>偏执检测, 100%采样, 会报告泄漏的位置</td>
+</tr>
+</tbody></table>
+<p>通过设置 JVM 参数 <code>-Dio.netty.leakDetection.level=PARANOID</code> 来调整检测等级。​</p>
+<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>分析一下源码, 看看 Netty 是如何检测资源泄漏并及时报告用户的。在看 ResourceLeakDetector 前, 先了解几个比较重要的类。​</p>
+<p>源码基于 netty 4.1.79.Final 版本分析</p>
+<h4 id="DefaultResourceLeak"><a href="#DefaultResourceLeak" class="headerlink" title="DefaultResourceLeak"></a>DefaultResourceLeak</h4><p>DefaultResourceLeak 是默认的资源泄漏追踪器, 它继承自 <code>WeakReference</code>, 它会为追踪对象建立一个弱引用连接, 当追踪对象被 GC 回收后, JVM 会将 <code>WeakReference</code> 加入到 <code>refQueue</code>, 通过 <code>refQueue</code> 就能判断是否存在资源泄漏了。</p>
+<p><img src="/imgs/netty/DefaultResourceLeak-%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png" alt="DefaultResourceLeak-继承关系"></p>
+<p>先看它的属性:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * 追踪记录的头节点, 单向链表。</span></span><br><span class="line"><span class="comment"> * 访问对象时, 会记录访问的堆栈信息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="meta">@SuppressWarnings(&quot;unused&quot;)</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> TraceRecord head;</span><br><span class="line"><span class="meta">@SuppressWarnings(&quot;unused&quot;)</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> <span class="type">int</span> droppedRecords;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 活跃的资源集合</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Set&lt;DefaultResourceLeak&lt;?&gt;&gt; allLeaks;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 追踪对象的一致性哈希码, 确保关闭对象和追踪对象一致</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> trackedHash;</span><br></pre></td></tr></table></figure>
+
+<p>再看构造函数:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> referent 引用本身, ByteBuf</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> refQueue 弱引用队列</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> allLeaks 活跃的资源集合</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> initialHint 自定义泄漏信息提示类</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">DefaultResourceLeak(</span><br><span class="line">        Object referent,</span><br><span class="line">        ReferenceQueue&lt;Object&gt; refQueue,</span><br><span class="line">        Set&lt;DefaultResourceLeak&lt;?&gt;&gt; allLeaks,</span><br><span class="line">        Object initialHint) &#123;</span><br><span class="line">    <span class="built_in">super</span>(referent, refQueue);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">assert</span> referent != <span class="literal">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 计算追踪对象的一致性哈希, close时判断追踪对象和关闭对象是同一个</span></span><br><span class="line">    trackedHash = System.identityHashCode(referent);</span><br><span class="line">    <span class="comment">// 将当前DefaultResourceLeak加入到活跃资源集合中</span></span><br><span class="line">    allLeaks.add(<span class="built_in">this</span>);</span><br><span class="line">    <span class="comment">// 记录追踪的堆栈信息, TraceRecord.BOTTOM代表链尾</span></span><br><span class="line">    headUpdater.set(<span class="built_in">this</span>, initialHint == <span class="literal">null</span> ?</span><br><span class="line">            <span class="keyword">new</span> <span class="title class_">TraceRecord</span>(TraceRecord.BOTTOM) : <span class="keyword">new</span> <span class="title class_">TraceRecord</span>(TraceRecord.BOTTOM, initialHint));</span><br><span class="line">    <span class="built_in">this</span>.allLeaks = allLeaks;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>DefaultResourceLeak 的创建过程还是比较简单的, 重要的是 TraceRecord 的创建, 它才是记录追踪堆栈的功能类。​</p>
+<h4 id="TraceRecord"><a href="#TraceRecord" class="headerlink" title="TraceRecord"></a>TraceRecord</h4><p>TraceRecord 记录着追踪对象访问的堆栈轨迹, 它继承自 <code>Throwable</code>, 这样它就可以通过调用 <code>Throwable.getStackTrace()</code> 获取堆栈跟踪的元素数组了。<br>​<br>TraceRecord 类本身不复杂, 重要的是它的 <code>toString()</code> 方法, 它会把追踪对象的访问堆栈信息给构建出来。</p>
+<p>属性如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 额外的提示信息</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> String hintString;</span><br><span class="line"><span class="comment">// 下一个节点</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> TraceRecord next;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> pos;</span><br></pre></td></tr></table></figure>
+
+<p>构造函数:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> next 下一个节点</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> hint 额外的提示信息</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">TraceRecord(TraceRecord next, Object hint) &#123;</span><br><span class="line">    <span class="comment">// This needs to be generated even if toString() is never called as it may change later on.</span></span><br><span class="line">    hintString = hint <span class="keyword">instanceof</span> ResourceLeakHint ? ((ResourceLeakHint) hint).toHintString() : hint.toString();</span><br><span class="line">    <span class="built_in">this</span>.next = next;</span><br><span class="line">    <span class="built_in">this</span>.pos = next.pos + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>toString()方法, 用来构建追踪对象的堆栈信息:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 构建跟踪的堆栈信息</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">StringBuilder</span> <span class="variable">buf</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>(<span class="number">2048</span>);</span><br><span class="line">    <span class="keyword">if</span> (hintString != <span class="literal">null</span>) &#123;</span><br><span class="line">        buf.append(<span class="string">&quot;\tHint: &quot;</span>).append(hintString).append(NEWLINE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取堆栈信息</span></span><br><span class="line">    StackTraceElement[] array = getStackTrace();</span><br><span class="line">    <span class="comment">// 跳过前三个元素, 前三个堆栈信息是ResourceLeakDetector相关, 报告出来无意义</span></span><br><span class="line">    out: <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">3</span>; i &lt; array.length; i++) &#123;</span><br><span class="line">        <span class="type">StackTraceElement</span> <span class="variable">element</span> <span class="operator">=</span> array[i];</span><br><span class="line">        <span class="comment">// Strip the noisy stack trace elements.</span></span><br><span class="line">        String[] exclusions = excludedMethods.get();</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">k</span> <span class="operator">=</span> <span class="number">0</span>; k &lt; exclusions.length; k += <span class="number">2</span>) &#123;</span><br><span class="line">            <span class="comment">// Suppress a warning about out of bounds access</span></span><br><span class="line">            <span class="comment">// since the length of excludedMethods is always even, see addExclusions()</span></span><br><span class="line">            <span class="keyword">if</span> (exclusions[k].equals(element.getClassName())</span><br><span class="line">                    &amp;&amp; exclusions[k + <span class="number">1</span>].equals(element.getMethodName())) &#123; <span class="comment">// lgtm[java/index-out-of-bounds]</span></span><br><span class="line">                <span class="keyword">continue</span> out;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        buf.append(<span class="string">&#x27;\t&#x27;</span>);</span><br><span class="line">        buf.append(element.toString());</span><br><span class="line">        buf.append(NEWLINE);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> buf.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="ResourceLeakDetector"><a href="#ResourceLeakDetector" class="headerlink" title="ResourceLeakDetector"></a>ResourceLeakDetector</h4><p>回到 ResourceLeakDetector, 以 <code>PooledByteBufAllocator.newDirectBuffer()</code> 申请池化的直接内存为例, 它创建完 ByteBuf 后不会立即返回, 它需要在 ByteBuf 发生泄漏时感知到, 因此需要对 ByteBuf 做一个包装。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">protected</span> ByteBuf <span class="title function_">newDirectBuffer</span><span class="params">(<span class="type">int</span> initialCapacity, <span class="type">int</span> maxCapacity)</span> &#123;</span><br><span class="line">    <span class="comment">// 申请一个池化的, 基于直接内存的ByteBuf, 这里的细节先不管</span></span><br><span class="line">    <span class="type">PoolThreadCache</span> <span class="variable">cache</span> <span class="operator">=</span> threadCache.get();</span><br><span class="line">    PoolArena&lt;ByteBuffer&gt; directArena = cache.directArena;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> ByteBuf buf;</span><br><span class="line">    <span class="keyword">if</span> (directArena != <span class="literal">null</span>) &#123;</span><br><span class="line">        buf = directArena.allocate(cache, initialCapacity, maxCapacity);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        buf = PlatformDependent.hasUnsafe() ?</span><br><span class="line">                UnsafeByteBufUtil.newUnsafeDirectByteBuf(<span class="built_in">this</span>, initialCapacity, maxCapacity) :</span><br><span class="line">                <span class="keyword">new</span> <span class="title class_">UnpooledDirectByteBuf</span>(<span class="built_in">this</span>, initialCapacity, maxCapacity);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 尝试感知Buf的资源泄漏</span></span><br><span class="line">    <span class="keyword">return</span> toLeakAwareBuffer(buf);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>toLeakAwareBuffer()</code> 会判断是简单检测还是高级检测, 返回不同的包装类, 这个包装类后面会说。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 尝试感知Buf的资源泄漏</span></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">static</span> ByteBuf <span class="title function_">toLeakAwareBuffer</span><span class="params">(ByteBuf buf)</span> &#123;</span><br><span class="line">    ResourceLeakTracker&lt;ByteBuf&gt; leak;</span><br><span class="line">    <span class="comment">// 获取检测等级</span></span><br><span class="line">    <span class="keyword">switch</span> (ResourceLeakDetector.getLevel()) &#123;</span><br><span class="line">        <span class="keyword">case</span> SIMPLE: <span class="comment">// 简单检测, 返回 SimpleLeakAwareByteBuf 包装类</span></span><br><span class="line">            leak = AbstractByteBuf.leakDetector.track(buf);</span><br><span class="line">            <span class="keyword">if</span> (leak != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="comment">// 将 ByteBuf 包装成 SimpleLeakAwareByteBuf</span></span><br><span class="line">                buf = <span class="keyword">new</span> <span class="title class_">SimpleLeakAwareByteBuf</span>(buf, leak);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> ADVANCED:</span><br><span class="line">        <span class="keyword">case</span> PARANOID: <span class="comment">// 高级检测, 返回 AdvancedLeakAwareByteBuf 包装类</span></span><br><span class="line">            leak = AbstractByteBuf.leakDetector.track(buf);</span><br><span class="line">            <span class="keyword">if</span> (leak != <span class="literal">null</span>) &#123;</span><br><span class="line">                <span class="comment">// 将 ByteBuf 包装成 AdvancedLeakAwareByteBuf</span></span><br><span class="line">                buf = <span class="keyword">new</span> <span class="title class_">AdvancedLeakAwareByteBuf</span>(buf, leak);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>: <span class="comment">// 禁用检测, 不包装直接返回</span></span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> buf;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>AbstractByteBuf.leakDetector.track(buf)</code> 方法比较核心, 它会返回一个 buf 的泄漏追踪器, 当 buf 被正常释放时, 包装类会自动关闭追踪器, 反之资源泄漏时, 追踪器可以感知到, 并发出报告。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> ResourceLeakTracker&lt;T&gt; <span class="title function_">track</span><span class="params">(T obj)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> track0(obj);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 创建一个obj的泄漏追踪器</span></span><br><span class="line"><span class="comment">// 主要做了两件事: 创建追踪器、报告泄漏情况</span></span><br><span class="line"><span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line"><span class="keyword">private</span> DefaultResourceLeak <span class="title function_">track0</span><span class="params">(T obj)</span> &#123;</span><br><span class="line">    <span class="comment">// 获取检测等级</span></span><br><span class="line">    <span class="type">Level</span> <span class="variable">level</span> <span class="operator">=</span> ResourceLeakDetector.level;</span><br><span class="line">    <span class="keyword">if</span> (level == Level.DISABLED) &#123;</span><br><span class="line">        <span class="comment">// 禁用检测</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 小于PARANOID等级, 需要判断是否采样</span></span><br><span class="line">    <span class="keyword">if</span> (level.ordinal() &lt; Level.PARANOID.ordinal()) &#123;</span><br><span class="line">        <span class="keyword">if</span> ((PlatformDependent.threadLocalRandom().nextInt(samplingInterval)) == <span class="number">0</span>) &#123;</span><br><span class="line">            reportLeak();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">DefaultResourceLeak</span>(obj, refQueue, allLeaks, getInitialHint(resourceType));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 报告泄漏</span></span><br><span class="line">    reportLeak();</span><br><span class="line">    <span class="comment">// 等级为PARANOID, 100%检测</span></span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">DefaultResourceLeak</span>(obj, refQueue, allLeaks, getInitialHint(resourceType));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里用到了几个属性, 说明下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// ByteBuf被检测后, 会创建一个弱引用指向它, GC时如果ByteBuf没有强引用被回收,</span></span><br><span class="line"><span class="comment">// ByteBuf被回收后, JVM会将WeakReference放入到refQueue中, 通过refQueue就可以判断是否发生内存泄漏。</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> ReferenceQueue&lt;Object&gt; refQueue = <span class="keyword">new</span> <span class="title class_">ReferenceQueue</span>&lt;Object&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 已经报告的泄漏对象集合</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Set&lt;String&gt; reportedLeaks =</span><br><span class="line">    Collections.newSetFromMap(<span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;String, Boolean&gt;());</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 采样的间隔, 默认128</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> samplingInterval;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 活跃的资源集合</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Set&lt;DefaultResourceLeak&lt;?&gt;&gt; allLeaks =</span><br><span class="line">    Collections.newSetFromMap(<span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;DefaultResourceLeak&lt;?&gt;, Boolean&gt;());</span><br></pre></td></tr></table></figure>
+
+<p><code>reportLeak()</code> 的功能是报告资源的泄漏情况, 前面说过当追踪对象被 GC 回收掉后, JVM 会将 WeakReference 加入到 refQueue 中, 因此这里会遍历 refQueue, 取出泄漏对象后, 调用它的 <code>toString()</code> 来获取堆栈信息, <code>reportUntracedLeak()</code> 就很简单了, 只是通过 logger 进行输出。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 报告泄漏情况</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">reportLeak</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (!needReport()) &#123;</span><br><span class="line">        <span class="comment">// 不需要报告, 从refQueue中取出引用被clear掉</span></span><br><span class="line">        clearRefQueue();</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 遍历refQueue, 报告泄漏的情况</span></span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="type">DefaultResourceLeak</span> <span class="variable">ref</span> <span class="operator">=</span> (DefaultResourceLeak) refQueue.poll();</span><br><span class="line">        <span class="comment">// 没有泄漏的对象了, 退出循环</span></span><br><span class="line">        <span class="keyword">if</span> (ref == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 先将自己清理掉</span></span><br><span class="line">        <span class="keyword">if</span> (!ref.dispose()) &#123;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 泄漏的具体信息</span></span><br><span class="line">        <span class="type">String</span> <span class="variable">records</span> <span class="operator">=</span> ref.getReportAndClearRecords();</span><br><span class="line">        <span class="comment">// 添加到已报告的对象集合中</span></span><br><span class="line">        <span class="keyword">if</span> (reportedLeaks.add(records)) &#123;</span><br><span class="line">            <span class="comment">// 调用logger.error()报告资源泄漏的情况</span></span><br><span class="line">            <span class="keyword">if</span> (records.isEmpty()) &#123;</span><br><span class="line">                reportUntracedLeak(resourceType);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                reportTracedLeak(resourceType, records);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>DefaultResourceLeak.getReportAndClearRecords()</code> 调用了 <code>DefaultResourceLeak.generateReport()</code> 构建堆栈信息, 让用户感知到资源在哪里发生了泄漏。<code>generateReport()</code> 也比较简单, 就是对 TraceRecord 做遍历, 拼接方法调用的堆栈信息。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line">String <span class="title function_">getReportAndClearRecords</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">TraceRecord</span> <span class="variable">oldHead</span> <span class="operator">=</span> headUpdater.getAndSet(<span class="built_in">this</span>, <span class="literal">null</span>);</span><br><span class="line">    <span class="keyword">return</span> generateReport(oldHead);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> String <span class="title function_">generateReport</span><span class="params">(TraceRecord oldHead)</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> (oldHead == <span class="literal">null</span>) &#123;</span><br><span class="line">        <span class="comment">// Already closed</span></span><br><span class="line">        <span class="keyword">return</span> EMPTY_STRING;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">final</span> <span class="type">int</span> <span class="variable">dropped</span> <span class="operator">=</span> droppedRecordsUpdater.get(<span class="built_in">this</span>);</span><br><span class="line">    <span class="type">int</span> <span class="variable">duped</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="variable">present</span> <span class="operator">=</span> oldHead.pos + <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// Guess about 2 kilobytes per stack trace</span></span><br><span class="line">    <span class="type">StringBuilder</span> <span class="variable">buf</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StringBuilder</span>(present * <span class="number">2048</span>).append(NEWLINE);</span><br><span class="line">    buf.append(<span class="string">&quot;Recent access records: &quot;</span>).append(NEWLINE);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line">    Set&lt;String&gt; seen = <span class="keyword">new</span> <span class="title class_">HashSet</span>&lt;String&gt;(present);</span><br><span class="line">    <span class="comment">// 遍历TraceRecord, 拼装堆栈信息</span></span><br><span class="line">    <span class="keyword">for</span> (; oldHead != TraceRecord.BOTTOM; oldHead = oldHead.next) &#123;</span><br><span class="line">        <span class="type">String</span> <span class="variable">s</span> <span class="operator">=</span> oldHead.toString();</span><br><span class="line">        <span class="keyword">if</span> (seen.add(s)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (oldHead.next == TraceRecord.BOTTOM) &#123;</span><br><span class="line">                buf.append(<span class="string">&quot;Created at:&quot;</span>).append(NEWLINE).append(s);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                buf.append(<span class="string">&#x27;#&#x27;</span>).append(i++).append(<span class="string">&#x27;:&#x27;</span>).append(NEWLINE).append(s);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            duped++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (duped &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        buf.append(<span class="string">&quot;: &quot;</span>)</span><br><span class="line">                .append(duped)</span><br><span class="line">                .append(<span class="string">&quot; leak records were discarded because they were duplicates&quot;</span>)</span><br><span class="line">                .append(NEWLINE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (dropped &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        buf.append(<span class="string">&quot;: &quot;</span>)</span><br><span class="line">            .append(dropped)</span><br><span class="line">            .append(<span class="string">&quot; leak records were discarded because the leak record count is targeted to &quot;</span>)</span><br><span class="line">            .append(TARGET_RECORDS)</span><br><span class="line">            .append(<span class="string">&quot;. Use system property &quot;</span>)</span><br><span class="line">            .append(PROP_TARGET_RECORDS)</span><br><span class="line">            .append(<span class="string">&quot; to increase the limit.&quot;</span>)</span><br><span class="line">            .append(NEWLINE);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    buf.setLength(buf.length() - NEWLINE.length());</span><br><span class="line">    <span class="keyword">return</span> buf.toString();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至此, 创建资源泄漏追踪器和泄漏报告的流程就全部结束了。</p>
+<h3 id="简单检测和高级检测"><a href="#简单检测和高级检测" class="headerlink" title="简单检测和高级检测"></a>简单检测和高级检测</h3><p>创建完 ResourceLeakTracker 资源泄漏追踪器后, Netty 还需要将 ByteBuf 进行包装, 这里用到了 <strong>装饰器模式</strong>, 装饰类的功能有两个:</p>
+<ol>
+<li>追踪对象被 release 后, 关闭追踪器。</li>
+<li>追踪对象被访问后, 记录堆栈。</li>
+</ol>
+<p>对于第二个功能点, 只有高级检测才需要, 因此 Netty 提供了两个包装类: SimpleLeakAwareByteBuf 和 AdvancedLeakAwareByteBuf, 简单检测和高级检测。</p>
+<p>它俩的区别就是简单检测不会记录追踪对象访问的堆栈信息, 只会单纯的报告发生了泄漏, 这样的好处是开销较小, 坏处是无法确定泄漏的位置。</p>
+<p><img src="/imgs/netty/LeakAwareByteBuf-%E7%BB%A7%E6%89%BF%E5%85%B3%E7%B3%BB.png" alt="LeakAwareByteBuf-继承关系"></p>
+<p>装饰类需要依赖一个原生的 ByteBuf, 所有的操作都委托给 ByteBuf 去执行, 它会在需要增强的方法前后插入一些扩展功能。​</p>
+<p>以增强后的 <code>release()</code> 方法示例:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SimpleLeakAwareByteBuf 中的 release 方法</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">release</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 如果对象成功释放 则关闭追踪器</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">super</span>.release()) &#123;</span><br><span class="line">        closeLeak();</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// AdvancedLeakAwareByteBuf 中的 release 方法</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">release</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 记录访问的堆栈信息, 大量的方法调用都需要记录堆栈</span></span><br><span class="line">    leak.record();</span><br><span class="line">    <span class="comment">// 调用 SimpleLeakAwareByteBuf 中的 release 方法</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">super</span>.release();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>closeLeak()</code> 会调用 <code>DefaultResourceLeak.close()</code> 关闭追踪:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SimpleLeakAwareByteBuf 中的 closeLeak 方法</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">closeLeak</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// Close the ResourceLeakTracker with the tracked ByteBuf as argument. This must be the same that was used when</span></span><br><span class="line">    <span class="comment">// calling DefaultResourceLeak.track(...).</span></span><br><span class="line">    <span class="type">boolean</span> <span class="variable">closed</span> <span class="operator">=</span> leak.close(trackedByteBuf);</span><br><span class="line">    <span class="keyword">assert</span> closed;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// DefaultResourceLeak 中的 close 方法</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">close</span><span class="params">(T trackedObject)</span> &#123;</span><br><span class="line">    <span class="comment">// Ensure that the object that was tracked is the same as the one that was passed to close(...).</span></span><br><span class="line">    <span class="keyword">assert</span> trackedHash == System.identityHashCode(trackedObject);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> close();</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">// This method will do `synchronized(trackedObject)` and we should be sure this will not cause deadlock.</span></span><br><span class="line">        <span class="comment">// It should not, because somewhere up the callstack should be a (successful) `trackedObject.release`,</span></span><br><span class="line">        <span class="comment">// therefore it is unreasonable that anyone else, anywhere, is holding a lock on the trackedObject.</span></span><br><span class="line">        <span class="comment">// (Unreasonable but possible, unfortunately.)</span></span><br><span class="line">        reachabilityFence0(trackedObject);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 关闭追踪</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">close</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">// 从活跃资源集合中移除自己</span></span><br><span class="line">    <span class="keyword">if</span> (allLeaks.remove(<span class="built_in">this</span>)) &#123;</span><br><span class="line">        <span class="comment">// 清除弱引用</span></span><br><span class="line">        <span class="comment">// Call clear so the reference is not even enqueued.</span></span><br><span class="line">        clear();</span><br><span class="line">        <span class="comment">// 清空TraceRecord</span></span><br><span class="line">        headUpdater.set(<span class="built_in">this</span>, <span class="literal">null</span>);</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>leak.record()</code> 会调用 <code>DefaultResourceLeak.record0()</code> 方法记录堆栈信息, 创建一个 TraceRecord 加入到追踪记录的链表中</p>
+<h3 id="泄漏总结"><a href="#泄漏总结" class="headerlink" title="泄漏总结"></a>泄漏总结</h3><p>Netty 根据 WeakReference 弱引用来判断对象是否发生内存泄漏, 通过创建一个追踪对象的装饰类来进行增强, 当追踪对象被 release 后, 自动关闭追踪器, 否则在发生泄漏时进行报告。<br>​<br>如果开启了资源泄漏检测, Netty 会为追踪对象创建一个泄漏追踪器 ResourceLeakTracker, ResourceLeakTracker 包含一个单向链表, 链表由一系列 TraceRecord 组成, 它代表的是对象访问的堆栈记录, 如果发生了资源泄漏, Netty 会根据这个链表构建资源泄漏的位置信息并写入日志。<br>​<br>Netty 提供了两种检测机制, 分别是简单的和高级的, 对于高级检测, Netty 还会记录追踪对象的访问堆栈信息, 在报告时可以快速定位到资源泄漏的具体位置, 缺点是这会带来较大的额外开销, 不建议在线上使用。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904146550652941">Netty 系列——NIO</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/Netty%20%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E5%89%96%E6%9E%90%E4%B8%8E%20RPC%20%E5%AE%9E%E8%B7%B5-%E5%AE%8C/16%20%20IO%20%E5%8A%A0%E9%80%9F%EF%BC%9A%E4%B8%8E%E4%BC%97%E4%B8%8D%E5%90%8C%E7%9A%84%20Netty%20%E9%9B%B6%E6%8B%B7%E8%B4%9D%E6%8A%80%E6%9C%AF.md">16 IO 加速: 与众不同的 Netty 零拷贝技术</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6974321745519968293">Netty 是如何检测资源泄漏的？</a></li>
+<li><a target="_blank" rel="noopener" href="https://learn.lianglianglee.com/%E4%B8%93%E6%A0%8F/Netty%20%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E5%89%96%E6%9E%90%E4%B8%8E%20RPC%20%E5%AE%9E%E8%B7%B5-%E5%AE%8C/12%20%20%E4%BB%96%E5%B1%B1%E4%B9%8B%E7%9F%B3%EF%BC%9A%E9%AB%98%E6%80%A7%E8%83%BD%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E5%99%A8%20jemalloc%20%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86.md">12 他山之石: 高性能内存分配器 jemalloc 基本原理</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/netty/" rel="tag"># netty</a>
+              <a href="/tags/io/" rel="tag"># io</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2021/11/06/mq/" rel="prev" title="消息队列">
+                  <i class="fa fa-chevron-left"></i> 消息队列
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2022/01/09/IO%E6%B5%81/" rel="next" title="IO流">
+                  IO流 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Apomelo</span>
+</div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+<script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.14.2/algoliasearch-lite.umd.js" integrity="sha256-dImjLPUsG/6p3+i7gVKBiDM8EemJAhQ0VvkRK2pVsQY=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.43.1/instantsearch.production.min.js" integrity="sha256-jLNoKrKRDKAOg8JBqkl8jSy2tpqCGQ1/++9QRYtWl8k=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.1.3/mermaid.min.js","integrity":"sha256-TIYL00Rhw/8WaoUhYTLX9SKIEFdXxg+yMWSLVUbhiLg="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+
+</body>
+</html>
