@@ -379,7 +379,16 @@
 <li><p>博客_config.yml 末尾添加以下代码</p>
  <figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="section"># Algolia Search</span></span><br><span class="line"></span><br><span class="line"><span class="section">## Docs: https://theme-next.org/docs/third-party-services/search-services</span></span><br><span class="line"></span><br><span class="line">algolia:</span><br><span class="line">applicationID: &#x27;你的 Application ID&#x27;</span><br><span class="line">apiKey: &#x27;你的 Search-Only API Key&#x27;</span><br><span class="line">indexName: &#x27;输入刚才创建 index name&#x27;</span><br><span class="line">chunkSize: 5000</span><br></pre></td></tr></table></figure>
 </li>
-<li><p>添加环境变量 HEXO_ALGOLIA_INDEXING_KEY&#x3D;’你的 Admin API Key’</p>
+<li><p>新建一个有更新权限的 api key</p>
+<ul>
+<li>indices 选择上面的 index name （不选择表示对所有 index 生效）</li>
+<li>ACL 选择 <code>search</code> <code>addObject</code> <code>deleteObject</code> <code>deleteIndex</code> <code>listIndexes</code></li>
+</ul>
+</li>
+<li><p>添加环境变量 HEXO_ALGOLIA_INDEXING_KEY&#x3D;’有更新权限的 api key’</p>
+<blockquote>
+<p><strong>注意：</strong> 环境变量添加后 git bash 窗口和 PowerShell 窗口已经生效，但是 vscode 里面的终端窗口可能还未生效</p>
+</blockquote>
 </li>
 <li><p>测试 algolia, 如果不生效, 安装 Hexo Algolia 扩展 (我最新版本没有安装该插件, 功能可以正常使用)</p>
  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install hexo-algolia --save</span><br></pre></td></tr></table></figure>
