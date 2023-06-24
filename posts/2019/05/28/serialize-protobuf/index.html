@@ -155,7 +155,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -166,7 +166,7 @@
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">51</span>
+        <span class="site-state-item-count">52</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -319,7 +319,7 @@
 <li><strong>optional</strong>: a well-formed message can have zero or one of this field (but not more than one).</li>
 <li><strong>repeated</strong>: this field can be repeated any number of times (including zero) in a well-formed message. The order of the repeated values will be preserved.</li>
 </ol>
-<p>也可以用<strong>map</strong>: map&lt;string, int32&gt; param &#x3D; 1;</p>
+<p>也可以用<strong>map</strong>: <code>map&lt;string, int32&gt; param = 1;</code></p>
 <h3 id="字段值类型（Scalar-Value-Types）"><a href="#字段值类型（Scalar-Value-Types）" class="headerlink" title="字段值类型（Scalar Value Types）"></a>字段值类型（Scalar Value Types）</h3><table>
 <thead>
 <tr>
@@ -454,7 +454,7 @@
 </tbody></table>
 <p>You can find out more about how these types are encoded when you serialize your message in Protocol Buffer Encoding.</p>
 <ul>
-<li><div id="refer-anchor-1"> [1] In Java, unsigned 32-bit and 64-bit integers are represented using their signed counterparts, with the top bit simply being stored in the sign bit.</div>
+<li><div id="refer-anchor-1">[1] In Java, unsigned 32-bit and 64-bit integers are represented using their signed counterparts, with the top bit simply being stored in the sign bit.</div>
 </li>
 <li><div id="refer-anchor-2">[2] In all cases, setting values to a field will perform type checking to make sure it is valid.</div>
 </li>
@@ -527,13 +527,14 @@
 </tr>
 </tbody></table>
 <p>这样就大大减少了占用的位数，算法使用：</p>
-<p>(n &lt;&lt; 1) ^ (n &gt;&gt; 31) sint32<br>(n &lt;&lt; 1) ^ (n &gt;&gt; 63) sint64</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(n &lt;&lt; 1) ^ (n &gt;&gt; 31) sint32</span><br><span class="line">(n &lt;&lt; 1) ^ (n &gt;&gt; 63) sint64</span><br></pre></td></tr></table></figure>
+
 <h2 id="float-double"><a href="#float-double" class="headerlink" title="float double"></a>float double</h2><p>不压缩，多少位就多少位存储。</p>
 <h2 id="string"><a href="#string" class="headerlink" title="string"></a>string</h2><p>string 则是在 Value 中多加了一个或多个字节表示长度（msb标识），剩下的内容才是真正的值。</p>
 <h2 id="repeated"><a href="#repeated" class="headerlink" title="repeated"></a>repeated</h2><p>这里介绍压缩率更高的 Packed Repeated Fields。</p>
 <p>在 2.1.0 版本以后，protocol buffers 引入了该种类型，其与 repeated 字段一样，只是在末尾声明了 <code>[packed=true]</code>。类似 repeated 字段却又不同。在 proto3 中 Repeated 字段默认就是以这种方式处理。</p>
 <p>例如有如下 message 类型：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">message Test4 &#123;  </span><br><span class="line">    repeated int32 d = 4 [packed=true];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">message </span><span class="title class_">Test4</span> &#123;  </span><br><span class="line">    <span class="keyword">repeated</span> <span class="type">int32</span> d = <span class="number">4</span> [packed=<span class="literal">true</span>];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>构造一个 Test4 字段，并且设置 repeated 字段 d 3 个值：3，270 和 86942，编码后：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">22 // tag 0010 0010(field number 010 0 = 4, wire type 010 = 2)</span><br><span class="line"></span><br><span class="line">06 // payload size (设置的length = 6 bytes)</span><br><span class="line"></span><br><span class="line">03 // first element (varint 3)</span><br><span class="line"></span><br><span class="line">8E 02 // second element (varint 270)</span><br><span class="line"></span><br><span class="line">9E A7 05 // third element (varint 86942)</span><br></pre></td></tr></table></figure>
