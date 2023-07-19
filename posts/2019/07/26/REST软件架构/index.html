@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.16.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="Web技术发展World Wide Web（万维网），简称Web，是一种基于超文本和HTTP的、全球性的、动态交互的、跨平台的分布式图形信息系统。">
 <meta property="og:type" content="article">
@@ -153,18 +153,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">30</span>
+          <span class="site-state-item-count">31</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">13</span>
+        <span class="site-state-item-count">14</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">52</span>
+        <span class="site-state-item-count">55</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -308,7 +308,7 @@
 <h5 id="4-统一接口（Uniform-Interface）"><a href="#4-统一接口（Uniform-Interface）" class="headerlink" title="4. 统一接口（Uniform Interface）"></a>4. 统一接口（Uniform Interface）</h5><p><span id="统一接口"></span>REST要求必须使用统一的接口来对资源进行操作。</p>
 <p>REST要求对资源执行的操作，操作语义必须在HTPP消息体之前的部分完全表达，不能将操作语义封装到消息体内部。这样做为了提高交互可见性，便于通信的中间件实现缓存和安全审核。</p>
 <p>REST是不依赖于任何协议的，但目前几乎所有的REST都是基于HTTP协议的。接口应该使用标准的HTTP方法如GET，PUT和POST，并遵循这些方法的语义。</p>
-<p>非REST的接口，1000个人能写出1000个接口，例如对机器人的操作：<br>（1）&#x2F;api&#x2F;findRobots<br>（2）&#x2F;api&#x2F;robots&#x2F;select<br>REST API：<br>&amp;emsp;GET    &#x2F;rest&#x2F;robots&#x2F;{id} 查询一个机器人<br>&amp;emsp;POST   &#x2F;rest&#x2F;robots      新建一个机器人<br>&amp;emsp;PUT    &#x2F;rest&#x2F;robots&#x2F;{id} 更新一个机器人<br>&amp;emsp;DELETE &#x2F;rest&#x2F;robots&#x2F;{id} 删除一个机器人</p>
+<p>非REST的接口，1000个人能写出1000个接口，例如对机器人的操作：<br>（1）&#x2F;api&#x2F;findRobots<br>（2）&#x2F;api&#x2F;robots&#x2F;select<br>REST API：<br>&emsp;GET    &#x2F;rest&#x2F;robots&#x2F;{id} 查询一个机器人<br>&emsp;POST   &#x2F;rest&#x2F;robots      新建一个机器人<br>&emsp;PUT    &#x2F;rest&#x2F;robots&#x2F;{id} 更新一个机器人<br>&emsp;DELETE &#x2F;rest&#x2F;robots&#x2F;{id} 删除一个机器人</p>
 <p><strong>统一接口主要包括：</strong><br>（1）7个HTTP方法：GET&#x2F;POST&#x2F;PUT&#x2F;DELETE&#x2F;PATCH&#x2F;HEAD&#x2F;OPTIONS<br>（2）HTTP头信息（可自定义）<br>（3）HTTP响应状态代码（可自定义）<br>（4）一套标准的内容协商机制<br>（5）一套标准的缓存机制<br>（6）一套标准的客户端身份认证机制</p>
 <p><strong>HTTP方法幂等性</strong><br>幂等是指一次或多次请求一个资源的时候，应该具有相同的副作用。<br><strong>HTTP方法安全性</strong><br>安全是指对原有资源没有任何影响，安全性不代表请求一定不产生副作用。比如GET请求增加计数器，这种产生的副作用是服务端自作主张，服务端在设计的时候应该不让副作用太大，客户端可以这些请求不会产生副作用。</p>
 <p>GET: 安全且幂等，用来获取资源表示<br>POST: 不安全且不幂等，用来创建资源或用于部分更新资源<br>PUT: 不安全且幂等，用替换的方式更新资源<br>DELETE: 不安全且幂等，用于删除一个资源</p>
@@ -373,15 +373,14 @@
   <footer class="footer">
     <div class="footer-inner">
 
-
-<div class="copyright">
-  &copy; 
-  <span itemprop="copyrightYear">2023</span>
-  <span class="with-love">
-    <i class="fa fa-heart"></i>
-  </span>
-  <span class="author" itemprop="copyrightHolder">Apomelo</span>
-</div>
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Apomelo</span>
+  </div>
 <div class="busuanzi-count">
     <span class="post-meta-item" id="busuanzi_container_site_uv">
       <span class="post-meta-item-icon">
@@ -419,12 +418,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.17.0/algoliasearch-lite.umd.js" integrity="sha256-Lf9DrpGmcRip6OQzbcL6lnvNmoZNSKpyQX5pMlwatWE=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.55.0/instantsearch.production.min.js" integrity="sha256-aRxUroY27yHj7g0t6OfxRaGP1NIgtuperOoNVzgUSys=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.18.0/algoliasearch-lite.umd.js" integrity="sha256-V3GHVlMSAsogT3wL0OY/l4d3fRLa56gNzlnzdIMBIWg=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.56.3/instantsearch.production.min.js" integrity="sha256-mWvjWAfZylKMOg+S3HLq+wng1HHRnl2Idr2r8NsUzIU=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/9.4.3/mermaid.min.js","integrity":"sha256-e0o3JYsdjqKajf9eOe22FhioYSz9WofRY4dLKo3F6do="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.2.3/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
+
 
 
 

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="简介布隆过滤器有着广泛的应用，对于大量数据的“存不存在”的问题在空间上有明显优势，但是在判断存不存在是有一定的错误率(false positive)，也就是说，有可能把不属于这个集合的元素误认为属于这个集合(False Positive)，但不会把属于这个集合的元素误认为不属于这个集合(False Negative)。 布隆在 1970 年提出了布隆过滤器(Bloom Filter)，是一个很长的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="布隆过滤器">
+<meta property="og:url" content="https://apomelo.cc/posts/2023/07/19/big-data-bloomfilter/index.html">
+<meta property="og:site_name" content="Apomelo - 追逐">
+<meta property="og:description" content="简介布隆过滤器有着广泛的应用，对于大量数据的“存不存在”的问题在空间上有明显优势，但是在判断存不存在是有一定的错误率(false positive)，也就是说，有可能把不属于这个集合的元素误认为属于这个集合(False Positive)，但不会把属于这个集合的元素误认为不属于这个集合(False Negative)。 布隆在 1970 年提出了布隆过滤器(Bloom Filter)，是一个很长的">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://apomelo.cc/imgs/big-data-bloomfilter/big-data-bloomfilter-%E5%8A%A0%E5%85%A5%E8%BF%87%E7%A8%8B.png">
+<meta property="og:image" content="https://apomelo.cc/imgs/big-data-bloomfilter/big-data-bloomfilter-1.png">
+<meta property="article:published_time" content="2023-07-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-07-18T16:00:00.000Z">
+<meta property="article:author" content="Apomelo">
+<meta property="article:tag" content="big data">
+<meta property="article:tag" content="bloomfilter">
+<meta property="article:tag" content="布隆过滤器">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://apomelo.cc/imgs/big-data-bloomfilter/big-data-bloomfilter-%E5%8A%A0%E5%85%A5%E8%BF%87%E7%A8%8B.png">
+
+
+<link rel="canonical" href="https://apomelo.cc/posts/2023/07/19/big-data-bloomfilter/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.cc/posts/2023/07/19/big-data-bloomfilter/","path":"posts/2023/07/19/big-data-bloomfilter/","title":"布隆过滤器"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>布隆过滤器 | Apomelo - 追逐</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%93%E4%B8%9A%E6%9C%AF%E8%AF%AD"><span class="nav-number">1.2.</span> <span class="nav-text">专业术语</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">2.</span> <span class="nav-text">应用场景</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8%E5%AE%9E%E7%8E%B0"><span class="nav-number">3.</span> <span class="nav-text">布隆过滤器实现</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A5-BitSet-%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E4%B8%BA%E4%BE%8B"><span class="nav-number">3.1.</span> <span class="nav-text">以 BitSet 实现方式为例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A5-BitSet-%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E7%9A%84%E4%BB%A3%E7%A0%81"><span class="nav-number">3.2.</span> <span class="nav-text">以 BitSet 实现方式的代码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AF%AF%E6%8A%A5%E7%8E%87-False-Positive-Rate"><span class="nav-number">4.</span> <span class="nav-text">误报率 - False Positive Rate</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AF%E6%8A%A5%E7%8E%87%E7%9A%84%E4%BA%A7%E7%94%9F"><span class="nav-number">4.1.</span> <span class="nav-text">误报率的产生</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AF%E6%8A%A5%E7%8E%87%E7%9A%84%E8%AE%A1%E7%AE%97"><span class="nav-number">4.2.</span> <span class="nav-text">误报率的计算</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%8F%E5%B0%91%E8%AF%AF%E6%8A%A5%E7%8E%87"><span class="nav-number">4.3.</span> <span class="nav-text">减少误报率</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">31</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">14</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">55</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2023/07/19/big-data-bloomfilter/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="布隆过滤器 | Apomelo - 追逐">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          布隆过滤器
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-07-19 00:00:00" itemprop="dateCreated datePublished" datetime="2023-07-19T00:00:00+08:00">2023-07-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/default/" itemprop="url" rel="index"><span itemprop="name">default</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2023/07/19/big-data-bloomfilter/" class="post-meta-item leancloud_visitors" data-flag-title="布隆过滤器" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>布隆过滤器有着广泛的应用，对于大量数据的“存不存在”的问题在空间上有明显优势，但是在判断存不存在是有一定的错误率(false positive)，也就是说，<strong>有可能把不属于这个集合的元素误认为属于这个集合(False Positive)，但不会把属于这个集合的元素误认为不属于这个集合(False Negative)。</strong></p>
+<p>布隆在 1970 年提出了布隆过滤器(Bloom Filter)，是一个很长的二进制向量(可以想象成一个序列)和一系列随机映射函数(hash function)。可用于判断一个元素是否在一个集合中，查询效率很高(1-N，最优能逼近于 1)。通常应用在一些需要快速判断某个元素是否属于集合，但是并不严格要求 100%正确的场合。</p>
+<h2 id="特点"><a href="#特点" class="headerlink" title="特点"></a>特点</h2><ul>
+<li><strong>优点</strong>: 占用空间小，查询快</li>
+<li><strong>缺点</strong>: 有误判，删除困难</li>
+</ul>
+<h2 id="专业术语"><a href="#专业术语" class="headerlink" title="专业术语"></a>专业术语</h2><ul>
+<li><code>False Positive</code>: 中文可以理解为“假阳性”，在这里表示，有可能把不属于这个集合的元素误认为属于这个集合</li>
+<li><code>False Negative</code>: 中文可以理解为“假阴性”，Bloom Filter 是不存在 false negatived 的， 即不会把属于这个集合的元素误认为不属于这个集合(False Negative)</li>
+</ul>
+<span id="more"></span>
+
+<h1 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h1><ul>
+<li><code>网页爬虫对URL的去重</code>: 避免爬取相同的 URL 地址；</li>
+<li><code>反垃圾邮件</code>: 假设邮件服务器通过发送方的邮件域或者 IP 地址对垃圾邮件进行过滤，那么就需要判断当前的邮件域或者 IP 地址是否处于黑名单之中。如果邮件服务器的通信邮件数量非常大(也可以认为数据量级上亿)，那么也可以使用 Bloom Filter 算法；</li>
+<li><code>缓存击穿</code>: 将已存在的缓存放到布隆中，当黑客访问不存在的缓存时迅速返回避免缓存及 DB 挂掉；</li>
+<li><code>HTTP缓存服务器</code>: 当本地局域网中的 PC 发起一条 HTTP 请求时，缓存服务器会先查看一下这个 URL 是否已经存在于缓存之中，如果存在的话就没有必要去原始的服务器拉取数据了(为了简单起见，我们假设数据没有发生变化)，这样既能节省流量，还能加快访问速度，以提高用户体验。</li>
+<li><code>黑/白名单</code>: 类似反垃圾邮件。</li>
+<li><code>Bigtable</code>: Google 著名的分布式数据库 Bigtable 使用了布隆过滤器来查找不存在的行或列，以减少磁盘查找的 IO 次数。</li>
+<li><code>Squid</code>: 网页代理缓存服务器在  cachedigests  中使用了也布隆过滤器。</li>
+<li><code>Venti 文档存储系统</code>: 也采用布隆过滤器来检测先前存储的数据。</li>
+<li><code>SPIN 模型检测器</code>: 也使用布隆过滤器在大规模验证问题时跟踪可达状态空间。</li>
+<li><code>Chrome加速安全浏览</code>: Google Chrome 浏览器使用了布隆过滤器加速安全浏览服务。</li>
+<li><code>Key-Value系统</code>: 在很多 Key-Value 系统中也使用了布隆过滤器来加快查询过程，如 Hbase，Accumulo，Leveldb，一般而言，Value 保存在磁盘中，访问磁盘需要花费大量时间，然而使用布隆过滤器可以快速判断某个 Key 对应的 Value 是否存在，因此可以避免很多不必要的磁盘 IO 操作，只是引入布隆过滤器会带来一定的内存消耗。</li>
+<li><code>HTTP Proxy-Cache</code>: 在 Internet Cache Protocol 中的 Proxy-Cache 很多都是使用 Bloom Filter 存储 URLs，除了高效的查询外，还能很方便得传输交换 Cache 信息。</li>
+<li><code>网络应用</code>: P2P 网络中查找资源操作，可以对每条网络通路保存 Bloom Filter，当命中时，则选择该通路访问。广播消息时，可以检测某个 IP 是否已发包。检测广播消息包的环路，将 Bloom Filter 保存在包里，每个节点将自己添加入 Bloom Filter。信息队列管理，使用 Counter Bloom Filter 管理信息流量。</li>
+</ul>
+<h1 id="布隆过滤器实现"><a href="#布隆过滤器实现" class="headerlink" title="布隆过滤器实现"></a>布隆过滤器实现</h1><p>Bloom Filter 在很多开源框架都有实现，例如:</p>
+<ul>
+<li><code>Elasticsearch</code>: org.elasticsearch.common.util.BloomFilter</li>
+<li><code>guava</code>: com.google.common.hash.BloomFilter</li>
+<li><code>Hadoop</code>: org.apache.hadoop.util.bloom.BloomFilter(基于 BitSet 实现)</li>
+</ul>
+<h2 id="以-BitSet-实现方式为例"><a href="#以-BitSet-实现方式为例" class="headerlink" title="以 BitSet 实现方式为例"></a>以 BitSet 实现方式为例</h2><p>创建一个 m 位 BitSet，先将所有位初始化为 0，然后选择 k 个不同的哈希函数。第 i 个哈希函数对字符串 str 哈希的结果记为 h(i，str)，且 h(i，str)的范围是 0 到 m-1 。</p>
+<p><strong>加入字符串过程</strong></p>
+<p>下面是每个字符串处理的过程，首先是将字符串 str“记录”到 BitSet 中的过程: 对于字符串 str，分别计算 <code>h(1，str)，h(2，str)…… h(k，str)</code>。然后将 BitSet 的第 <code>h(1，str)、h(2，str)…… h(k，str)</code> 位设为 1。</p>
+<p><img src="/imgs/big-data-bloomfilter/big-data-bloomfilter-%E5%8A%A0%E5%85%A5%E8%BF%87%E7%A8%8B.png" alt="big-data-bloomfilter-加入过程"></p>
+<p>这样就将字符串 str 映射到 BitSet 中的 k 个二进制位了。</p>
+<p><strong>检查字符串是否存在的过程</strong></p>
+<p>下面是检查字符串 str 是否被 BitSet 记录过的过程: 对于字符串 str，分别计算 <code>h(1，str)，h(2，str)…… h(k，str)</code> 。然后检查 BitSet 的第 <code>h(1，str)、h(2，str)…… h(k，str)</code> 位是否为 1，若其中任何一位不为 1 则可以判定 str 一定没有被记录过。若全部位都是 1，则“认为”字符串 str 存在。 若一个字符串对应的 Bit 不全为 1，则可以肯定该字符串一定没有被 Bloom Filter 记录过。(这是显然的，因为字符串被记录过，其对应的二进制位肯定全部被设为 1 了)</p>
+<h2 id="以-BitSet-实现方式的代码"><a href="#以-BitSet-实现方式的代码" class="headerlink" title="以 BitSet 实现方式的代码"></a>以 BitSet 实现方式的代码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> example.hash.bloomfliter;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.BitSet;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BloomFilter</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * BitSet初始分配2^24个bit</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">DEFAULT_SIZE</span> <span class="operator">=</span> <span class="number">1</span> &lt;&lt; <span class="number">25</span>;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 不同哈希函数的种子，一般应取质数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span>[] seeds = <span class="keyword">new</span> <span class="title class_">int</span>[]&#123;<span class="number">5</span>, <span class="number">7</span>, <span class="number">11</span>, <span class="number">13</span>, <span class="number">31</span>, <span class="number">37</span>, <span class="number">61</span>&#125;;</span><br><span class="line">    <span class="keyword">private</span> <span class="type">BitSet</span> <span class="variable">bits</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">BitSet</span>(DEFAULT_SIZE);</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 哈希函数对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> SimpleHash[] func = <span class="keyword">new</span> <span class="title class_">SimpleHash</span>[seeds.length];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">BloomFilter</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; seeds.length; i++) &#123;</span><br><span class="line">            func[i] = <span class="keyword">new</span> <span class="title class_">SimpleHash</span>(DEFAULT_SIZE, seeds[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将字符串标记到bits中</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">(String value)</span> &#123;</span><br><span class="line">        <span class="keyword">for</span> (SimpleHash f : func) &#123;</span><br><span class="line">            bits.set(f.hash(value), <span class="literal">true</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断字符串是否已经被bits标记</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">contains</span><span class="params">(String value)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (value == <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">ret</span> <span class="operator">=</span> <span class="literal">true</span>;</span><br><span class="line">        <span class="keyword">for</span> (SimpleHash f : func) &#123;</span><br><span class="line">            ret = ret &amp;&amp; bits.get(f.hash(value));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> ret;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 哈希函数类</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">class</span> <span class="title class_">SimpleHash</span> &#123;</span><br><span class="line">        <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">MAXIMUM_CAPACITY</span> <span class="operator">=</span> <span class="number">1</span> &lt;&lt; <span class="number">30</span>;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">private</span> <span class="type">int</span> cap;</span><br><span class="line">        <span class="keyword">private</span> <span class="type">int</span> seed;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="title function_">SimpleHash</span><span class="params">(<span class="type">int</span> cap, <span class="type">int</span> seed)</span> &#123;</span><br><span class="line">            <span class="built_in">this</span>.setCap(cap);</span><br><span class="line">            <span class="built_in">this</span>.seed = seed;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 禁止子类重写</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">void</span> <span class="title function_">setCap</span><span class="params">(<span class="type">int</span> cap)</span> &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">n</span> <span class="operator">=</span> cap - <span class="number">1</span>;</span><br><span class="line">            n |= n &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">            n |= n &gt;&gt;&gt; <span class="number">2</span>;</span><br><span class="line">            n |= n &gt;&gt;&gt; <span class="number">4</span>;</span><br><span class="line">            n |= n &gt;&gt;&gt; <span class="number">8</span>;</span><br><span class="line">            n |= n &gt;&gt;&gt; <span class="number">16</span>;</span><br><span class="line">            <span class="built_in">this</span>.cap = (n &lt; <span class="number">0</span>) ? <span class="number">1</span> : (n &gt;= MAXIMUM_CAPACITY) ? MAXIMUM_CAPACITY : n + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * hash函数，采用简单的加权和hash</span></span><br><span class="line"><span class="comment">         * 更多 hash 函数参考： &#123;<span class="doctag">@link</span> util.hash.HashUtils&#125;</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">hash</span><span class="params">(String value)</span> &#123;</span><br><span class="line">            <span class="type">int</span> <span class="variable">result</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; value.length(); i++) &#123;</span><br><span class="line">                result = seed * result + value.charAt(i);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> (cap - <span class="number">1</span>) &amp; result;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="误报率-False-Positive-Rate"><a href="#误报率-False-Positive-Rate" class="headerlink" title="误报率 - False Positive Rate"></a>误报率 - False Positive Rate</h1><h2 id="误报率的产生"><a href="#误报率的产生" class="headerlink" title="误报率的产生"></a>误报率的产生</h2><p>初始状态下，Bloom Filter 是一个 m 位的位数组，且数组被 0 所填充。同时，我们需要定义 k 个不同的 hash 函数，每一个 hash 函数都随机的将每一个输入元素映射到位数组中的一个位上。那么对于一个确定的输入，我们会得到 k 个索引。</p>
+<p>插入元素: 经过 k 个 hash 函数的映射，我们会得到 k 个索引，我们把位数组中这 k 个位置全部置 1(不管其中的位之前是 0 还是 1)</p>
+<p>查询元素: 输入元素经过 k 个 hash 函数的映射会得到 k 个索引，如果位数组中这 k 个索引任意一处是 0，那么就说明这个元素不在集合之中；如果元素处于集合之中，那么当插入元素的时候这 k 个位都是 1。但如果这 k 个索引处的位都是 1，被查询的元素就一定在集合之中吗? 答案是不一定，也就是说出现了 False Positive 的情况(但 Bloom Filter 不会出现 False Negative 的情况)</p>
+<p><img src="/imgs/big-data-bloomfilter/big-data-bloomfilter-1.png" alt="big-data-bloomfilter-1"></p>
+<p>在上图中，当插入 x、y、z 这三个元素之后，再来查询 w，会发现 w 不在集合之中，而如果 w 经过三个 hash 函数计算得出的结果所得索引处的位全是 1，那么 Bloom Filter 就会告诉你，w 在集合之中，实际上这里是误报，w 并不在集合之中。</p>
+<h2 id="误报率的计算"><a href="#误报率的计算" class="headerlink" title="误报率的计算"></a>误报率的计算</h2><p>Bloom Filter 的误报率到底有多大? 下面在数学上进行一番推敲。假设 HASH 函数输出的索引值落在 m 位的数组上的每一位上都是等可能的。那么，对于一个给定的 HASH 函数，在进行某一个运算的时候，一个特定的位没有被设置为 1 的概率是</p>
+<p>$1-\frac{1}{m}$</p>
+<p>那么，对于所有的 k 个 HASH 函数，都没有把这个位设置为 1 的概率是</p>
+<p>$(1-\frac{1}{m})^k$</p>
+<p>如果我们已经插入了 n 个元素，那么对于一个给定的位，这个位仍然是 0 的概率是</p>
+<p>$(1-\frac{1}{m})^{kn}$</p>
+<p>那么插入 n 个元素之后，这个位是 1 的概率是</p>
+<p>$1 - (1 - \frac{1}{m})^{kn}$</p>
+<p>所以插入 n 个元素之后，第 n + 1 个元素经过 HASH 函数得到的 k 位都是 1 的概率是</p>
+<p>$[1 - (1 - \frac{1}{m})^{kn}] ^ k$</p>
+<p>根据常数 e 的定义，可以近似的表示为:</p>
+<p>根据数学公式可以推理<strong>误判概率</strong> $P_{error}$ 有如下关系：</p>
+<p>$$<br>\begin{equation}\begin{split} P_{error} &amp;&#x3D;  [1 - (1 - \frac{1}{m})^{kn}]^k \<br>&amp;&#x3D; [1 - (1 - \frac{1}{m})^{-m  (- \frac{kn}{m})}]^k \<br>&amp;\approx(1 - e ^ {- \frac{kn}{m}})^k \<br>\end{split}\end{equation}<br>$$</p>
+<ul>
+<li>$m$ 是位数组的大小；</li>
+<li>$n$ 是已经添加元素的数量；</li>
+<li>$k$ 是哈希函数数量；</li>
+<li>$e$ 数学常数，约等于 2.718281828。</li>
+</ul>
+<h2 id="减少误报率"><a href="#减少误报率" class="headerlink" title="减少误报率"></a>减少误报率</h2><p>通过上面的估计式也可以<strong>估计</strong>在给定的比特向量长度 m 以及插入次数 n 下使得误判率最小的哈希函数的个数, 考察关于 k 的函数 $f(k)$ (其中 n 和 m 是常数)</p>
+<p>$$<br>f(k) &#x3D; (1 - e ^ {- \frac{kn}{m}})^k<br>$$</p>
+<p>由于 n 和 m 都是常数, 因此我们不妨将 $e ^ \frac{n}{m}$ 看做一个整体, 记为 t, 即 $t &#x3D; e ^ \frac{n}{m}$, 于是</p>
+<p>$$<br>f(k) &#x3D; (1 - t^{-k})^k<br>$$</p>
+<p>将上式两边取对数, 得</p>
+<p>$$<br>ln f(k) &#x3D; kln(1 - t^{-k})<br>$$</p>
+<p>对上式两边求导, 有</p>
+<p>$$<br>\frac{1}{f(k)}f’(k) &#x3D; ln(1 - t ^ {-k}) + \frac{kt^{-k}lnt}{1 - t^{-k}}<br>$$</p>
+<p>令上式等于 0, 解得</p>
+<p>$$<br>t^{-k} &#x3D; \frac{1}{2}<br>$$</p>
+<p>即</p>
+<p>$$<br>e ^ \frac{-kn}{m} &#x3D; \frac{1}{2}<br>$$</p>
+<p>于是,</p>
+<p>$$<br>k &#x3D; \frac{m}{n}ln2<br>$$</p>
+<p>即当 $k &#x3D; \frac{m}{n}ln2$ 时, 布隆过滤器的误判概率最低, 此时, 误判概率为</p>
+<p>$$<br>P_{error} &#x3D; (1 - \frac{1}{2}) ^k &#x3D; 2 ^ {- ln2 \frac{m}{n}}<br>$$</p>
+<p><strong>最优的哈希函数个数和位数组的大小的推断：</strong></p>
+<p>布隆过滤器的原理很简单, 它的难点在于根据需要的误判概率确定过滤器的参数值 (比特向量长度 n, 哈希函数个数 k), 根据上一节的推导, 我们可以使用如下的结论:</p>
+<ul>
+<li>在给定误判概率 P 下, k 应取 $- \frac{lnp}{ln2}$</li>
+<li>在给定的元素数 n 和哈希函数个数 k 下, m 应取 $\frac{nk}{ln2}$</li>
+</ul>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://pdai.tech/md/algorithm/alg-domain-bigdata-bloom-filter.html">大数据处理 - Bitmap &amp; Bloom Filter</a></li>
+<li><a target="_blank" rel="noopener" href="https://sunyunqiang.com/blog/bloom_filter/">21. 布隆过滤器 (Bloom Filter) 的原理</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/big-data/" rel="tag"># big data</a>
+              <a href="/tags/bloomfilter/" rel="tag"># bloomfilter</a>
+              <a href="/tags/%E5%B8%83%E9%9A%86%E8%BF%87%E6%BB%A4%E5%99%A8/" rel="tag"># 布隆过滤器</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2023/04/27/python/" rel="prev" title="python">
+                  <i class="fa fa-chevron-left"></i> python
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Apomelo</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.18.0/algoliasearch-lite.umd.js" integrity="sha256-V3GHVlMSAsogT3wL0OY/l4d3fRLa56gNzlnzdIMBIWg=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.56.3/instantsearch.production.min.js" integrity="sha256-mWvjWAfZylKMOg+S3HLq+wng1HHRnl2Idr2r8NsUzIU=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.2.3/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+
+</body>
+</html>
