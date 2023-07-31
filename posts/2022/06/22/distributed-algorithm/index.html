@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="简介分散式算法（英语：Distributed algorithm），一种算法类型。为分散式计算而设计，它运行在一群相互连结的处理器所构成的计算机硬件平台上。分散式算法以并行方式执行，是平行算法下的子类别。因为同时运行在不同处理器上，对算法其他部分运行情况的资讯所知有限，使得这类型的算法较为困难。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分布式算法">
+<meta property="og:url" content="https://apomelo.cc/posts/2022/06/22/distributed-algorithm/index.html">
+<meta property="og:site_name" content="Apomelo - 追逐">
+<meta property="og:description" content="简介分散式算法（英语：Distributed algorithm），一种算法类型。为分散式计算而设计，它运行在一群相互连结的处理器所构成的计算机硬件平台上。分散式算法以并行方式执行，是平行算法下的子类别。因为同时运行在不同处理器上，对算法其他部分运行情况的资讯所知有限，使得这类型的算法较为困难。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-hash-1.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-hash-2.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-hash-3.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-hash-4.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-hash-5.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-hash-6.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-hash-7.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-hash-8.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-hash-9.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-paxos-1.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-paxos-2.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-paxos-3.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-paxos-4.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-paxos-5.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-paxos-6.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-paxos-7.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-paxos-8.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-1.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-2.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-3">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-4.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-5.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-6.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-7.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-8.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-9.jpg">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-zab-1.png">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-zab-2.png">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-zab-3.png">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-zab-4.png">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-zab-5.png">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-zab-6.png">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-snowflake-1.png">
+<meta property="article:published_time" content="2022-06-21T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-06-21T16:00:00.000Z">
+<meta property="article:author" content="Apomelo">
+<meta property="article:tag" content="distributed">
+<meta property="article:tag" content="algorithm">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-hash-1.jpg">
+
+
+<link rel="canonical" href="https://apomelo.cc/posts/2022/06/22/distributed-algorithm/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.cc/posts/2022/06/22/distributed-algorithm/","path":"posts/2022/06/22/distributed-algorithm/","title":"分布式算法"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>分布式算法 | Apomelo - 追逐</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%88%86%E5%B8%83%E5%BC%8F%E7%AE%97%E6%B3%95"><span class="nav-number">2.</span> <span class="nav-text">常见的分布式算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7-Hash-%E7%AE%97%E6%B3%95"><span class="nav-number">3.</span> <span class="nav-text">一致性 Hash 算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7-Hash-%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B"><span class="nav-number">3.1.</span> <span class="nav-text">一致性 Hash 算法简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%80%E8%87%B4%E6%80%A7-Hash-%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="nav-number">3.2.</span> <span class="nav-text">一致性 Hash 算法原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Hash-%E7%8E%AF"><span class="nav-number">3.2.1.</span> <span class="nav-text">Hash 环</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9"><span class="nav-number">3.2.2.</span> <span class="nav-text">删除节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0%E8%8A%82%E7%82%B9"><span class="nav-number">3.2.3.</span> <span class="nav-text">增加节点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%B9%B3%E8%A1%A1%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">3.2.4.</span> <span class="nav-text">不平衡的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E8%8A%82%E7%82%B9"><span class="nav-number">3.2.5.</span> <span class="nav-text">虚拟节点</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Paxos-%E7%AE%97%E6%B3%95"><span class="nav-number">4.</span> <span class="nav-text">Paxos 算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos-%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B"><span class="nav-number">4.1.</span> <span class="nav-text">Paxos 算法简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos-%E7%AE%97%E6%B3%95%E6%8E%A8%E5%AF%BC"><span class="nav-number">4.2.</span> <span class="nav-text">Paxos 算法推导</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Basic-Paxos-%E7%AE%97%E6%B3%95"><span class="nav-number">4.3.</span> <span class="nav-text">Basic Paxos 算法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%92%E8%89%B2"><span class="nav-number">4.3.1.</span> <span class="nav-text">角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%B8%AA%E9%98%B6%E6%AE%B5"><span class="nav-number">4.3.2.</span> <span class="nav-text">3 个阶段</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5-Prepare-%E9%98%B6%E6%AE%B5"><span class="nav-number">4.3.2.1.</span> <span class="nav-text">第一阶段: Prepare 阶段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5-Accept-%E9%98%B6%E6%AE%B5"><span class="nav-number">4.3.2.2.</span> <span class="nav-text">第二阶段: Accept 阶段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5-Learn-%E9%98%B6%E6%AE%B5"><span class="nav-number">4.3.2.3.</span> <span class="nav-text">第三阶段: Learn 阶段</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%AA%E4%BB%A3%E7%A0%81"><span class="nav-number">4.3.3.</span> <span class="nav-text">伪代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%BE%E4%BE%8B"><span class="nav-number">4.3.4.</span> <span class="nav-text">实现举例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos-%E7%AE%97%E6%B3%95%E6%8B%93%E5%B1%95"><span class="nav-number">4.4.</span> <span class="nav-text">Paxos 算法拓展</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Multi-Paxos-%E7%AE%97%E6%B3%95"><span class="nav-number">4.4.1.</span> <span class="nav-text">Multi-Paxos 算法</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Raft-%E7%AE%97%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">Raft 算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Raft-%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B"><span class="nav-number">5.1.</span> <span class="nav-text">Raft 算法简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Raft-%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="nav-number">5.2.</span> <span class="nav-text">Raft 算法原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%92%E8%89%B2-1"><span class="nav-number">5.2.1.</span> <span class="nav-text">角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%92%E8%89%B2%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2"><span class="nav-number">5.2.2.</span> <span class="nav-text">角色状态转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Raft-%E7%AE%97%E6%B3%95%E5%AD%90%E9%97%AE%E9%A2%98"><span class="nav-number">5.2.3.</span> <span class="nav-text">Raft 算法子问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Leader-%E9%80%89%E4%B8%BE"><span class="nav-number">5.2.4.</span> <span class="nav-text">Leader 选举</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E5%90%8C%E6%AD%A5"><span class="nav-number">5.2.5.</span> <span class="nav-text">日志同步</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E5%85%A8%E6%80%A7"><span class="nav-number">5.2.6.</span> <span class="nav-text">安全性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%97%A5%E5%BF%97%E5%8E%8B%E7%BC%A9"><span class="nav-number">5.2.7.</span> <span class="nav-text">日志压缩</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%90%E5%91%98%E5%8F%98%E6%9B%B4"><span class="nav-number">5.2.8.</span> <span class="nav-text">成员变更</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ZAB-%E7%AE%97%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">ZAB 算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ZAB-%E7%AE%97%E6%B3%95%E7%AE%80%E4%BB%8B"><span class="nav-number">7.</span> <span class="nav-text">ZAB 算法简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E5%B9%BF%E6%92%AD"><span class="nav-number">7.1.</span> <span class="nav-text">消息广播</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B4%A9%E6%BA%83%E6%81%A2%E5%A4%8D"><span class="nav-number">7.2.</span> <span class="nav-text">崩溃恢复</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E5%90%8C%E6%AD%A5"><span class="nav-number">7.3.</span> <span class="nav-text">数据同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ZXID-%E5%8E%9F%E7%90%86"><span class="nav-number">7.4.</span> <span class="nav-text">ZXID 原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.5.</span> <span class="nav-text">总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Snowflake-%E7%AE%97%E6%B3%95"><span class="nav-number">8.</span> <span class="nav-text">Snowflake 算法</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Snowflake-%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86"><span class="nav-number">8.1.</span> <span class="nav-text">Snowflake 算法原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Snowflake-%E7%AE%97%E6%B3%95%E5%8E%9F%E7%90%86-1"><span class="nav-number">8.2.</span> <span class="nav-text">Snowflake 算法原理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%B9%E6%AF%94"><span class="nav-number">9.</span> <span class="nav-text">对比</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Raft-%E4%B8%8E-Multi-Paxos-%E5%AF%B9%E6%AF%94"><span class="nav-number">9.1.</span> <span class="nav-text">Raft 与 Multi-Paxos 对比</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">10.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2022/06/22/distributed-algorithm/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="分布式算法 | Apomelo - 追逐">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          分布式算法
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-06-22 00:00:00" itemprop="dateCreated datePublished" datetime="2022-06-22T00:00:00+08:00">2022-06-22</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/distributed/" itemprop="url" rel="index"><span itemprop="name">distributed</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2022/06/22/distributed-algorithm/" class="post-meta-item leancloud_visitors" data-flag-title="分布式算法" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>分散式算法（英语：Distributed algorithm），一种算法类型。为分散式计算而设计，它运行在一群相互连结的处理器所构成的计算机硬件平台上。分散式算法以并行方式执行，是平行算法下的子类别。因为同时运行在不同处理器上，对算法其他部分运行情况的资讯所知有限，使得这类型的算法较为困难。</p>
+<span id="more"></span>
+
+<h1 id="常见的分布式算法"><a href="#常见的分布式算法" class="headerlink" title="常见的分布式算法"></a>常见的分布式算法</h1><ul>
+<li>分布式算法 - 一致性 Hash 算法<ul>
+<li>一致性 Hash 算法是个经典算法，Hash 环的引入是为解决 <code>单调性(Monotonicity)</code> 的问题；虚拟节点的引入是为了解决 <code>平衡性(Balance)</code> 问题</li>
+</ul>
+</li>
+<li>分布式算法 - Paxos 算法<ul>
+<li>Paxos 算法是 Lamport 宗师提出的一种基于消息传递的分布式一致性算法，使其获得 2013 年图灵奖。自 Paxos 问世以来就持续垄断了分布式一致性算法，Paxos 这个名词几乎等同于分布式一致性, 很多分布式一致性算法都由 Paxos 演变而来</li>
+</ul>
+</li>
+<li>分布式算法 - Raft 算法<ul>
+<li>Paxos 是出了名的难懂，而 Raft 正是为了探索一种更易于理解的一致性算法而产生的。它的首要设计目的就是易于理解，所以在选主的冲突处理等方式上它都选择了非常简单明了的解决方案</li>
+</ul>
+</li>
+<li>分布式算法 - ZAB 算法<ul>
+<li>ZAB 协议全称：Zookeeper Atomic Broadcast（Zookeeper 原子广播协议）, 它应该是所有一致性协议中生产环境中应用最多的了。为什么呢？因为他是为 Zookeeper 设计的分布式一致性协议！</li>
+</ul>
+</li>
+<li>分布式算法 - Snowflake 算法<ul>
+<li>Snowflake，雪花算法是由 Twitter 开源的分布式 ID 生成算法，以划分命名空间的方式将 64-bit 位分割成多个部分，每个部分代表不同的含义。这种就是将 64 位划分为不同的段，每段代表不同的涵义，基本就是时间戳、机器 ID 和序列数。为什么如此重要？因为它提供了一种 ID 生成及生成的思路，当然这种方案就是需要考虑时钟回拨的问题以及做一些 buffer 的缓冲设计提高性能。</li>
+</ul>
+</li>
+</ul>
+<h1 id="一致性-Hash-算法"><a href="#一致性-Hash-算法" class="headerlink" title="一致性 Hash 算法"></a>一致性 Hash 算法</h1><h2 id="一致性-Hash-算法简介"><a href="#一致性-Hash-算法简介" class="headerlink" title="一致性 Hash 算法简介"></a>一致性 Hash 算法简介</h2><p><strong>在分布式集群中，对机器的添加删除，或者机器故障后自动脱离集群这些操作是分布式集群管理最基本的功能。如果采用常用的 hash(object)%N 算法，那么在有机器添加或者删除后，很多原有的数据就无法找到了，这样严重的违反了单调性原则。</strong></p>
+<p>一致性哈希算法在 1997 年由麻省理工学院提出的一种分布式哈希(DHT)实现算法，设计目标是为了解决因特网中的热点(Hot spot)问题，初衷和 CARP 十分类似。 一致性哈希修正了 CARP 使用的简 单哈希算法带来的问题，使得分布式哈希(DHT)可以在 P2P 环境中真正得到应用。</p>
+<p>一致性 hash 算法提出了在动态变化的 Cache 环境中，判定哈希算法好坏的四个定义:</p>
+<ul>
+<li><code>平衡性(Balance)</code>: 平衡性是指哈希的结果能够尽可能分布到所有的缓冲中去，这样可以使得所有的缓冲空间都得到利用。很多哈希算法都能够满足这一条件。</li>
+<li><code>单调性(Monotonicity)</code>: 单调性是指如果已经有一些内容通过哈希分派到了相应的缓冲中，又有新的缓冲加入到系统中。哈希的结果应能够保证原有已分配的内容可以被映射到原有的或者新的缓冲中去，而不会被映射到旧的缓冲集合中的其他缓冲区。</li>
+<li><code>分散性(Spread)</code>: 在分布式环境中，终端有可能看不到所有的缓冲，而是只能看到其中的一部分。当终端希望通过哈希过程将内容映射到缓冲上时，由于不同终端所见的缓冲范围有可能不同，从而导致哈希的结果不一致，最终的结果是相同的内容被不同的终端映射到不同的缓冲区中。这种情况显然是应该避免的，因为它导致相同内容被存储到不同缓冲中去，降低了系统存储的效率。分散性的定义就是上述情况发生的严重程度。好的哈希算法应能够尽量避免不一致的情况发生，也就是尽量降低分散性。</li>
+<li><code>负载(Load)</code>: 负载问题实际上是从另一个角度看待分散性问题。既然不同的终端可能将相同的内容映射到不同的缓冲区中，那么对于一个特定的缓冲区而言，也可能被不同的用户映射为不同 的内容。与分散性一样，这种情况也是应当避免的，因此好的哈希算法应能够尽量降低缓冲的负荷。</li>
+</ul>
+<h2 id="一致性-Hash-算法原理"><a href="#一致性-Hash-算法原理" class="headerlink" title="一致性 Hash 算法原理"></a>一致性 Hash 算法原理</h2><h3 id="Hash-环"><a href="#Hash-环" class="headerlink" title="Hash 环"></a>Hash 环</h3><p>使用常见的 hash 算法可以把一个 key 值哈希到一个具有 2^32 个桶的空间中。也可以理解成，将 key 值哈希到 <code>[0, 2^32)</code> 的一个数字空间中。 我们假设这个是个首尾连接的环形空间。如下图:</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-hash-1.jpg" alt="distributed-algorithm-hash-1"></p>
+<p>假设我们现在有 key1,key2,key3,key4 4 个 key 值，我们通过一定的 hash 算法，将其对应到上面的环形 hash 空间中。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">k1=<span class="built_in">hash</span>(key1);</span><br><span class="line">k2=<span class="built_in">hash</span>(key2);</span><br><span class="line">k3=<span class="built_in">hash</span>(key3);</span><br><span class="line">k4=<span class="built_in">hash</span>(key4);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-hash-2.jpg" alt="distributed-algorithm-hash-2"></p>
+<p>同样的，假设我们有 3 台 cache 服务器，把缓存服务器通过 hash 算法，加入到上述的环中。一般情况下是根据机器的 IP 地址或者唯一的计算机别名进行哈希。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">c1=<span class="built_in">hash</span>(cache1);</span><br><span class="line">c2=<span class="built_in">hash</span>(cache2);</span><br><span class="line">c3=<span class="built_in">hash</span>(cache3);</span><br></pre></td></tr></table></figure>
+
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-hash-3.jpg" alt="distributed-algorithm-hash-3"></p>
+<p>接下来就是数据如何存储到 cache 服务器上了，key 值哈希之后的结果顺时针找上述环形 hash 空间中，距离自己最近的机器节点，然后将数据存储到上面， 如上图所示，k1 存储到 c3 服务器上， k4,k3 存储到 c1 服务器上， k2 存储在 c2 服务器上。用图表示如下:</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-hash-4.jpg" alt="distributed-algorithm-hash-4"></p>
+<h3 id="删除节点"><a href="#删除节点" class="headerlink" title="删除节点"></a>删除节点</h3><p>假设 cache3 服务器宕机，这时候需要从集群中将其摘除。那么，之前存储再 c3 上的 k1，将会顺时针寻找距离它最近的一个节点，也就是 c1 节点，这样，k1 就会存储到 c1 上了，看一看下下面的图，比较清晰。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-hash-5.jpg" alt="distributed-algorithm-hash-5"></p>
+<p>摘除 c3 节点之后，只影响到了原先存储再 c3 上的 k1，而 k3、k4、k2 都没有受到影响，也就意味着解决了最开始的解决方案(hash(key)%N)中可能带来的雪崩问题。</p>
+<h3 id="增加节点"><a href="#增加节点" class="headerlink" title="增加节点"></a>增加节点</h3><p>新增 C4 节点之后，原先存储到 C1 的 k4，迁移到了 C4，分担了 C1 上的存储压力和流量压力。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-hash-6.jpg" alt="distributed-algorithm-hash-6"></p>
+<h3 id="不平衡的问题"><a href="#不平衡的问题" class="headerlink" title="不平衡的问题"></a>不平衡的问题</h3><p>上面的简单的一致性 hash 的方案在某些情况下但依旧存在问题: 一个节点宕机之后，数据需要落到距离他最近的节点上，会导致下个节点的压力突然增大，可能导致雪崩，整个服务挂掉。</p>
+<p>如下图所示:</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-hash-7.jpg" alt="distributed-algorithm-hash-7"></p>
+<p>当节点 C3 摘除之后，之前再 C3 上的 k1 就要迁移到 C1 上，这时候带来了两部分的压力:</p>
+<ul>
+<li>之前请求到 C3 上的流量转嫁到了 C1 上,会导致 C1 的流量增加，如果之前 C3 上存在热点数据，则可能导致 C1 扛不住压力挂掉。</li>
+<li>之前存储到 C3 上的 key 值转义到了 C1，会导致 C1 的内容占用量增加，可能存在瓶颈。</li>
+</ul>
+<p>当上面两个压力发生的时候，可能导致 C1 节点也宕机了。那么压力便会传递到 C2 上，又出现了类似滚雪球的情况，服务压力出现了雪崩，导致整个服务不可用。这一点违背了最开始提到的四个原则中的 <code>平衡性</code>， 节点宕机之后，流量及内存的分配方式打破了原有的平衡。</p>
+<h3 id="虚拟节点"><a href="#虚拟节点" class="headerlink" title="虚拟节点"></a>虚拟节点</h3><p>“虚拟节点” (virtual node) 是实际节点 (机器) 在 hash 空间的复制品 (replica) ，一实际个节点 (机器) 对应了若干个“虚拟节点”，这个对应个数也成为“复制个数”，“虚拟节点”在 hash 空间中以 hash 值排列。</p>
+<p>依旧用图片来解释，假设存在以下的真实节点和虚拟节点的对应关系。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Visual100—&gt; Real1</span><br><span class="line">Visual101—&gt; Real1</span><br><span class="line">Visual200—&gt; Real2</span><br><span class="line">Visual201—&gt; Real2</span><br><span class="line">Visual300—&gt; Real3</span><br><span class="line">Visual301—&gt; Real3</span><br></pre></td></tr></table></figure>
+
+<p>同样的，hash 之后的结果如下:</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">hash</span>(Visual100)—&gt; V100  —&gt; Real1</span><br><span class="line"><span class="built_in">hash</span>(Visual101)—&gt; V101  —&gt; Real1</span><br><span class="line"><span class="built_in">hash</span>(Visual200)—&gt; V200  —&gt; Real2</span><br><span class="line"><span class="built_in">hash</span>(Visual201)—&gt; V201  —&gt; Real2</span><br><span class="line"><span class="built_in">hash</span>(Visual300)—&gt; V300  —&gt; Real3</span><br><span class="line"><span class="built_in">hash</span>(Visual301)—&gt; V301  —&gt; Real3</span><br></pre></td></tr></table></figure>
+
+<p>key 值的 hash 结果如上，这里暂时不写了。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-hash-8.jpg" alt="distributed-algorithm-hash-8"></p>
+<p>和之前介绍的不添加虚拟节点的类似，主要聊下如果宕机之后的情况。</p>
+<p>假设 Real1 机器宕机，则会发生一下情况。</p>
+<ul>
+<li>原先存储在虚拟节点 V100 上的 k1 数据将迁移到 V301 上，也就意味着迁移到了 Real3 机器上。</li>
+<li>原先存储再虚拟节点 V101 上的 k4 数据将迁移到 V200 上，也就意味着迁移到了 Real2 机器上。</li>
+</ul>
+<p>结果如下图:</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-hash-9.jpg" alt="distributed-algorithm-hash-9"></p>
+<p>这个就解决之前的问题了，某个节点宕机之后，存储及流量压力并没有全部转移到某台机器上，而是分散到了多台节点上。解决了节点宕机可能存在的雪崩问题。</p>
+<p>当物理节点多的时候，虚拟节点多，这个的雪崩可能就越小。</p>
+<h1 id="Paxos-算法"><a href="#Paxos-算法" class="headerlink" title="Paxos 算法"></a>Paxos 算法</h1><h2 id="Paxos-算法简介"><a href="#Paxos-算法简介" class="headerlink" title="Paxos 算法简介"></a>Paxos 算法简介</h2><p>Paxos 算法是 Lamport 宗师提出的一种基于消息传递的分布式一致性算法，使其获得 2013 年图灵奖。</p>
+<p>Paxos 由 Lamport 于 1998 年在《The Part-Time Parliament》论文中首次公开，最初的描述使用希腊的一个小岛 Paxos 作为比喻，描述了 Paxos 小岛中通过决议的流程，并以此命名这个算法，但是这个描述理解起来比较有挑战性。后来在 2001 年，Lamport 觉得同行不能理解他的幽默感，于是重新发表了朴实的算法描述版本《Paxos Made Simple》。</p>
+<p>自 Paxos 问世以来就持续垄断了分布式一致性算法，Paxos 这个名词几乎等同于分布式一致性。Google 的很多大型分布式系统都采用了 Paxos 算法来解决分布式一致性问题，如 Chubby、Megastore 以及 Spanner 等。开源的 ZooKeeper，以及 MySQL 5.7 推出的用来取代传统的主从复制的 MySQL Group Replication 等纷纷采用 Paxos 算法解决分布式一致性问题。</p>
+<h2 id="Paxos-算法推导"><a href="#Paxos-算法推导" class="headerlink" title="Paxos 算法推导"></a>Paxos 算法推导</h2><p>通常说 Paxos 算法是复杂算法难以理解是指其推导过程复杂。理论证明一个 Paxos 的实现，比实现这个 Paxos 还要难。 一个成熟的 Paxos 实现很难独立产生，往往需要和一个系统结合在一起，通过一个或者多个系统来验证其可靠性和完备性。</p>
+<p>理解 Paxos 算法的推导过程: <a target="_blank" rel="noopener" href="https://blog.csdn.net/yeqiuzs/article/details/76862026">https://blog.csdn.net/yeqiuzs/article/details/76862026</a></p>
+<h2 id="Basic-Paxos-算法"><a href="#Basic-Paxos-算法" class="headerlink" title="Basic Paxos 算法"></a>Basic Paxos 算法</h2><p>Paxos 算法解决的问题正是分布式一致性问题，即一个分布式系统中的各个进程如何就某个值(决议)达成一致。</p>
+<p>Paxos 算法运行在允许宕机故障的异步系统中，不要求可靠的消息传递，可容忍消息丢失、延迟、乱序以及重复。它利用大多数 (Majority) 机制保证了 2F+1 的容错能力，即 2F+1 个节点的系统最多允许 F 个节点同时出现故障。</p>
+<p>一个或多个提议进程 (Proposer) 可以发起提案 (Proposal)，Paxos 算法使所有提案中的某一个提案，在所有进程中达成一致。系统中的多数派同时认可该提案，即达成了一致。最多只针对一个确定的提案达成一致。</p>
+<h3 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h3><p>Paxos 将系统中的角色分为<code>提议者 (Proposer)</code>，<code>决策者 (Acceptor)</code>，和<code>最终决策学习者 (Learner)</code>:</p>
+<ul>
+<li><code>Proposer</code>: 提出提案 (Proposal)。Proposal 信息包括提案编号 (Proposal ID) 和提议的值 (Value)。</li>
+<li><code>Acceptor</code>: 参与决策，回应 Proposers 的提案。收到 Proposal 后可以接受提案，若 Proposal 获得多数 Acceptors 的接受，则称该 Proposal 被批准。</li>
+<li><code>Learner</code>: 不参与决策，从 Proposers&#x2F;Acceptors 学习最新达成一致的提案(Value)。</li>
+</ul>
+<p>在多副本状态机中，每个副本同时具有 Proposer、Acceptor、Learner 三种角色。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-paxos-1.jpg" alt="distributed-algorithm-paxos-1"></p>
+<blockquote>
+<p>可以理解为人大代表(Proposer)在人大向其它代表(Acceptors)提案，通过后让老百姓(Learner)落实。</p>
+</blockquote>
+<h3 id="3-个阶段"><a href="#3-个阶段" class="headerlink" title="3 个阶段"></a>3 个阶段</h3><p><img src="/imgs/distributed-algorithm/distributed-algorithm-paxos-2.jpg" alt="distributed-algorithm-paxos-2"></p>
+<h4 id="第一阶段-Prepare-阶段"><a href="#第一阶段-Prepare-阶段" class="headerlink" title="第一阶段: Prepare 阶段"></a>第一阶段: Prepare 阶段</h4><p>Proposer 向 Acceptors 发出 Prepare 请求，Acceptors 针对收到的 Prepare 请求进行 Promise 承诺。</p>
+<ul>
+<li><p><code>Prepare</code>: Proposer 生成全局唯一且递增的 Proposal ID (可使用时间戳加 Server ID)，向所有 Acceptors 发送 Prepare 请求，这里无需携带提案内容，只携带 Proposal ID 即可。</p>
+</li>
+<li><p><code>Promise</code>: Acceptors 收到 Prepare 请求后，做出“两个承诺，一个应答”。</p>
+<ul>
+<li>承诺 1: 不再接受 Proposal ID 小于等于(注意: 这里是&lt;&#x3D; )当前请求的 Prepare 请求;</li>
+<li>承诺 2: 不再接受 Proposal ID 小于(注意: 这里是&lt; )当前请求的 Propose 请求;</li>
+<li>应答: 不违背以前作出的承诺下，回复已经 Accept 过的提案中 Proposal ID 最大的那个提案的 Value 和 Proposal ID，没有则返回空值。</li>
+</ul>
+</li>
+</ul>
+<h4 id="第二阶段-Accept-阶段"><a href="#第二阶段-Accept-阶段" class="headerlink" title="第二阶段: Accept 阶段"></a>第二阶段: Accept 阶段</h4><p>Proposer 收到多数 Acceptors 承诺的 Promise 后，向 Acceptors 发出 Propose 请求，Acceptors 针对收到的 Propose 请求进行 Accept 处理。</p>
+<ul>
+<li><code>Propose</code>: Proposer 收到多数 Acceptors 的 Promise 应答后，从应答中选择 Proposal ID 最大的提案的 Value，作为本次要发起的提案。如果所有应答的提案 Value 均为空值，则可以自己随意决定提案 Value。然后携带当前 Proposal ID，向所有 Acceptors 发送 Propose 请求。</li>
+<li><code>Accept</code>: Acceptor 收到 Propose 请求后，在不违背自己之前作出的承诺下，接受并持久化当前 Proposal ID 和提案 Value。</li>
+</ul>
+<h4 id="第三阶段-Learn-阶段"><a href="#第三阶段-Learn-阶段" class="headerlink" title="第三阶段: Learn 阶段"></a>第三阶段: Learn 阶段</h4><p>Proposer 在收到多数 Acceptors 的 Accept 之后，标志着本次 Accept 成功，决议形成，将形成的决议发送给所有 Learners。</p>
+<h3 id="伪代码"><a href="#伪代码" class="headerlink" title="伪代码"></a>伪代码</h3><p><img src="/imgs/distributed-algorithm/distributed-algorithm-paxos-3.jpg" alt="distributed-algorithm-paxos-3"></p>
+<ul>
+<li>获取一个 Proposal ID n，为了保证 Proposal ID 唯一，可采用时间戳+Server ID 生成；</li>
+<li>Proposer 向所有 Acceptors 广播 Prepare(n)请求；</li>
+<li>Acceptor 比较 n 和 minProposal，如果 n&gt;minProposal，minProposal&#x3D;n，并且将 acceptedProposal 和 acceptedValue 返回；</li>
+<li>Proposer 接收到过半数回复后，如果发现有 acceptedValue 返回，将所有回复中 acceptedProposal 最大的 acceptedValue 作为本次提案的 value，否则可以任意决定本次提案的 value；</li>
+<li>到这里可以进入第二阶段，广播 Accept (n,value) 到所有节点；</li>
+<li>Acceptor 比较 n 和 minProposal，如果 n&gt;&#x3D;minProposal，则 acceptedProposal&#x3D;minProposal&#x3D;n，acceptedValue&#x3D;value，本地持久化后，返回；否则，返回 minProposal。</li>
+<li>提议者接收到过半数请求后，如果发现有返回值 result &gt;n，表示有更新的提议，跳转到 1；否则 value 达成一致。</li>
+</ul>
+<h3 id="实现举例"><a href="#实现举例" class="headerlink" title="实现举例"></a>实现举例</h3><p>下面举几个例子，实例 1 如下图:</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-paxos-4.jpg" alt="distributed-algorithm-paxos-4"></p>
+<p>图中 P 代表 Prepare 阶段，A 代表 Accept 阶段。3.1 代表 Proposal ID 为 3.1，其中 3 为时间戳，1 为 Server ID。X 和 Y 代表提议 Value。</p>
+<p>实例 1 中 P 3.1 达成多数派，其 Value(X)被 Accept，然后 P 4.5 学习到 Value(X)，并 Accept。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-paxos-5.jpg" alt="distributed-algorithm-paxos-5"></p>
+<p>实例 2 中 P 3.1 没有被多数派 Accept(只有 S3 Accept)，但是被 P 4.5 学习到，P 4.5 将自己的 Value 由 Y 替换为 X，Accept(X)。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-paxos-6.jpg" alt="distributed-algorithm-paxos-6"></p>
+<p>实例 3 中 P 3.1 没有被多数派 Accept(只有 S1 Accept)，同时也没有被 P 4.5 学习到。由于 P 4.5 Propose 的所有应答，均未返回 Value，则 P 4.5 可以 Accept 自己的 Value (Y)。后续 P 3.1 的 Accept (X) 会失败，已经 Accept 的 S1，会被覆盖。</p>
+<p>Paxos 算法可能形成活锁而永远不会结束，如下图实例所示:</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-paxos-7.jpg" alt="distributed-algorithm-paxos-7"></p>
+<p>回顾两个承诺之一，Acceptor 不再应答 Proposal ID 小于等于当前请求的 Prepare 请求。意味着需要应答 Proposal ID 大于当前请求的 Prepare 请求。</p>
+<p>两个 Proposers 交替 Prepare 成功，而 Accept 失败，形成活锁(Livelock)。</p>
+<h2 id="Paxos-算法拓展"><a href="#Paxos-算法拓展" class="headerlink" title="Paxos 算法拓展"></a>Paxos 算法拓展</h2><h3 id="Multi-Paxos-算法"><a href="#Multi-Paxos-算法" class="headerlink" title="Multi-Paxos 算法"></a>Multi-Paxos 算法</h3><p>原始的 Paxos 算法(Basic Paxos)只能对一个值形成决议，决议的形成至少需要两次网络来回，在高并发情况下可能需要更多的网络来回，极端情况下甚至可能形成活锁。如果想连续确定多个值，Basic Paxos 搞不定了。因此 Basic Paxos 几乎只是用来做理论研究，并不直接应用在实际工程中。</p>
+<p>实际应用中几乎都需要连续确定多个值，而且希望能有更高的效率。Multi-Paxos 正是为解决此问题而提出。Multi-Paxos 基于 Basic Paxos 做了两点改进:</p>
+<ul>
+<li>针对每一个要确定的值，运行一次 Paxos 算法实例(Instance)，形成决议。每一个 Paxos 实例使用唯一的 Instance ID 标识。</li>
+<li>在所有 Proposers 中选举一个 Leader，由 Leader 唯一地提交 Proposal 给 Acceptors 进行表决。这样没有 Proposer 竞争，解决了活锁问题。在系统中仅有一个 Leader 进行 Value 提交的情况下，Prepare 阶段就可以跳过，从而将两阶段变为一阶段，提高效率。</li>
+</ul>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-paxos-8.jpg" alt="distributed-algorithm-paxos-8"></p>
+<p>Multi-Paxos 首先需要选举 Leader，Leader 的确定也是一次决议的形成，所以可执行一次 Basic Paxos 实例来选举出一个 Leader。选出 Leader 之后只能由 Leader 提交 Proposal，在 Leader 宕机之后服务临时不可用，需要重新选举 Leader 继续服务。在系统中仅有一个 Leader 进行 Proposal 提交的情况下，Prepare 阶段可以跳过。</p>
+<p>Multi-Paxos 通过改变 Prepare 阶段的作用范围至后面 Leader 提交的所有实例，从而使得 Leader 的连续提交只需要执行一次 Prepare 阶段，后续只需要执行 Accept 阶段，将两阶段变为一阶段，提高了效率。为了区分连续提交的多个实例，每个实例使用一个 Instance ID 标识，Instance ID 由 Leader 本地递增生成即可。</p>
+<p>Multi-Paxos 允许有多个自认为是 Leader 的节点并发提交 Proposal 而不影响其安全性，这样的场景即退化为 Basic Paxos。</p>
+<p>Chubby 和 Boxwood 均使用 Multi-Paxos。ZooKeeper 使用的 Zab 也是 Multi-Paxos 的变形。</p>
+<h1 id="Raft-算法"><a href="#Raft-算法" class="headerlink" title="Raft 算法"></a>Raft 算法</h1><p>Raft 是为了探索一种更易于理解的一致性算法而产生的。 它的首要设计目的就是易于理解，所以在选主的冲突处理等方式上它都选择了非常简单明了的解决方案。</p>
+<p>动图模拟网址：</p>
+<p><a target="_blank" rel="noopener" href="http://thesecretlivesofdata.com/raft/">动画理解 Raft 神器</a><br><a target="_blank" rel="noopener" href="https://raft.github.io/">Raft Visualization</a></p>
+<h2 id="Raft-算法简介"><a href="#Raft-算法简介" class="headerlink" title="Raft 算法简介"></a>Raft 算法简介</h2><p>不同于 Paxos 算法直接从分布式一致性问题出发推导出来，Raft 算法则是从多副本状态机的角度提出，用于管理多副本状态机的日志复制。 Raft 实现了和 Paxos 相同的功能，它将一致性分解为多个子问题: Leader 选举(Leader election)、日志同步(Log replication)、安全性(Safety)、日志压缩(Log compaction)、成员变更(Membership change)等。 同时，Raft 算法使用了更强的假设来减少了需要考虑的状态，使之变的易于理解和实现。</p>
+<h2 id="Raft-算法原理"><a href="#Raft-算法原理" class="headerlink" title="Raft 算法原理"></a>Raft 算法原理</h2><h3 id="角色-1"><a href="#角色-1" class="headerlink" title="角色"></a>角色</h3><p>Raft 将系统中的角色分为<code>领导者(Leader)</code>、<code>跟从者(Follower)</code>和<code>候选人(Candidate)</code>:</p>
+<ul>
+<li><code>Leader</code>: 接受客户端请求，并向 Follower 同步请求日志，当日志同步到大多数节点上后告诉 Follower 提交日志。</li>
+<li><code>Follower</code>: 接受并持久化 Leader 同步的日志，在 Leader 告之日志可以提交之后，提交日志。</li>
+<li><code>Candidate</code>: Leader 选举过程中的临时角色。</li>
+</ul>
+<p><strong>Raft 要求系统在任意时刻最多只有一个 Leader，正常工作期间只有 Leader 和 Followers。</strong></p>
+<h3 id="角色状态转换"><a href="#角色状态转换" class="headerlink" title="角色状态转换"></a>角色状态转换</h3><p><img src="/imgs/distributed-algorithm/distributed-algorithm-raft-1.jpg" alt="distributed-algorithm-raft-1"></p>
+<p>Follower 只响应其他服务器的请求。如果 Follower 超时没有收到 Leader 的消息，它会成为一个 Candidate 并且开始一次 Leader 选举。 收到大多数服务器投票的 Candidate 会成为新的 Leader。 Leader 在宕机之前会一直保持 Leader 的状态。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-raft-2.jpg" alt="distributed-algorithm-raft-2"></p>
+<p>Raft 算法将时间分为一个个的任期(term)，每一个 term 的开始都是 Leader 选举。 在成功选举 Leader 之后，Leader 会在整个 term 内管理整个集群。如果 Leader 选举失败，该 term 就会因为没有 Leader 而结束。</p>
+<p>Raft 实现了和 Paxos 相同的功能，它将一致性分解为多个子问题: Leader 选举(Leader election)、日志同步(Log replication)、安全性(Safety)、日志压缩(Log compaction)、成员变更(Membership change)等</p>
+<h3 id="Raft-算法子问题"><a href="#Raft-算法子问题" class="headerlink" title="Raft 算法子问题"></a>Raft 算法子问题</h3><p>Raft 实现了和 Paxos 相同的功能，它将一致性分解为多个子问题: Leader 选举(Leader election)、日志同步(Log replication)、安全性(Safety)、日志压缩(Log compaction)、成员变更(Membership change)等</p>
+<h3 id="Leader-选举"><a href="#Leader-选举" class="headerlink" title="Leader 选举"></a>Leader 选举</h3><p>Raft 使用心跳(heartbeat)触发 Leader 选举。当服务器启动时，初始化为 Follower。Leader 向所有 Followers 周期性发送 heartbeat。如果 Follower 在选举超时时间内没有收到 Leader 的 heartbeat，就会等待一段随机的时间后发起一次 Leader 选举。</p>
+<p>Follower 将其当前 term 加一然后转换为 Candidate。它首先给自己投票并且给集群中的其他服务器发送 RequestVote RPC (RPC 细节参见八、Raft 算法总结)。结果有以下三种情况:</p>
+<ul>
+<li>赢得了多数的选票，成功选举为 Leader；</li>
+<li>收到了 Leader 的消息，表示有其它服务器已经抢先当选了 Leader；</li>
+<li>没有服务器赢得多数的选票，Leader 选举失败，等待选举时间超时后发起下一次选举。</li>
+</ul>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-raft-3" alt="distributed-algorithm-raft-3"></p>
+<p>选举出 Leader 后，Leader 通过定期向所有 Followers 发送心跳信息维持其统治。若 Follower 一段时间未收到 Leader 的心跳则认为 Leader 可能已经挂了，再次发起 Leader 选举过程。</p>
+<p>Raft 保证选举出的 Leader 上一定具有最新的已提交的日志，这一点将在四、安全性中说明。</p>
+<h3 id="日志同步"><a href="#日志同步" class="headerlink" title="日志同步"></a>日志同步</h3><p>Leader 选出后，就开始接收客户端的请求。Leader 把请求作为日志条目(Log entries)加入到它的日志中，然后并行的向其他服务器发起 AppendEntries RPC (RPC 细节参见八、Raft 算法总结)复制日志条目。当这条日志被复制到大多数服务器上，Leader 将这条日志应用到它的状态机并向客户端返回执行结果。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-raft-4.jpg" alt="distributed-algorithm-raft-4"></p>
+<p>某些 Followers 可能没有成功的复制日志，Leader 会无限的重试 AppendEntries RPC 直到所有的 Followers 最终存储了所有的日志条目。</p>
+<p>日志由有序编号(log index)的日志条目组成。每个日志条目包含它被创建时的任期号(term)，和用于状态机执行的命令。如果一个日志条目被复制到大多数服务器上，就被认为可以提交(commit)了。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-raft-5.jpg" alt="distributed-algorithm-raft-5"></p>
+<p>Raft 日志同步保证如下两点:</p>
+<ul>
+<li>如果不同日志中的两个条目有着相同的索引和任期号，则它们所存储的命令是相同的。</li>
+<li>如果不同日志中的两个条目有着相同的索引和任期号，则它们之前的所有条目都是完全一样的。</li>
+</ul>
+<p>第一条特性源于 Leader 在一个 term 内在给定的一个 log index 最多创建一条日志条目，同时该条目在日志中的位置也从来不会改变。</p>
+<p>第二条特性源于 AppendEntries 的一个简单的一致性检查。当发送一个 AppendEntries RPC 时，Leader 会把新日志条目紧接着之前的条目的 log index 和 term 都包含在里面。如果 Follower 没有在它的日志中找到 log index 和 term 都相同的日志，它就会拒绝新的日志条目。</p>
+<p>一般情况下，Leader 和 Followers 的日志保持一致，因此 AppendEntries 一致性检查通常不会失败。然而，Leader 崩溃可能会导致日志不一致: 旧的 Leader 可能没有完全复制完日志中的所有条目。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-raft-6.jpg" alt="distributed-algorithm-raft-6"></p>
+<p>上图阐述了一些 Followers 可能和新的 Leader 日志不同的情况。一个 Follower 可能会丢失掉 Leader 上的一些条目，也有可能包含一些 Leader 没有的条目，也有可能两者都会发生。丢失的或者多出来的条目可能会持续多个任期。</p>
+<p>Leader 通过强制 Followers 复制它的日志来处理日志的不一致，Followers 上的不一致的日志会被 Leader 的日志覆盖。</p>
+<p>Leader 为了使 Followers 的日志同自己的一致，Leader 需要找到 Followers 同它的日志一致的地方，然后覆盖 Followers 在该位置之后的条目。</p>
+<p>Leader 会从后往前试，每次 AppendEntries 失败后尝试前一个日志条目，直到成功找到每个 Follower 的日志一致位点，然后向后逐条覆盖 Followers 在该位置之后的条目。</p>
+<h3 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h3><p>Raft 增加了如下两条限制以保证安全性:</p>
+<ul>
+<li>拥有最新的已提交的 log entry 的 Follower 才有资格成为 Leader。</li>
+</ul>
+<p>这个保证是在 RequestVote RPC 中做的，Candidate 在发送 RequestVote RPC 时，要带上自己的最后一条日志的 term 和 log index，其他节点收到消息时，如果发现自己的日志比请求中携带的更新，则拒绝投票。日志比较的原则是，如果本地的最后一条 log entry 的 term 更大，则 term 大的更新，如果 term 一样大，则 log index 更大的更新。</p>
+<ul>
+<li>Leader 只能推进 commit index 来提交当前 term 的已经复制到大多数服务器上的日志，旧 term 日志的提交要等到提交当前 term 的日志来间接提交(log index 小于 commit index 的日志被间接提交)。</li>
+</ul>
+<p>之所以要这样，是因为可能会出现已提交的日志又被覆盖的情况:</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-raft-7.jpg" alt="distributed-algorithm-raft-7"></p>
+<p>在阶段 a，term 为 2，S1 是 Leader，且 S1 写入日志(term, index)为(2, 2)，并且日志被同步写入了 S2；</p>
+<p>在阶段 b，S1 离线，触发一次新的选主，此时 S5 被选为新的 Leader，此时系统 term 为 3，且写入了日志(term, index)为(3， 2);</p>
+<p>S5 尚未将日志推送到 Followers 就离线了，进而触发了一次新的选主，而之前离线的 S1 经过重新上线后被选中变成 Leader，此时系统 term 为 4，此时 S1 会将自己的日志同步到 Followers，按照上图就是将日志(2， 2)同步到了 S3，而此时由于该日志已经被同步到了多数节点(S1, S2, S3)，因此，此时日志(2，2)可以被提交了。；</p>
+<p>在阶段 d，S1 又下线了，触发一次选主，而 S5 有可能被选为新的 Leader (这是因为 S5 可以满足作为主的一切条件: 1. term &#x3D; 5 &gt; 4，2. 最新的日志为(3，2)，比大多数节点(如 S2&#x2F;S3&#x2F;S4) 的日志都新)，然后 S5 会将自己的日志更新到 Followers，于是 S2、S3 中已经被提交的日志(2，2)被截断了。</p>
+<p>增加上述限制后，即使日志(2，2)已经被大多数节点(S1、S2、S3)确认了，但是它不能被提交，因为它是来自之前 term(2)的日志，直到 S1 在当前 term(4)产生的日志(4， 4)被大多数 Followers 确认，S1 方可提交日志(4，4)这条日志，当然，根据 Raft 定义，(4，4)之前的所有日志也会被提交。此时即使 S1 再下线，重新选主时 S5 不可能成为 Leader，因为它没有包含大多数节点已经拥有的日志(4，4)。</p>
+<h3 id="日志压缩"><a href="#日志压缩" class="headerlink" title="日志压缩"></a>日志压缩</h3><p>在实际的系统中，不能让日志无限增长，否则系统重启时需要花很长的时间进行回放，从而影响可用性。Raft 采用对整个系统进行 snapshot 来解决，snapshot 之前的日志都可以丢弃。</p>
+<p>每个副本独立的对自己的系统状态进行 snapshot，并且只能对已经提交的日志记录进行 snapshot。</p>
+<p>Snapshot 中包含以下内容:</p>
+<ul>
+<li>日志元数据。最后一条已提交的 log entry 的 log index 和 term。这两个值在 snapshot 之后的第一条 log entry 的 AppendEntries RPC 的完整性检查的时候会被用上。</li>
+<li>系统当前状态。</li>
+</ul>
+<p>当 Leader 要发给某个日志落后太多的 Follower 的 log entry 被丢弃，Leader 会将 snapshot 发给 Follower。或者当新加进一台机器时，也会发送 snapshot 给它。发送 snapshot 使用 InstalledSnapshot RPC。</p>
+<p>做 snapshot 既不要做的太频繁，否则消耗磁盘带宽， 也不要做的太不频繁，否则一旦节点重启需要回放大量日志，影响可用性。推荐当日志达到某个固定的大小做一次 snapshot。</p>
+<p>做一次 snapshot 可能耗时过长，会影响正常日志同步。可以通过使用 copy-on-write 技术避免 snapshot 过程影响正常日志同步。</p>
+<h3 id="成员变更"><a href="#成员变更" class="headerlink" title="成员变更"></a>成员变更</h3><p>成员变更是在集群运行过程中副本发生变化，如增加&#x2F;减少副本数、节点替换等。</p>
+<p>成员变更也是一个分布式一致性问题，既所有服务器对新成员达成一致。但是成员变更又有其特殊性，因为在成员变更的一致性达成的过程中，参与投票的进程会发生变化。</p>
+<p>如果将成员变更当成一般的一致性问题，直接向 Leader 发送成员变更请求，Leader 复制成员变更日志，达成多数派之后提交，各服务器提交成员变更日志后从旧成员配置(Cold)切换到新成员配置(Cnew)。</p>
+<p>因为各个服务器提交成员变更日志的时刻可能不同，造成各个服务器从旧成员配置(Cold)切换到新成员配置(Cnew)的时刻不同。</p>
+<p>成员变更不能影响服务的可用性，但是成员变更过程的某一时刻，可能出现在 Cold 和 Cnew 中同时存在两个不相交的多数派，进而可能选出两个 Leader，形成不同的决议，破坏安全性。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-raft-8.jpg" alt="distributed-algorithm-raft-8"></p>
+<p>由于成员变更的这一特殊性，成员变更不能当成一般的一致性问题去解决。</p>
+<p>为了解决这一问题，Raft 提出了两阶段的成员变更方法。集群先从旧成员配置 Cold 切换到一个过渡成员配置，称为共同一致(joint consensus)，共同一致是旧成员配置 Cold 和新成员配置 Cnew 的组合 Cold U Cnew，一旦共同一致 Cold U Cnew 被提交，系统再切换到新成员配置 Cnew。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-raft-9.jpg" alt="distributed-algorithm-raft-9"></p>
+<p>Raft 两阶段成员变更过程如下:</p>
+<ul>
+<li>Leader 收到成员变更请求从 Cold 切成 Cnew；</li>
+<li>eader 在本地生成一个新的 log entry，其内容是 Cold∪Cnew，代表当前时刻新旧成员配置共存，写入本地日志，同时将该 log entry 复制至 Cold∪Cnew 中的所有副本。在此之后新的日志同步需要保证得到 Cold 和 Cnew 两个多数派的确认；</li>
+<li>Follower 收到 Cold∪Cnew 的 log entry 后更新本地日志，并且此时就以该配置作为自己的成员配置；</li>
+<li>如果 Cold 和 Cnew 中的两个多数派确认了 Cold U Cnew 这条日志，Leader 就提交这条 log entry；</li>
+<li>接下来 Leader 生成一条新的 log entry，其内容是新成员配置 Cnew，同样将该 log entry 写入本地日志，同时复制到 Follower 上；</li>
+<li>Follower 收到新成员配置 Cnew 后，将其写入日志，并且从此刻起，就以该配置作为自己的成员配置，并且如果发现自己不在 Cnew 这个成员配置中会自动退出；</li>
+<li>Leader 收到 Cnew 的多数派确认后，表示成员变更成功，后续的日志只要得到 Cnew 多数派确认即可。Leader 给客户端回复成员变更执行成功。</li>
+</ul>
+<p>异常分析:</p>
+<ul>
+<li>如果 Leader 的 Cold U Cnew 尚未推送到 Follower，Leader 就挂了，此后选出的新 Leader 并不包含这条日志，此时新 Leader 依然使用 Cold 作为自己的成员配置。</li>
+<li>如果 Leader 的 Cold U Cnew 推送到大部分的 Follower 后就挂了，此后选出的新 Leader 可能是 Cold 也可能是 Cnew 中的某个 Follower。</li>
+<li>如果 Leader 在推送 Cnew 配置的过程中挂了，那么同样，新选出来的 Leader 可能是 Cold 也可能是 Cnew 中的某一个，此后客户端继续执行一次改变配置的命令即可。</li>
+<li>如果大多数的 Follower 确认了 Cnew 这个消息后，那么接下来即使 Leader 挂了，新选出来的 Leader 肯定位于 Cnew 中。</li>
+<li>两阶段成员变更比较通用且容易理解，但是实现比较复杂，同时两阶段的变更协议也会在一定程度上影响变更过程中的服务可用性，因此我们期望增强成员变更的限制，以简化操作流程。</li>
+</ul>
+<p>两阶段成员变更，之所以分为两个阶段，是因为对 Cold 与 Cnew 的关系没有做任何假设，为了避免 Cold 和 Cnew 各自形成不相交的多数派选出两个 Leader，才引入了两阶段方案。</p>
+<p>如果增强成员变更的限制，假设 Cold 与 Cnew 任意的多数派交集不为空，这两个成员配置就无法各自形成多数派，那么成员变更方案就可能简化为一阶段。</p>
+<p>那么如何限制 Cold 与 Cnew，使之任意的多数派交集不为空呢? 方法就是每次成员变更只允许增加或删除一个成员。</p>
+<p>可从数学上严格证明，只要每次只允许增加或删除一个成员，Cold 与 Cnew 不可能形成两个不相交的多数派。</p>
+<p>一阶段成员变更:</p>
+<ul>
+<li>成员变更限制每次只能增加或删除一个成员(如果要变更多个成员，连续变更多次)。</li>
+<li>成员变更由 Leader 发起，Cnew 得到多数派确认后，返回客户端成员变更成功。</li>
+<li>一次成员变更成功前不允许开始下一次成员变更，因此新任 Leader 在开始提供服务前要将自己本地保存的最新成员配置重新投票形成多数派确认。</li>
+<li>Leader 只要开始同步新成员配置，即可开始使用新的成员配置进行日志同步。</li>
+</ul>
+<h1 id="ZAB-算法"><a href="#ZAB-算法" class="headerlink" title="ZAB 算法"></a>ZAB 算法</h1><h1 id="ZAB-算法简介"><a href="#ZAB-算法简介" class="headerlink" title="ZAB 算法简介"></a>ZAB 算法简介</h1><p>ZAB 协议全称：Zookeeper Atomic Broadcast（Zookeeper 原子广播协议）。</p>
+<ol>
+<li>Zookeeper 是一个为分布式应用提供高效且可靠的分布式协调服务。 在解决分布式一致性方面，Zookeeper 并没有使用 Paxos ，而是采用了 ZAB 协议。</li>
+<li>ZAB 协议定义： <strong>ZAB 协议是为分布式协调服务 Zookeeper 专门设计的一种支持 <code>崩溃恢复</code> 和 <code>原子广播</code> 协议</strong>。</li>
+<li>基于该协议，Zookeeper 实现了一种 主备模式 的系统架构来保持集群中各个副本之间数据一致性。具体如下图所示：<br><img src="/imgs/distributed-algorithm/distributed-algorithm-zab-1.png" alt="distributed-algorithm-zab-1"><br>上图显示了 Zookeeper 如何处理集群中的数据。所有客户端写入数据都是写入到 主进程（称为 Leader）中，然后，由 Leader 复制到备份进程（称为 Follower）中。从而保证数据一致性。从设计上看，和 Raft 类似。</li>
+<li>那么复制过程又是如何的呢？复制过程类似 2PC，ZAB 只需要 Follower 有一半以上返回 Ack 信息就可以执行提交，大大减小了同步阻塞。也提高了可用性。</li>
+</ol>
+<p>简单介绍完，开始重点介绍 <code>消息广播</code> 和 <code>崩溃恢复</code>。 <strong>整个 Zookeeper 就是在这两个模式之间切换</strong>。 简而言之，当 Leader 服务可以正常使用，就进入消息广播模式，当 Leader 不可用时，则进入崩溃恢复模式。</p>
+<h2 id="消息广播"><a href="#消息广播" class="headerlink" title="消息广播"></a>消息广播</h2><p>ZAB 协议的消息广播过程使用的是一个原子广播协议，类似一个 二阶段提交过程。对于客户端发送的写请求，全部由 Leader 接收，Leader 将请求封装成一个事务 Proposal，将其发送给所有 Follwer ，然后，根据所有 Follwer 的反馈，如果超过半数成功响应，则执行 commit 操作（先提交自己，再发送 commit 给所有 Follwer）。</p>
+<p>基本上，整个广播流程分为 3 步骤：</p>
+<p>1.将数据都复制到 Follwer 中</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-zab-2.png" alt="distributed-algorithm-zab-2"></p>
+<p>等待 Follwer 回应 Ack，最低超过半数即成功</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-zab-3.png" alt="distributed-algorithm-zab-3"></p>
+<p>当超过半数成功回应，则执行 commit ，同时提交自己</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-zab-4.png" alt="distributed-algorithm-zab-4"></p>
+<p>通过以上 3 个步骤，就能够保持集群之间数据的一致性。实际上，在 Leader 和 Follwer 之间还有一个消息队列，用来解耦他们之间的耦合，避免同步，实现异步解耦。</p>
+<p>还有一些细节：</p>
+<ul>
+<li>Leader 在收到客户端请求之后，会将这个请求封装成一个事务，并给这个事务分配一个全局递增的唯一 ID，称为事务 ID（ZXID），ZAB 兮协议需要保证事务的顺序，因此必须将每一个事务按照 ZXID 进行先后排序然后处理。</li>
+<li>在 Leader 和 Follwer 之间还有一个消息队列，用来解耦他们之间的耦合，解除同步阻塞。</li>
+<li>zookeeper 集群中为保证任何所有进程能够有序的顺序执行，只能是 Leader 服务器接受写请求，即使是 Follower 服务器接受到客户端的请求，也会转发到 Leader 服务器进行处理。</li>
+<li>实际上，这是一种简化版本的 2PC，不能解决单点问题。等会我们会讲述 ZAB 如何解决单点问题（即 Leader 崩溃问题）。</li>
+</ul>
+<h2 id="崩溃恢复"><a href="#崩溃恢复" class="headerlink" title="崩溃恢复"></a>崩溃恢复</h2><p>刚刚我们说消息广播过程中，Leader 崩溃怎么办？还能保证数据一致吗？如果 Leader 先本地提交了，然后 commit 请求没有发送出去，怎么办？</p>
+<p>实际上，当 Leader 崩溃，即进入我们开头所说的崩溃恢复模式（崩溃即：Leader 失去与过半 Follwer 的联系）。下面来详细讲述。</p>
+<ul>
+<li>假设 1：Leader 在复制数据给所有 Follwer 之后崩溃，怎么办？</li>
+<li>假设 2：Leader 在收到 Ack 并提交了自己，同时发送了部分 commit 出去之后崩溃怎么办？</li>
+</ul>
+<p>针对这些问题，ZAB 定义了 2 个原则：</p>
+<ul>
+<li>ZAB 协议确保那些已经在 Leader 提交的事务最终会被所有服务器提交。</li>
+<li>ZAB 协议确保丢弃那些只在 Leader 提出&#x2F;复制，但没有提交的事务。</li>
+</ul>
+<p>所以，ZAB 设计了下面这样一个选举算法：<strong>能够确保提交已经被 Leader 提交的事务，同时丢弃已经被跳过的事务</strong>。</p>
+<p>针对这个要求，如果让 Leader 选举算法能够保证新选举出来的 Leader 服务器拥有集群总所有机器编号（即 ZXID 最大）的事务，那么就能够保证这个新选举出来的 Leader 一定具有所有已经提交的提案。</p>
+<p>而且这么做有一个好处是：<strong>可以省去 Leader 服务器检查事务的提交和丢弃工作的这一步操作</strong>。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-zab-5.png" alt="distributed-algorithm-zab-5"></p>
+<p>这样，我们刚刚假设的两个问题便能够解决。假设 1 最终会丢弃调用没有提交的数据，假设 2 最终会同步所有服务器的数据。这个时候，就引出了一个问题，如何同步？</p>
+<h2 id="数据同步"><a href="#数据同步" class="headerlink" title="数据同步"></a>数据同步</h2><p>当崩溃恢复之后，需要在正式工作之前（接收客户端请求），Leader 服务器首先确认事务是否都已经被过半的 Follwer 提交了，即是否完成了数据同步。目的是为了保持数据一致。</p>
+<p>当所有的 Follwer 服务器都成功同步之后，Leader 会将这些服务器加入到可用服务器列表中。</p>
+<p>实际上，Leader 服务器处理或丢弃事务都是依赖着 ZXID 的，那么这个 ZXID 如何生成呢？</p>
+<p>答：在 ZAB 协议的事务编号 ZXID 设计中，ZXID 是一个 64 位的数字，其中低 32 位可以看作是一个简单的递增的计数器，针对客户端的每一个事务请求，Leader 都会产生一个新的事务 Proposal 并对该计数器进行 + 1 操作。</p>
+<p>而高 32 位则代表了 Leader 服务器上取出本地日志中最大事务 Proposal 的 ZXID，并从该 ZXID 中解析出对应的 epoch 值，然后再对这个值加一。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-zab-6.png" alt="distributed-algorithm-zab-6"></p>
+<p>高 32 位代表了每代 Leader 的唯一性，低 32 代表了每代 Leader 中事务的唯一性。同时，也能让 Follwer 通过高 32 位识别不同的 Leader。简化了数据恢复流程。</p>
+<p>基于这样的策略：当 Follower 链接上 Leader 之后，Leader 服务器会根据自己服务器上最后被提交的 ZXID 和 Follower 上的 ZXID 进行比对，比对结果要么回滚，要么和 Leader 同步。</p>
+<h2 id="ZXID-原理"><a href="#ZXID-原理" class="headerlink" title="ZXID 原理"></a>ZXID 原理</h2><p>zxid 就是上面提到的事务编号，是一个 8 字节的整型数字，但是 ZK 设计的时候把这一个数字拆成了两部分使用，一鱼两吃！</p>
+<p>8 个字节的整数一共有 64 位长度，前 32 位用来记录 epoch，后 32 位就是用来计数。你可能要问了？ epoch？是啥？</p>
+<p>zxid 初始化是 0，也就是这样</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00000000000000000000000000000000 00000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+
+<p>每一次写请求都会增加后 32 位，假设现在进行了 10 次写请求（无论该请求有没有真的修改到数据），zxid 就会变成这样</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00000000000000000000000000000000 00000000000000000000000000001010</span><br></pre></td></tr></table></figure>
+
+<p>当进行一次选举的时候，前 32 位就会增加 1，并且清零后 32 位</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">00000000000000000000000000000001 00000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+
+<p>除了选举以外，当后 32 位彻底用完（变成全 1，也就是 ZK 正常执行了 2^32 - 1 次写请求都没进行过一次选举，牛逼！）也会让前 32 位增加 1，相当于进位</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 进位前</span></span><br><span class="line">00000000000000000000000000000000 11111111111111111111111111111111</span><br><span class="line"><span class="comment"># 进位后</span></span><br><span class="line">00000000000000000000000000000001 00000000000000000000000000000000</span><br></pre></td></tr></table></figure>
+
+<p>到这里我就可以回答大家前面的问题了，epoch 就是 zxid 前 32 位的这个数字，epoch 本身的翻译是 “纪元，时代” 的意思，意味着更新换代，而 zxid 的后 32 位数字仅仅是写请求的计数罢了</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>ZAB 协议和我们之前看的 Raft 协议实际上是有相似之处的，比如都有一个 Leader，用来保证一致性（Paxos 并没有使用 Leader 机制保证一致性）。再有采取过半即成功的机制保证服务可用（实际上 Paxos 和 Raft 都是这么做的）。</p>
+<p>ZAB 让整个 Zookeeper 集群在两个模式之间转换，消息广播和崩溃恢复，消息广播可以说是一个简化版本的 2PC，通过崩溃恢复解决了 2PC 的单点问题，通过队列解决了 2PC 的同步阻塞问题。</p>
+<p>而支持崩溃恢复后数据准确性的就是数据同步了，数据同步基于事务的 ZXID 的唯一性来保证。通过 + 1 操作可以辨别事务的先后顺序。</p>
+<h1 id="Snowflake-算法"><a href="#Snowflake-算法" class="headerlink" title="Snowflake 算法"></a>Snowflake 算法</h1><h2 id="Snowflake-算法原理"><a href="#Snowflake-算法原理" class="headerlink" title="Snowflake 算法原理"></a>Snowflake 算法原理</h2><p>Snowflake，雪花算法是由 Twitter 开源的分布式 ID 生成算法，以划分命名空间的方式将 64-bit 位分割成多个部分，每个部分代表不同的含义。这种就是将 64 位划分为不同的段，每段代表不同的涵义，基本就是时间戳、机器 ID 和序列数。为什么如此重要？因为它提供了一种 ID 生成及生成的思路，当然这种方案就是需要考虑时钟回拨的问题以及做一些 buffer 的缓冲设计提高性能。</p>
+<h2 id="Snowflake-算法原理-1"><a href="#Snowflake-算法原理-1" class="headerlink" title="Snowflake 算法原理"></a>Snowflake 算法原理</h2><p>Snowflake，雪花算法是由 Twitter 开源的分布式 ID 生成算法，以划分命名空间的方式将 64-bit 位分割成多个部分，每个部分代表不同的含义。而 Java 中 64 bit 的整数是 Long 类型，所以在 Java 中 SnowFlake 算法生成的 ID 就是 long 来存储的。</p>
+<ul>
+<li><strong>第 1 位</strong>占用 1 bit，其值始终是 0，可看做是符号位不使用。</li>
+<li><strong>第 2 位</strong>开始的 41 位是时间戳，41-bit 位可表示 <code>2^41</code> 个数，每个数代表毫秒，那么雪花算法可用的时间年限是 <code>(1L&lt;&lt;41)/(1000*60*24*365)=69</code> 年的时间。</li>
+<li><strong>中间的 10-bit 位</strong>可表示机器数，即 <code>2^10 = 1024</code> 台机器，但是一般情况下我们不会部署这么台机器。如果我们对 IDC（互联网数据中心）有需求，还可以将 10 bit 分 5 bit 给 IDC，分 5 bit 给工作机器。 这样就可以表示 32 个 IDC，每个 IDC 下可以有 32 台机器，具体的划分可以根据自身需求定义。</li>
+<li><strong>最后 12-bit 位</strong>是自增序列，可表示 <code>2^12 = 4096</code> 个数。</li>
+</ul>
+<p>这样的划分之后相当于<strong>在一毫秒一个数据中心的一台机器上可产生 4096 个有序的不重复的 ID</strong>。但是我们 IDC 和机器数肯定不止一个，所以毫秒内能生成的有序 ID 数是翻倍的。</p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-snowflake-1.png" alt="distributed-algorithm-snowflake-1"></p>
+<p>Snowflake 的 Twitter 官方原版是用 Scala 写的，对 Scala 语言有研究的同学可以去阅读下，以下是 Java 版本的写法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> example.distributed.snowflake;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Twitter_Snowflake&lt;br&gt;</span></span><br><span class="line"><span class="comment"> * SnowFlake的结构如下(每部分用-分开):&lt;br&gt;</span></span><br><span class="line"><span class="comment"> * 0 - 0000000000 0000000000 0000000000 0000000000 0 - 00000 - 00000 - 000000000000 &lt;br&gt;</span></span><br><span class="line"><span class="comment"> * 1位标识，由于long基本类型在Java中是带符号的，最高位是符号位，正数是0，负数是1，所以id一般是正数，最高位是0&lt;br&gt;</span></span><br><span class="line"><span class="comment"> * 41位时间截(毫秒级)，注意，41位时间截不是存储当前时间的时间截，而是存储时间截的差值（当前时间截 - 开始时间截)</span></span><br><span class="line"><span class="comment"> * 得到的值），这里的的开始时间截，一般是我们的id生成器开始使用的时间，由我们程序来指定的（如下下面程序IdWorker类的startTime属性）。</span></span><br><span class="line"><span class="comment"> * 41位的时间截，可以使用69年，年 T = (1L &lt;&lt; 41) / (1000L * 60 * 60 * 24 * 365) = 69&lt;br&gt;</span></span><br><span class="line"><span class="comment"> * 10位的数据机器位，可以部署在1024个节点，包括5位datacenterId和5位workerId&lt;br&gt;</span></span><br><span class="line"><span class="comment"> * 12位序列，毫秒内的计数，12位的计数顺序号支持每个节点每毫秒(同一机器，同一时间截)产生4096个ID序号&lt;br&gt;</span></span><br><span class="line"><span class="comment"> * 加起来刚好64位，为一个Long型。&lt;br&gt;</span></span><br><span class="line"><span class="comment"> * SnowFlake的优点是，整体上按照时间自增排序，并且整个分布式系统内不会产生ID碰撞(由数据中心ID和机器ID作区分)，并且效率较高，</span></span><br><span class="line"><span class="comment"> * 经测试，SnowFlake每秒能够产生26万ID左右。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">SnowflakeDistributeId</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ==============================Fields===========================================</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 开始时间截 (2020a-01-01)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">twepoch</span> <span class="operator">=</span> <span class="number">1577808000000L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 机器id所占的位数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">workerIdBits</span> <span class="operator">=</span> <span class="number">5L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 数据标识id所占的位数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">datacenterIdBits</span> <span class="operator">=</span> <span class="number">5L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 支持的最大机器id，结果是31 (这个移位算法可以很快的计算出几位二进制数所能表示的最大十进制数)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">maxWorkerId</span> <span class="operator">=</span> -<span class="number">1L</span> ^ (-<span class="number">1L</span> &lt;&lt; workerIdBits);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 支持的最大数据标识id，结果是31</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">maxDatacenterId</span> <span class="operator">=</span> -<span class="number">1L</span> ^ (-<span class="number">1L</span> &lt;&lt; datacenterIdBits);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 序列在id中占的位数</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">sequenceBits</span> <span class="operator">=</span> <span class="number">12L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 机器ID向左移12位</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">workerIdShift</span> <span class="operator">=</span> sequenceBits;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 数据标识id向左移17位(12+5)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">datacenterIdShift</span> <span class="operator">=</span> sequenceBits + workerIdBits;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 时间截向左移22位(5+5+12)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">timestampLeftShift</span> <span class="operator">=</span> sequenceBits + workerIdBits + datacenterIdBits;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 生成序列的掩码，这里为4095 (0b111111111111=0xfff=4095)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">long</span> <span class="variable">sequenceMask</span> <span class="operator">=</span> -<span class="number">1L</span> ^ (-<span class="number">1L</span> &lt;&lt; sequenceBits);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 工作机器ID(0~31)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> workerId;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 数据中心ID(0~31)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> datacenterId;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 毫秒内序列(0~4095)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> <span class="variable">sequence</span> <span class="operator">=</span> <span class="number">0L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 上次生成ID的时间截</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">long</span> <span class="variable">lastTimestamp</span> <span class="operator">=</span> -<span class="number">1L</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//==============================Constructors=====================================</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构造函数</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> workerId     工作ID (0~31)</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> datacenterId 数据中心ID (0~31)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">SnowflakeDistributeId</span><span class="params">(<span class="type">long</span> workerId, <span class="type">long</span> datacenterId)</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (workerId &gt; maxWorkerId || workerId &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(String.format(<span class="string">&quot;worker Id can&#x27;t be greater than %d or less than 0&quot;</span>, maxWorkerId));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (datacenterId &gt; maxDatacenterId || datacenterId &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(String.format(<span class="string">&quot;datacenter Id can&#x27;t be greater than %d or less than 0&quot;</span>, maxDatacenterId));</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="built_in">this</span>.workerId = workerId;</span><br><span class="line">        <span class="built_in">this</span>.datacenterId = datacenterId;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// ==============================Methods==========================================</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获得下一个ID (该方法是线程安全的)</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> SnowflakeId</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="type">long</span> <span class="title function_">nextId</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">long</span> <span class="variable">timestamp</span> <span class="operator">=</span> timeGen();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果当前时间小于上一次ID生成的时间戳，说明系统时钟回退过这个时候应当抛出异常</span></span><br><span class="line">        <span class="keyword">if</span> (timestamp &lt; lastTimestamp) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(</span><br><span class="line">                    String.format(<span class="string">&quot;Clock moved backwards.  Refusing to generate id for %d milliseconds&quot;</span>, lastTimestamp - timestamp));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果是同一时间生成的，则进行毫秒内序列</span></span><br><span class="line">        <span class="keyword">if</span> (lastTimestamp == timestamp) &#123;</span><br><span class="line">            sequence = (sequence + <span class="number">1</span>) &amp; sequenceMask;</span><br><span class="line">            <span class="comment">//毫秒内序列溢出</span></span><br><span class="line">            <span class="keyword">if</span> (sequence == <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">//阻塞到下一个毫秒,获得新的时间戳</span></span><br><span class="line">                timestamp = tilNextMillis(lastTimestamp);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//时间戳改变，毫秒内序列重置</span></span><br><span class="line">        <span class="keyword">else</span> &#123;</span><br><span class="line">            sequence = <span class="number">0L</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//上次生成ID的时间截</span></span><br><span class="line">        lastTimestamp = timestamp;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//移位并通过或运算拼到一起组成64位的ID</span></span><br><span class="line">        <span class="keyword">return</span> ((timestamp - twepoch) &lt;&lt; timestampLeftShift) <span class="comment">//</span></span><br><span class="line">                | (datacenterId &lt;&lt; datacenterIdShift) <span class="comment">//</span></span><br><span class="line">                | (workerId &lt;&lt; workerIdShift) <span class="comment">//</span></span><br><span class="line">                | sequence;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 阻塞到下一个毫秒，直到获得新的时间戳</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> lastTimestamp 上次生成ID的时间截</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 当前时间戳</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="type">long</span> <span class="title function_">tilNextMillis</span><span class="params">(<span class="type">long</span> lastTimestamp)</span> &#123;</span><br><span class="line">        <span class="type">long</span> <span class="variable">timestamp</span> <span class="operator">=</span> timeGen();</span><br><span class="line">        <span class="keyword">while</span> (timestamp &lt;= lastTimestamp) &#123;</span><br><span class="line">            timestamp = timeGen();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> timestamp;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 返回以毫秒为单位的当前时间</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 当前时间(毫秒)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="type">long</span> <span class="title function_">timeGen</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> System.currentTimeMillis();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>测试的代码如下</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">    <span class="type">SnowflakeDistributeId</span> <span class="variable">idWorker</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">SnowflakeDistributeId</span>(<span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line">    <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++) &#123;</span><br><span class="line">        <span class="type">long</span> <span class="variable">id</span> <span class="operator">=</span> idWorker.nextId();</span><br><span class="line"><span class="comment">//      System.out.println(Long.toBinaryString(id));</span></span><br><span class="line">        System.out.println(id);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><strong>雪花算法提供了一个很好的设计思想，雪花算法生成的 ID 是趋势递增，不依赖数据库等第三方系统，以服务的方式部署，稳定性更高，生成 ID 的性能也是非常高的，而且可以根据自身业务特性分配 bit 位，非常灵活</strong>。</p>
+<p>但是雪花算法强<strong>依赖机器时钟</strong>，如果机器上时钟回拨，会导致发号重复或者服务会处于不可用状态。如果恰巧回退前生成过一些 ID，而时间回退后，生成的 ID 就有可能重复。官方对于此并没有给出解决方案，而是简单的抛错处理，这样会造成在时间被追回之前的这段时间服务不可用。</p>
+<p>很多其他类雪花算法也是在此思想上的设计然后改进规避它的缺陷，后面介绍的<code>百度 UidGenerator</code> 和 <code>美团分布式ID生成系统 Leaf</code> 中 snowflake 模式都是在 snowflake 的基础上演进出来的。</p>
+<h1 id="对比"><a href="#对比" class="headerlink" title="对比"></a>对比</h1><h2 id="Raft-与-Multi-Paxos-对比"><a href="#Raft-与-Multi-Paxos-对比" class="headerlink" title="Raft 与 Multi-Paxos 对比"></a>Raft 与 Multi-Paxos 对比</h2><p>Raft 与 Multi-Paxos 都是基于领导者的一致性算法，乍一看有很多地方相同，下面总结一下 Raft 与 Multi-Paxos 的异同。</p>
+<p>Raft 与 Multi-Paxos 中相似的概念:</p>
+<table>
+<thead>
+<tr>
+<th>Raft</th>
+<th>Multi-Paxos</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Leader</td>
+<td>Proposer</td>
+</tr>
+<tr>
+<td>Term</td>
+<td>Proposal ID</td>
+</tr>
+<tr>
+<td>Log</td>
+<td>Proposal Value</td>
+</tr>
+<tr>
+<td>Log index</td>
+<td>Instance ID</td>
+</tr>
+<tr>
+<td>RequestVote</td>
+<td>Prepare 阶段</td>
+</tr>
+<tr>
+<td>AppendEntries</td>
+<td>Proposer</td>
+</tr>
+<tr>
+<td>Leader</td>
+<td>Accept 阶段</td>
+</tr>
+</tbody></table>
+<p>Raft 与 Multi-Paxos 的不同:</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Raft</th>
+<th>Multi-Paxos</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>领导者</td>
+<td>唯一 Leader</td>
+<td>允许多 Proposer</td>
+</tr>
+<tr>
+<td>领导者选举权</td>
+<td>具有最新提交的日志的副本</td>
+<td>任意副本</td>
+</tr>
+<tr>
+<td>日志连续性</td>
+<td>保证连续</td>
+<td>允许空洞</td>
+</tr>
+<tr>
+<td>日志提交</td>
+<td>推进 commit index</td>
+<td>异步的 Commit 消息</td>
+</tr>
+</tbody></table>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://pdai.tech/md/algorithm/alg-domain-distribute-overview.html">分布式算法 - Overview</a></li>
+<li><a target="_blank" rel="noopener" href="https://pdai.tech/md/algorithm/alg-domain-distribute-x-consistency-hash.html">分布式算法 - 一致性 Hash 算法</a></li>
+<li><a target="_blank" rel="noopener" href="https://researchlab.github.io/2017/01/16/consistent-hashing-summary/">一致性哈希算法总结</a></li>
+<li><a target="_blank" rel="noopener" href="https://pdai.tech/md/algorithm/alg-domain-distribute-x-paxos.html">分布式算法 - Paxos 算法</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/31780743">Paxos 算法详解</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/yeqiuzs/article/details/76862026">理解 Paxos 算法的推导过程</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.jdon.com/artichect/paxos.html">分布式系统 Paxos 算法</a></li>
+<li><a target="_blank" rel="noopener" href="https://pdai.tech/md/algorithm/alg-domain-distribute-x-raft.html">分布式算法 - Raft 算法</a></li>
+<li><a target="_blank" rel="noopener" href="http://thesecretlivesofdata.com/raft/">动画理解 Raft 神器</a></li>
+<li><a target="_blank" rel="noopener" href="https://raft.github.io/">Raft Visualization</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7218915344130359351">一文彻底搞懂 Raft 算法，看这篇就够了！！！</a></li>
+<li><a target="_blank" rel="noopener" href="https://pdai.tech/md/algorithm/alg-domain-distribute-x-zab.html">分布式算法 - ZAB 算法</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xueweihan/p/14515634.html">ZooKeeper 的选举机制，你了解多少？ </a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/distributed/" rel="tag"># distributed</a>
+              <a href="/tags/algorithm/" rel="tag"># algorithm</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2022/02/20/java-lock/" rel="prev" title="java锁">
+                  <i class="fa fa-chevron-left"></i> java锁
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2023/02/08/serialize-compare/" rel="next" title="序列化框架对比">
+                  序列化框架对比 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Apomelo</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.18.0/algoliasearch-lite.umd.js" integrity="sha256-V3GHVlMSAsogT3wL0OY/l4d3fRLa56gNzlnzdIMBIWg=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.56.3/instantsearch.production.min.js" integrity="sha256-mWvjWAfZylKMOg+S3HLq+wng1HHRnl2Idr2r8NsUzIU=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.2.3/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+
+</body>
+</html>

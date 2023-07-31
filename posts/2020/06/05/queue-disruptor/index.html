@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="Disruptor 简介Disruptor 是一个开源的高性能队列框架，由英国外汇交易公司 LMAX 开发。研发的初衷是为了解决内存队列的延迟问题，能够在无锁的情况下实现队列的并发操作，基于 Disruptor 开发的系统单线程能支撑每秒 600 万订单。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="disruptor笔记">
+<meta property="og:url" content="https://apomelo.cc/posts/2020/06/05/queue-disruptor/index.html">
+<meta property="og:site_name" content="Apomelo - 追逐">
+<meta property="og:description" content="Disruptor 简介Disruptor 是一个开源的高性能队列框架，由英国外汇交易公司 LMAX 开发。研发的初衷是为了解决内存队列的延迟问题，能够在无锁的情况下实现队列的并发操作，基于 Disruptor 开发的系统单线程能支撑每秒 600 万订单。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://apomelo.cc/imgs/queue-disruptor/%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85_%E6%B6%88%E8%B4%B9%E8%BF%87%E7%A8%8B.png">
+<meta property="og:image" content="https://apomelo.cc/imgs/queue-disruptor/%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85_%E7%94%9F%E4%BA%A7%E8%BF%87%E7%A8%8B.png">
+<meta property="article:published_time" content="2020-06-04T16:00:00.000Z">
+<meta property="article:modified_time" content="2020-06-04T16:00:00.000Z">
+<meta property="article:author" content="Apomelo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="queue">
+<meta property="article:tag" content="disruptor">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://apomelo.cc/imgs/queue-disruptor/%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85_%E6%B6%88%E8%B4%B9%E8%BF%87%E7%A8%8B.png">
+
+
+<link rel="canonical" href="https://apomelo.cc/posts/2020/06/05/queue-disruptor/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.cc/posts/2020/06/05/queue-disruptor/","path":"posts/2020/06/05/queue-disruptor/","title":"disruptor笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>disruptor笔记 | Apomelo - 追逐</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Disruptor-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">Disruptor 简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E7%9A%84%E7%89%B9%E6%80%A7"><span class="nav-number">2.</span> <span class="nav-text">队列的特性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-%E5%86%85%E7%BD%AE%E9%98%9F%E5%88%97"><span class="nav-number">3.</span> <span class="nav-text">Java 内置队列</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%98%9F%E5%88%97%E5%8A%A0%E9%94%81%E6%80%A7%E8%83%BD"><span class="nav-number">4.</span> <span class="nav-text">队列加锁性能</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Disruptor-%E8%AE%BE%E8%AE%A1%E6%96%B9%E6%A1%88"><span class="nav-number">5.</span> <span class="nav-text">Disruptor 设计方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Disruptor-%E4%B8%BB%E8%A6%81%E5%AE%9E%E7%8E%B0%E7%B1%BB"><span class="nav-number">6.</span> <span class="nav-text">Disruptor 主要实现类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%97%A0%E9%94%81%E8%AE%BE%E8%AE%A1%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-number">7.</span> <span class="nav-text">无锁设计实现原理</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85"><span class="nav-number">7.1.</span> <span class="nav-text">多生产者</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AF%BB%E6%95%B0%E6%8D%AE"><span class="nav-number">7.1.1.</span> <span class="nav-text">读数据</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99%E6%95%B0%E6%8D%AE"><span class="nav-number">7.1.2.</span> <span class="nav-text">写数据</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AD%89%E5%BE%85%E7%AD%96%E7%95%A5"><span class="nav-number">8.</span> <span class="nav-text">等待策略</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E4%BA%A7%E8%80%85%E7%AD%89%E5%BE%85%E7%AD%96%E7%95%A5"><span class="nav-number">8.1.</span> <span class="nav-text">生产者等待策略</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E8%B4%B9%E8%80%85%E7%AD%89%E5%BE%85%E7%AD%96%E7%95%A5"><span class="nav-number">8.2.</span> <span class="nav-text">消费者等待策略</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E8%A1%8C%E5%A1%AB%E5%85%85"><span class="nav-number">9.</span> <span class="nav-text">缓存行填充</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">10.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2020/06/05/queue-disruptor/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="disruptor笔记 | Apomelo - 追逐">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          disruptor笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2020-06-05 00:00:00" itemprop="dateCreated datePublished" datetime="2020-06-05T00:00:00+08:00">2020-06-05</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2020/06/05/queue-disruptor/" class="post-meta-item leancloud_visitors" data-flag-title="disruptor笔记" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="Disruptor-简介"><a href="#Disruptor-简介" class="headerlink" title="Disruptor 简介"></a>Disruptor 简介</h1><p>Disruptor 是一个开源的高性能队列框架，由英国外汇交易公司 LMAX 开发。研发的初衷是为了解决内存队列的延迟问题，能够在无锁的情况下实现队列的并发操作，基于 Disruptor 开发的系统单线程能支撑每秒 600 万订单。</p>
+<span id="more"></span>
+
+<h1 id="队列的特性"><a href="#队列的特性" class="headerlink" title="队列的特性"></a>队列的特性</h1><p>先进先出（FIFO），生产者往队列里发布事件，消费者获得通知消费事件；如果队列中没有事件时，消费者堵塞，直到生产者发布了新事件。</p>
+<h1 id="Java-内置队列"><a href="#Java-内置队列" class="headerlink" title="Java 内置队列"></a>Java 内置队列</h1><table>
+<thead>
+<tr>
+<th>队列</th>
+<th>有界性</th>
+<th>锁</th>
+<th>阻塞</th>
+<th>数据结构</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ArrayBlockingQueue</td>
+<td>bounded</td>
+<td>加锁</td>
+<td>是</td>
+<td>arraylist</td>
+</tr>
+<tr>
+<td>LinkedBlockingQueue</td>
+<td>optionally-bounded</td>
+<td>加锁</td>
+<td>是</td>
+<td>linkedlist</td>
+</tr>
+<tr>
+<td>ConcurrentLinkedQueue</td>
+<td>unbounded</td>
+<td>CAS</td>
+<td>否</td>
+<td>linkedlist</td>
+</tr>
+<tr>
+<td>LinkedTransferQueue</td>
+<td>unbounded</td>
+<td>CAS</td>
+<td>是</td>
+<td>linkedlist</td>
+</tr>
+<tr>
+<td>PriorityBlockingQueue</td>
+<td>unbounded</td>
+<td>加锁</td>
+<td>是</td>
+<td>heap</td>
+</tr>
+<tr>
+<td>DelayQueue</td>
+<td>unbounded</td>
+<td>加锁</td>
+<td>是</td>
+<td>heap</td>
+</tr>
+<tr>
+<td>SynchronizedQueue</td>
+<td>synchronized</td>
+<td>CAS</td>
+<td>是</td>
+<td>linkedlist</td>
+</tr>
+</tbody></table>
+<p>队列的底层一般分成三种：数组、链表和堆。其中，堆一般情况下是为了实现带有优先级特性的队列，暂且不考虑。</p>
+<p>我们就从数组和链表两种数据结构来看，基于数组线程安全的队列，比较典型的是 ArrayBlockingQueue，它主要通过加锁的方式来保证线程安全；基于链表的线程安全队列分成 LinkedBlockingQueue 和 ConcurrentLinkedQueue 两大类，前者也通过锁的方式来实现线程安全，而后者以及上面表格中的 LinkedTransferQueue 都是通过原子变量 compare and swap（以下简称“CAS”）这种不加锁的方式来实现的。</p>
+<p>使用 CAS 协议实现的队列都是无界的（无法保证队列的长度在确定的范围内），理论上来说可以是无限扩展，那么如果生产者生产过快，消费者还没来得及消费，最终可能会导致内存溢出，影响系统稳定；而加锁的方式，可以实现有界队列。在稳定性要求特别高的系统中，为了防止生产者速度过快，导致内存溢出，只能选择有界队列；同时，为了减少 Java 的垃圾回收对系统性能的影响，会尽量选择 array&#x2F;heap 格式的数据结构。这样筛选下来，符合条件的队列就只有 ArrayBlockingQueue。</p>
+<p><strong>更多 java 原生队列相关知识，参见:</strong> <a href="/posts/2020/06/25/java-queue/" title="java原生队列">[java原生队列]</a></p>
+<h1 id="队列加锁性能"><a href="#队列加锁性能" class="headerlink" title="队列加锁性能"></a>队列加锁性能</h1><p>现实编程过程中，加锁通常会严重地影响性能。线程会因为竞争不到锁而被挂起，等锁被释放的时候，线程又会被恢复，这个过程中存在着很大的开销，并且通常会有较长时间的中断，因为当一个线程正在等待锁时，它不能做任何其他事情。如果一个线程在持有锁的情况下被延迟执行，例如发生了缺页错误、调度延迟或者其它类似情况，那么所有需要这个锁的线程都无法执行下去。如果被阻塞线程的优先级较高，而持有锁的线程优先级较低，就会发生优先级反转。</p>
+<p>Disruptor 论文中讲述了一个实验：</p>
+<ul>
+<li>这个测试程序调用了一个函数，该函数会对一个 64 位的计数器循环自增 5 亿次。</li>
+<li>机器环境：2.4G 6 核</li>
+<li>运算： 64 位的计数器累加 5 亿次</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Time (ms)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Single thread</td>
+<td>300</td>
+</tr>
+<tr>
+<td>Single thread with CAS</td>
+<td>5,700</td>
+</tr>
+<tr>
+<td>Single thread with lock</td>
+<td>10,000</td>
+</tr>
+<tr>
+<td>Single thread with volatile write</td>
+<td>4,700</td>
+</tr>
+<tr>
+<td>Two threads with CAS</td>
+<td>30,000</td>
+</tr>
+<tr>
+<td>Two threads with lock</td>
+<td>224,000</td>
+</tr>
+</tbody></table>
+<p>CAS 操作比单线程无锁慢了 1 个数量级；有锁且多线程并发的情况下，速度比单线程无锁慢 3 个数量级。可见无锁速度最快。</p>
+<p><strong>单线程</strong>情况下，不加锁的性能 &gt; CAS 操作的性能 &gt; 加锁的性能。</p>
+<p><strong>多线程</strong>情况下，为了保证线程安全，必须使用 CAS 或锁，这种情况下，CAS 的性能超过锁的性能，前者大约是后者的 8 倍。</p>
+<p>综上可知，加锁的性能是最差的。</p>
+<h1 id="Disruptor-设计方案"><a href="#Disruptor-设计方案" class="headerlink" title="Disruptor 设计方案"></a>Disruptor 设计方案</h1><p>Disruptor 通过以下设计来解决队列速度慢的问题：</p>
+<ol>
+<li>环形数组结构<br>为了避免垃圾回收，采用数组而非链表。同时，数组对处理器的缓存机制更加友好。</li>
+<li>元素位置定位<br>数组长度 2^n，通过位运算，加快定位的速度。下标采取递增的形式。不用担心 index 溢出的问题。index 是 long 类型，即使 100 万 QPS 的处理速度，也需要 30 万年才能用完。</li>
+<li>无锁设计<br>每个生产者或者消费者线程，会先申请可以操作的元素在数组中的位置，申请到之后，直接在该位置写入或者读取数据。</li>
+<li>缓存行填充<br>缓存行填充解决了伪共享（False Sharing）问题，提高多线程并发访问共享变量时的性能。<br><strong>缓存行填充原因及原理:</strong> <a href="/posts/2019/04/18/java-jvm/#对齐填充的应用">对齐填充的应用</a></li>
+</ol>
+<h1 id="Disruptor-主要实现类"><a href="#Disruptor-主要实现类" class="headerlink" title="Disruptor 主要实现类"></a>Disruptor 主要实现类</h1><ol>
+<li>Disruptor：Disruptor 的入口，主要封装了环形队列 RingBuffer、消费者集合 ConsumerRepository 的引用；主要提供了获取环形队列、添加消费者、生产者向 RingBuffer 中添加事件（可以理解为生产者生产数据）的操作；</li>
+<li>RingBuffer：Disruptor 中队列具体的实现，底层封装了 Object[]数组；在初始化时，会使用 Event 事件对数组进行填充，填充的大小就是 bufferSize 设置的值；此外，该对象内部还维护了 Sequencer（序列生产器）具体的实现；</li>
+<li>Sequencer：序列生产器，分别有 MultiProducerSequencer（多生产者序列生产器） 和 SingleProducerSequencer（单生产者序列生产器）两个实现类。上面的例子中，使用的是 SingleProducerSequencer；在 Sequencer 中，维护了消费者的 Sequence（序列对象）和生产者自己的 Sequence（序列对象）；以及维护了生产者与消费者序列冲突时候的等待策略 WaitStrategy；</li>
+<li>Sequence：序列对象，内部维护了一个 long 型的 value，这个序列指向了 RingBuffer 中 Object[] 数组具体的角标。生产者和消费者各自维护自己的 Sequence；但都是指向 RingBuffer 的 Object[] 数组；</li>
+<li>Wait Strategy：等待策略。当没有可消费的事件时，消费者根据特定的策略进行等待；当没有可生产的地方时，生产者根据特定的策略进行等待；</li>
+<li>Event：事件对象，就是我们 Ringbuffer 中存在的数据，在 Disruptor 中用 Event 来定义数据，并不存在 Event 类，它只是一个定义；</li>
+<li>EventProcessor：事件处理器，单独在一个线程内执行，判断消费者的序列和生产者序列关系，决定是否调用我们自定义的事件处理器，也就是是否可以进行消费；</li>
+<li>EventHandler：事件处理器，由用户自定义实现，也就是最终的事件消费者，需要实现 EventHandler 接口；</li>
+<li>Producer：事件生产者；</li>
+</ol>
+<h1 id="无锁设计实现原理"><a href="#无锁设计实现原理" class="headerlink" title="无锁设计实现原理"></a>无锁设计实现原理</h1><p>下面忽略数组的环形结构，介绍一下如何实现无锁设计。整个过程通过原子变量 CAS，保证操作的线程安全。</p>
+<h2 id="多生产者"><a href="#多生产者" class="headerlink" title="多生产者"></a>多生产者</h2><p>多个生产者的情况下，会遇到“如何防止多个线程重复写同一个元素”的问题。Disruptor 的解决方法是，每个线程获取不同的一段数组空间进行操作。这个通过 CAS 很容易达到。只需要在分配元素的时候，通过 CAS 判断一下这段空间是否已经分配出去即可。</p>
+<p>但是会遇到一个新问题：如何防止读取的时候，读到还未写的元素。Disruptor 在多个生产者的情况下，引入了一个与 Ring Buffer 大小相同的 buffer：available Buffer。当某个位置写入成功的时候，便把 availble Buffer 相应的位置置位，标记为写入成功。读取的时候，会遍历 available Buffer，来判断元素是否已经就绪。</p>
+<p>下面分读数据和写数据两种情况介绍。</p>
+<h3 id="读数据"><a href="#读数据" class="headerlink" title="读数据"></a>读数据</h3><ol>
+<li>申请读取到序号 n；</li>
+<li>若 writer cursor &gt;&#x3D; n，这时仍然无法确定连续可读的最大下标。从 reader cursor 开始读取 available Buffer，一直查到第一个不可用的元素，然后返回最大连续可读元素的位置；</li>
+<li>消费者读取元素。</li>
+</ol>
+<p>如下图所示，读线程读到下标为 2 的元素，三个线程 Writer1&#x2F;Writer2&#x2F;Writer3 正在向 RingBuffer 相应位置写数据，写线程被分配到的最大元素下标是 11。</p>
+<p>读线程申请读取到下标从 3 到 11 的元素，判断 writer cursor&gt;&#x3D;11。然后开始读取 availableBuffer，从 3 开始，往后读取，发现下标为 7 的元素没有生产成功，于是 WaitFor(11)返回 6。</p>
+<p>然后，消费者读取下标从 3 到 6 共计 4 个元素。</p>
+<p><img src="/imgs/queue-disruptor/%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85_%E6%B6%88%E8%B4%B9%E8%BF%87%E7%A8%8B.png" alt="多个生产者情况下，消费者消费过程示意图"></p>
+<h3 id="写数据"><a href="#写数据" class="headerlink" title="写数据"></a>写数据</h3><ol>
+<li>申请写入 m 个元素；</li>
+<li>若是有 m 个元素可以写入，则返回最大的序列号。每个生产者会被分配一段独享的空间；</li>
+<li>生产者写入元素，写入元素的同时设置 available Buffer 里面相应的位置，以标记自己哪些位置是已经写入成功的。</li>
+</ol>
+<p>如下图所示，Writer1 和 Writer2 两个线程写入数组，都申请可写的数组空间。Writer1 被分配了下标 3 到下表 5 的空间，Writer2 被分配了下标 6 到下标 9 的空间。</p>
+<p>Writer1 写入下标 3 位置的元素，同时把 available Buffer 相应位置置位，标记已经写入成功，往后移一位，开始写下标 4 位置的元素。Writer2 同样的方式。最终都写入完成。</p>
+<p><img src="/imgs/queue-disruptor/%E5%A4%9A%E7%94%9F%E4%BA%A7%E8%80%85_%E7%94%9F%E4%BA%A7%E8%BF%87%E7%A8%8B.png" alt="多个生产者情况下，生产者生产过程示意图"></p>
+<h1 id="等待策略"><a href="#等待策略" class="headerlink" title="等待策略"></a>等待策略</h1><h2 id="生产者等待策略"><a href="#生产者等待策略" class="headerlink" title="生产者等待策略"></a>生产者等待策略</h2><p>暂时只有休眠 1ns。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LockSupport.parkNanos(<span class="number">1</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="消费者等待策略"><a href="#消费者等待策略" class="headerlink" title="消费者等待策略"></a>消费者等待策略</h2><table>
+<thead>
+<tr>
+<th>名称</th>
+<th>措施</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>BlockingWaitStrategy</td>
+<td>加锁</td>
+<td>CPU 资源紧缺，吞吐量和延迟并不重要的场景</td>
+</tr>
+<tr>
+<td>BusySpinWaitStrategy</td>
+<td>自旋</td>
+<td>通过不断重试，减少切换线程导致的系统调用，而降低延迟。推荐在线程绑定到固定的 CPU 的场景下使用</td>
+</tr>
+<tr>
+<td>PhasedBackoffWaitStrategy</td>
+<td>自旋 + yield + 自定义策略</td>
+<td>CPU 资源紧缺，吞吐量和延迟并不重要的场景</td>
+</tr>
+<tr>
+<td>SleepingWaitStrategy</td>
+<td>自旋 + yield + sleep</td>
+<td>性能和 CPU 资源之间有很好的折中。延迟不均匀</td>
+</tr>
+<tr>
+<td>TimeoutBlockingWaitStrategy</td>
+<td>加锁，有超时限制</td>
+<td>CPU 资源紧缺，吞吐量和延迟并不重要的场景</td>
+</tr>
+<tr>
+<td>YieldingWaitStrategy</td>
+<td>自旋 + yield + 自旋</td>
+<td>性能和 CPU 资源之间有很好的折中。延迟比较均匀</td>
+</tr>
+</tbody></table>
+<h1 id="缓存行填充"><a href="#缓存行填充" class="headerlink" title="缓存行填充"></a>缓存行填充</h1><p>缓存行填充解决了伪共享（False Sharing）问题，提高多线程并发访问共享变量时的性能。</p>
+<p>在现代计算机系统中，CPU 缓存以缓存行（Cache Line）为单位进行数据加载和存储。缓存行是一个固定大小的数据块，在 x86 架构中通常为 64 字节。当一个线程访问一个共享变量时，它会加载所在缓存行的数据到 CPU 缓存中。如果多个线程同时访问位于同一缓存行的不同变量，会导致伪共享问题。</p>
+<p>伪共享问题的产生是由于多个线程的缓存行之间存在数据竞争，即它们共享同一缓存行，但实际上它们操作的变量是不同的。由于缓存一致性协议的限制，一个线程对共享变量的修改会导致整个缓存行的数据无效，从而迫使其他线程重新加载整个缓存行的数据，这会导致严重的性能下降。</p>
+<p>缓存行填充的作用是通过在变量之间插入空白字段，使得共享变量被放置在不同的缓存行中，从而避免了多个线程之间对同一缓存行的竞争。这样，即使多个线程同时访问不同的共享变量，它们的操作不会影响彼此，也不会导致缓存行失效，从而显著提高了并发访问性能。</p>
+<p><strong>缓存行填充详细原因及原理:</strong> <a href="/posts/2019/04/18/java-jvm/#对齐填充的应用">对齐填充的应用</a></p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://lmax-exchange.github.io/disruptor/user-guide/index.html">LMAX Disruptor User Guide</a></li>
+<li><a target="_blank" rel="noopener" href="https://tech.meituan.com/2016/11/18/disruptor.html">高性能队列——Disruptor</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/queue/" rel="tag"># queue</a>
+              <a href="/tags/disruptor/" rel="tag"># disruptor</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2020/04/25/redis/" rel="prev" title="Redis笔记">
+                  <i class="fa fa-chevron-left"></i> Redis笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2020/06/25/java-queue/" rel="next" title="java原生队列">
+                  java原生队列 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Apomelo</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.18.0/algoliasearch-lite.umd.js" integrity="sha256-V3GHVlMSAsogT3wL0OY/l4d3fRLa56gNzlnzdIMBIWg=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.56.3/instantsearch.production.min.js" integrity="sha256-mWvjWAfZylKMOg+S3HLq+wng1HHRnl2Idr2r8NsUzIU=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.2.3/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+
+</body>
+</html>
