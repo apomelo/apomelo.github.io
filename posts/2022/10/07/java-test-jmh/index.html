@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="简介JMH（Java Microbenchmark Harness）是一个由 OpenJDK 提供的 Java 微基准测试工具，用于对 Java 代码进行微基准测试。微基准测试是针对程序中的小段代码或者单个方法的性能测试，旨在对代码的性能进行准确的度量和比较。 JMH 是为了解决 Java 程序微基准测试的一些挑战而开发的，它提供了以下主要功能：  自动化的基准测试 ： JMH 提供了一组注解和">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 JMH 做 Benchmark 基准测试">
+<meta property="og:url" content="https://apomelo.cc/posts/2022/10/07/java-test-jmh/index.html">
+<meta property="og:site_name" content="Apomelo - 追逐">
+<meta property="og:description" content="简介JMH（Java Microbenchmark Harness）是一个由 OpenJDK 提供的 Java 微基准测试工具，用于对 Java 代码进行微基准测试。微基准测试是针对程序中的小段代码或者单个方法的性能测试，旨在对代码的性能进行准确的度量和比较。 JMH 是为了解决 Java 程序微基准测试的一些挑战而开发的，它提供了以下主要功能：  自动化的基准测试 ： JMH 提供了一组注解和">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://apomelo.cc/imgs/java-test-jmh/java-test-jmh-1.png">
+<meta property="og:image" content="https://apomelo.cc/imgs/java-test-jmh/java-test-jmh-2.png">
+<meta property="og:image" content="https://apomelo.cc/imgs/java-test-jmh/java-test-jmh-3.png">
+<meta property="article:published_time" content="2022-10-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2022-10-06T16:00:00.000Z">
+<meta property="article:author" content="Apomelo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="test">
+<meta property="article:tag" content="jmh">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://apomelo.cc/imgs/java-test-jmh/java-test-jmh-1.png">
+
+
+<link rel="canonical" href="https://apomelo.cc/posts/2022/10/07/java-test-jmh/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.cc/posts/2022/10/07/java-test-jmh/","path":"posts/2022/10/07/java-test-jmh/","title":"使用 JMH 做 Benchmark 基准测试"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>使用 JMH 做 Benchmark 基准测试 | Apomelo - 追逐</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E7%82%B9"><span class="nav-number">1.1.</span> <span class="nav-text">优点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">2.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%B3%A8%E8%A7%A3%E5%90%AB%E4%B9%89"><span class="nav-number">3.</span> <span class="nav-text">注解含义</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.1.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BenchmarkMode"><span class="nav-number">3.2.</span> <span class="nav-text">@BenchmarkMode</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#OutputTimeUnit"><span class="nav-number">3.3.</span> <span class="nav-text">@OutputTimeUnit</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Warmup"><span class="nav-number">3.4.</span> <span class="nav-text">@Warmup</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Measurement"><span class="nav-number">3.5.</span> <span class="nav-text">@Measurement</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fork"><span class="nav-number">3.6.</span> <span class="nav-text">@Fork</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Threads"><span class="nav-number">3.7.</span> <span class="nav-text">@Threads</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Group"><span class="nav-number">3.8.</span> <span class="nav-text">@Group</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#State"><span class="nav-number">3.9.</span> <span class="nav-text">@State</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Setup-%E5%92%8C-TearDown"><span class="nav-number">3.10.</span> <span class="nav-text">@Setup 和 @TearDown</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Param"><span class="nav-number">3.11.</span> <span class="nav-text">@Param</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CompilerControl"><span class="nav-number">3.12.</span> <span class="nav-text">@CompilerControl</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%B0%86%E7%BB%93%E6%9E%9C%E5%9B%BE%E5%BD%A2%E5%8C%96"><span class="nav-number">4.</span> <span class="nav-text">将结果图形化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2022/10/07/java-test-jmh/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="使用 JMH 做 Benchmark 基准测试 | Apomelo - 追逐">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          使用 JMH 做 Benchmark 基准测试
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2022-10-07 00:00:00" itemprop="dateCreated datePublished" datetime="2022-10-07T00:00:00+08:00">2022-10-07</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2022/10/07/java-test-jmh/" class="post-meta-item leancloud_visitors" data-flag-title="使用 JMH 做 Benchmark 基准测试" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>JMH（Java Microbenchmark Harness）是一个由 OpenJDK 提供的 Java 微基准测试工具，用于对 Java 代码进行微基准测试。微基准测试是针对程序中的小段代码或者单个方法的性能测试，旨在对代码的性能进行准确的度量和比较。</p>
+<p>JMH 是为了解决 Java 程序微基准测试的一些挑战而开发的，它提供了以下主要功能：</p>
+<ol>
+<li><strong>自动化的基准测试</strong> ： JMH 提供了一组注解和 API，可以方便地定义测试用例，配置测试参数，执行测试，并输出测试结果。这样可以避免手动编写基准测试代码，减少测试代码的冗余和错误。</li>
+<li><strong>预热阶段</strong> ： JMH 在运行基准测试之前会进行预热阶段，通过多次运行测试代码来预热 JVM 和代码缓存，以尽量达到代码在稳定状态下的性能。</li>
+<li><strong>统计和报告</strong> ： JMH 会对测试结果进行统计和报告，包括平均执行时间、标准差、吞吐量、延迟等性能指标，这些指标可以帮助开发人员更准确地评估代码的性能表现。</li>
+<li><strong>可插拔的扩展性</strong> ： JMH 提供了丰富的插件和扩展点，可以扩展和定制基准测试的功能，满足特定的测试需求。</li>
+</ol>
+<p>JMH 是一个强大的基准测试工具，特别适用于对 Java 代码进行微基准测试，它可以帮助开发人员更好地了解代码的性能特性，优化程序性能，并进行准确的性能比较。 在进行性能测试时，建议使用 JMH 来进行微基准测试，以确保测试结果的准确性和可靠性。</p>
+<span id="more"></span>
+
+<h2 id="优点"><a href="#优点" class="headerlink" title="优点"></a>优点</h2><p>JMH（Java Microbenchmark Harness）是一个强大的 Java 微基准测试工具，它具有许多优点，使其成为进行性能测试的首选工具。以下是 JMH 的主要优点：</p>
+<ol>
+<li><strong>简单易用</strong> ： JMH 提供了注解和 API，可以方便地定义测试用例，配置测试参数，执行测试，并输出测试结果。使用 JMH 可以避免手动编写复杂的基准测试代码，减少测试代码的冗余和错误。</li>
+<li><strong>自动化测试</strong> ： JMH 实现了自动化的测试流程，包括预热阶段和真正的测试阶段。它会在运行基准测试之前进行预热阶段，通过多次运行测试代码来预热 JVM 和代码缓存，以尽量达到代码在稳定状态下的性能。这样可以减少测试的干扰和误差，获得更准确的性能指标。</li>
+<li><strong>可靠的测试结果</strong> ： JMH 会对测试结果进行统计和报告，包括平均执行时间、标准差、吞吐量、延迟等性能指标。这些指标可以帮助开发人员更准确地评估代码的性能表现，并进行性能优化。</li>
+<li><strong>微基准测试</strong> ： JMH 专注于对小段代码或单个方法的性能进行测试，这种微基准测试非常适合对 Java 代码的性能进行准确的度量和比较。它避免了测试过程中其他因素对结果的影响，使得测试结果更可信。</li>
+<li><strong>可扩展性</strong> ： JMH 提供了丰富的插件和扩展点，可以扩展和定制基准测试的功能。这样可以根据具体需求，对测试环境进行定制，满足特定的测试需求。</li>
+<li><strong>集成于 OpenJDK</strong> ： JMH 是由 OpenJDK 提供的官方性能测试工具，因此与 Java 语言和 JVM 紧密集成，能够充分利用 JVM 的优化和特性。</li>
+</ol>
+<p>综上所述，JMH 的优点包括简单易用、自动化测试、可靠的测试结果、微基准测试、可扩展性和与 Java&#x2F;JVM 的紧密集成。这些优点使得 JMH 成为进行 Java 性能测试的首选工具，并能够帮助开发人员更好地了解代码的性能表现，优化程序性能，并进行准确的性能比较。</p>
+<h1 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h1><p><code>JMH</code> 是一个 jar 包，它和单元测试框架 <code>JUnit</code> 非常的像，可以通过注解进行一些基础配置。这部分配置有很多是可以通过 main 方法的 <code>OptionsBuilder</code> 进行设置的。</p>
+<p><img src="/imgs/java-test-jmh/java-test-jmh-1.png" alt="java-test-jmh-1"></p>
+<p>上图是一个典型的 JMH 程序执行的内容。通过开启多个进程，多个线程，首先执行预热，然后执行迭代，最后汇总所有的测试数据进行分析。 在执行前后，还可以根据粒度处理一些前置和后置操作。</p>
+<h1 id="注解含义"><a href="#注解含义" class="headerlink" title="注解含义"></a>注解含义</h1><h2 id="示例"><a href="#示例" class="headerlink" title="示例"></a>示例</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> test.org.openjdk.jmh;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.annotations.*;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.results.format.ResultFormatType;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.runner.Runner;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.runner.options.Options;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.runner.options.OptionsBuilder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"><span class="meta">@BenchmarkMode(Mode.Throughput)</span></span><br><span class="line"><span class="meta">@OutputTimeUnit(TimeUnit.MILLISECONDS)</span></span><br><span class="line"><span class="meta">@Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)</span></span><br><span class="line"><span class="meta">@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)</span></span><br><span class="line"><span class="meta">@Fork(1)</span></span><br><span class="line"><span class="meta">@Threads(2)</span></span><br><span class="line"><span class="meta">@State(Scope.Thread)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BenchmarkTest</span> &#123;</span><br><span class="line">    <span class="meta">@Benchmark</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">shift</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">long</span> <span class="variable">t</span> <span class="operator">=</span> <span class="number">455565655225562L</span>;</span><br><span class="line">        <span class="type">long</span> <span class="variable">a</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++) &#123;</span><br><span class="line">            a = t &gt;&gt; <span class="number">30</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Benchmark</span></span><br><span class="line">    <span class="comment">// 加上 group, 输出由 &quot;# Benchmark: test.org.openjdk.jmh.BenchmarkTest.div&quot;</span></span><br><span class="line">    <span class="comment">//              变成 &quot;# Benchmark: test.org.openjdk.jmh.BenchmarkTest.group1&quot;</span></span><br><span class="line">    <span class="meta">@Group(&quot;group1&quot;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">div</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="type">long</span> <span class="variable">t</span> <span class="operator">=</span> <span class="number">455565655225562L</span>;</span><br><span class="line">        <span class="type">long</span> <span class="variable">a</span> <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++) &#123;</span><br><span class="line">            a = t / <span class="number">1024</span> / <span class="number">1024</span> / <span class="number">1024</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> a;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">        <span class="type">Options</span> <span class="variable">opts</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">OptionsBuilder</span>()</span><br><span class="line">                .include(BenchmarkTest.class.getSimpleName())</span><br><span class="line">                .resultFormat(ResultFormatType.JSON)</span><br><span class="line">                .build();</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Runner</span>(opts).run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="BenchmarkMode"><a href="#BenchmarkMode" class="headerlink" title="@BenchmarkMode"></a>@BenchmarkMode</h2><p>样例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 统计一个维度</span></span><br><span class="line"><span class="meta">@BenchmarkMode(Mode.Throughput)</span></span><br><span class="line"><span class="comment">// 统计多个维度</span></span><br><span class="line"><span class="meta">@BenchmarkMode(&#123;Mode.Throughput, Mode.AverageTime&#125;)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>value</code>： Mode[] 类型，表示基准测试类型</li>
+</ul>
+<p>此注解用来指定基准测试类型，对应 Mode 选项，<strong>用来修饰类和方法都可以</strong>。 这里的 value，是一个数组，<strong>可以配置多个统计维度</strong>。</p>
+<p>所谓的模式，在 JMH 中，可以分为以下几种：</p>
+<ul>
+<li><strong>Throughput：</strong> 整体吞吐量，比如 QPS，单位时间内的调用量等。</li>
+<li><strong>AverageTime：</strong> 平均耗时，指的是每次执行的平均时间。如果这个值很小不好辨认，可以把统计的单位时间调小一点。</li>
+<li><strong>SampleTime：</strong> 随机<code>取样</code>。</li>
+<li><strong>SingleShotTime：</strong> 如果你想要测试仅仅一次的性能，比如第一次初始化花了多长时间，就可以使用这个参数，其实和传统的 main 方法没有什么区别。</li>
+<li><strong>All：</strong> 所有的指标，都算一遍，你可以设置成这个参数看下效果。</li>
+</ul>
+<p>我们拿吞吐量，看一下大体的执行结果：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Result <span class="string">&quot;test.org.openjdk.jmh.BenchmarkTest.shift&quot;</span>:</span><br><span class="line">  1060181.283 ±(99.9%) 84533.066 ops/ms [Average]</span><br><span class="line">  (min, avg, max) = (1037958.528, 1060181.283, 1087042.452), stdev = 21952.969</span><br><span class="line">  CI (99.9%): [975648.217, 1144714.350] (assumes normal distribution)</span><br></pre></td></tr></table></figure>
+
+<p>由于我们声明的时间单位是毫秒，本次 shift 方法的 QPS 就是 1060181.283 次&#x2F;毫秒。</p>
+<p>我们也可以看下最终的 QPS ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Benchmark             Mode  Cnt        Score       Error   Units</span><br><span class="line">BenchmarkTest.div    thrpt    5  1035585.045 ± 85157.739  ops/ms</span><br><span class="line">BenchmarkTest.shift  thrpt    5  1060181.283 ± 84533.066  ops/ms</span><br></pre></td></tr></table></figure>
+
+<p>由于是平均数，这里的 Error 值的是误差的意思（或者波动）。</p>
+<h2 id="OutputTimeUnit"><a href="#OutputTimeUnit" class="headerlink" title="@OutputTimeUnit"></a>@OutputTimeUnit</h2><p>样例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@OutputTimeUnit(TimeUnit.MILLISECONDS)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>value</code>： TimeUnit 类型</li>
+</ul>
+<p>输出示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Benchmark             Mode  Cnt        Score       Error   Units</span><br><span class="line">BenchmarkTest.div    thrpt    5  1035585.045 ± 85157.739  ops/ms</span><br><span class="line">BenchmarkTest.shift  thrpt    5  1060181.283 ± 84533.066  ops/ms</span><br></pre></td></tr></table></figure>
+
+<p>在衡量输出指标的时候，都有一个时间维度，它就是通过 <code>@OutputTimeUnit</code> 注解进行配置的。</p>
+<p>这个就比较简单了，它指明了基准测试结果的时间类型。 可用于类或者方法上。一般选择秒、毫秒、微秒，纳秒那是针对的速度非常快的方法。</p>
+<p><strong><code>OutputTimeUnit</code> 注解同样可以修饰类或者方法，通过更改时间级别，可以获取更加易读的结果。</strong></p>
+<h2 id="Warmup"><a href="#Warmup" class="headerlink" title="@Warmup"></a>@Warmup</h2><p>样例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Warmup(iterations = 3, time = 1, timeUnit = TimeUnit.SECONDS)</span></span><br></pre></td></tr></table></figure>
+
+<p>我们不止一次提到预热， <code>warmup</code> 这个注解，可以用在类或者方法上，进行预热配置。 可以看到，它有几个配置参数。</p>
+<ul>
+<li><code>timeUnit</code>：时间的单位，默认的单位是秒。</li>
+<li><code>iterations</code>：预热阶段的迭代数。</li>
+<li><code>time</code>：每次预热的时间。</li>
+<li><code>batchSize</code>：批处理大小，指定了每次操作调用几次方法。</li>
+</ul>
+<p>上面的注解，意思是对代码预热总计 3 秒（迭代 3 次，每次一秒） 。 预热过程的测试数据，是不记录测量结果的。</p>
+<p>输出示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Warmup Iteration   1: 770393.195 ops/ms</span><br><span class="line"># Warmup Iteration   2: 849304.864 ops/ms</span><br><span class="line"># Warmup Iteration   3: 1055148.024 ops/ms</span><br></pre></td></tr></table></figure>
+
+<h2 id="Measurement"><a href="#Measurement" class="headerlink" title="@Measurement"></a>@Measurement</h2><p>样例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>timeUnit</code>：时间的单位，默认的单位是秒。</li>
+<li><code>iterations</code>：预热阶段的迭代数。</li>
+<li><code>time</code>：每次预热的时间。</li>
+<li><code>batchSize</code>：批处理大小，指定了每次操作调用几次方法。</li>
+</ul>
+<p><code>Measurement</code> 和 <code>Warmup</code> 的参数是一样的。 但不同于预热，它指的是真正的迭代次数。</p>
+<p>输出示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Iteration   1: 1037958.528 ops/ms</span><br><span class="line">Iteration   2: 1054419.302 ops/ms</span><br><span class="line">Iteration   3: 1087042.452 ops/ms</span><br><span class="line">Iteration   4: 1042323.968 ops/ms</span><br><span class="line">Iteration   5: 1079162.167 ops/ms</span><br></pre></td></tr></table></figure>
+
+<p>虽然经过预热之后，代码都能表现出它的最优状态，但一般和实际应用场景还是有些出入的。 如果你的测试机器性能很高，或者你的测试机资源利用已经达到了极限，都会影响测试结果的数值。 通常情况下，需要在测试的时候，给机器充足的资源，保持一个稳定的环境。 在分析结果的时候，也更加关注不同实现方式的<strong>性能差异</strong>，而不是测试数据本身。</p>
+<h2 id="Fork"><a href="#Fork" class="headerlink" title="@Fork"></a>@Fork</h2><p>样例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Fork(1)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>value</code>： int 类型，表示使用几个进程测试</li>
+</ul>
+<p>fork 的值一般设置成 1，表示只使用一个进程进行测试；如果这个数字大于 1，表示会启用新的进程进行测试；但<strong>如果设置成 0，程序依然会运行，不过这样是在用户的 JVM 进程上运行的</strong>，可以看下下面的提示，但不推荐这么做。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># Fork: N/A, test runs in the host VM</span><br><span class="line"># *** WARNING: Non-forked runs may silently omit JVM options, mess up profilers, disable compiler hints, etc. ***</span><br><span class="line"># *** WARNING: Use non-forked runs only for debugging purposes, not for actual performance runs. ***</span><br></pre></td></tr></table></figure>
+
+<p>那么 fork 到底是在进程还是线程环境里运行呢？我们追踪一下 JMH 的源码，发现每个 fork 进程是单独运行在 <code>Proccess</code> 进程里的，这样就可以做完全的环境隔离，避免交叉影响。它的输入输出流，通过 Socket 连接的模式，发送到我们的执行终端。</p>
+<p><img src="/imgs/java-test-jmh/java-test-jmh-2.png" alt="java-test-jmh-2"></p>
+<p>在这里分享一个小技巧。其实 fork 注解有一个参数叫做 <code>jvmArgsAppend</code>，我们可以通过它传递一些 JVM 的参数，示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Fork(value = 3, jvmArgsAppend = &#123;&quot;-Xmx2048m&quot;, &quot;-server&quot;, &quot;-XX:+AggressiveOpts&quot;&#125;)</span></span><br></pre></td></tr></table></figure>
+
+<p>在平常的测试中，也可以适当增加 fork 数，来减少测试的误差。</p>
+<h2 id="Threads"><a href="#Threads" class="headerlink" title="@Threads"></a>@Threads</h2><p>样例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Fork(2)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>value</code>： int 类型，表示使用几个线程测试</li>
+</ul>
+<p><code>fork</code>是面向进程的，而<code>Threads</code>是面向线程的。指定了这个注解以后，将会开启并行测试。</p>
+<p>如果配置了 Threads.MAX ，则使用和处理机器核数相同的线程数。</p>
+<h2 id="Group"><a href="#Group" class="headerlink" title="@Group"></a>@Group</h2><p>样例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Group(&quot;group1&quot;)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>value</code>： String 类型，默认值： “group”</li>
+</ul>
+<p><code>@Group</code> 注解<strong>只能加在方法上</strong>，用来把测试方法进行归类。 如果你单个测试文件中方法比较多，或者需要将其归类，则可以使用这个注解。</p>
+<p>与之关联的 <code>@GroupThreads</code> 注解，会在这个归类的基础上，再进行一些线程方面的设置。</p>
+<p>输出示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"># Benchmark: test.org.openjdk.jmh.BenchmarkTest.group1</span><br></pre></td></tr></table></figure>
+
+<h2 id="State"><a href="#State" class="headerlink" title="@State"></a>@State</h2><p>样例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@State(Scope.Thread)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>value</code>： Scope 类型，指定了在类中变量的作用范围，有如下 3 种值：<ul>
+<li><strong>Benchmark</strong>： 表示变量的作用范围是某个基准测试类。</li>
+<li><strong>Thread</strong>： 每个线程一份副本，如果配置了 Threads 注解，则每个 Thread 都拥有一份变量，它们互不影响。</li>
+<li><strong>Group</strong>： 联系上面的 @Group 注解，在同一个 Group 里，将会共享同一个变量实例。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Setup-和-TearDown"><a href="#Setup-和-TearDown" class="headerlink" title="@Setup 和 @TearDown"></a>@Setup 和 @TearDown</h2><p>样例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Setup(Level.Trial)</span></span><br><span class="line"><span class="meta">@TearDown(Level.Trial)</span></span><br></pre></td></tr></table></figure>
+
+<p>这两个注解，同样有一个 Level 类型的 value 值，标明了方法运行的时机，它有三个取值。</p>
+<ul>
+<li><code>value</code>： Level 类型<ul>
+<li><strong>Trial</strong>： 默认的级别。 也就是 Benchmark 级别。</li>
+<li><strong>Iteration</strong>： 每次迭代都会运行。</li>
+<li><strong>Invocation</strong>： 每次方法调用都会运行，这个是粒度最细的。</li>
+</ul>
+</li>
+</ul>
+<p>和单元测试框架 JUnit 类似， <code>@Setup</code> 用于基准测试前的初始化动作， <code>@TearDown</code> 用于基准测试后的动作，来做一些全局的配置。</p>
+<h2 id="Param"><a href="#Param" class="headerlink" title="@Param"></a>@Param</h2><p>样例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Param(&#123;&quot;1&quot;, &quot;31&quot;&#125;)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>value</code>： String[] 类型</li>
+</ul>
+<p><code>@Param</code> 注解只能修饰字段，用来测试不同的参数，对程序性能的影响。配合 <code>@State</code> 注解，可以同时制定这些参数的执行范围。</p>
+<p>代码样例如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> test.org.openjdk.jmh;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.annotations.*;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.runner.Runner;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.runner.RunnerException;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.runner.options.Options;</span><br><span class="line"><span class="keyword">import</span> org.openjdk.jmh.runner.options.OptionsBuilder;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.math.BigInteger;</span><br><span class="line"><span class="keyword">import</span> java.util.concurrent.TimeUnit;</span><br><span class="line"></span><br><span class="line"><span class="meta">@BenchmarkMode(Mode.AverageTime)</span></span><br><span class="line"><span class="meta">@OutputTimeUnit(TimeUnit.NANOSECONDS)</span></span><br><span class="line"><span class="meta">@Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)</span></span><br><span class="line"><span class="meta">@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)</span></span><br><span class="line"><span class="meta">@Fork(1)</span></span><br><span class="line"><span class="meta">@State(Scope.Benchmark)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">BenchmarkParamTest</span> &#123;</span><br><span class="line">    <span class="meta">@Param(&#123;&quot;1&quot;, &quot;31&quot;&#125;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> arg;</span><br><span class="line">    <span class="meta">@Param(&#123;&quot;0&quot;, &quot;1&quot;, &quot;4&quot;&#125;)</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> certainty;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Benchmark</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">bench</span><span class="params">()</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> BigInteger.valueOf(arg).isProbablePrime(certainty);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> RunnerException &#123;</span><br><span class="line">        <span class="type">Options</span> <span class="variable">opt</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">OptionsBuilder</span>()</span><br><span class="line">                .include(BenchmarkParamTest.class.getSimpleName())</span><br><span class="line"><span class="comment">//                .param(&quot;arg&quot;, &quot;41&quot;, &quot;42&quot;) // Use this to selectively constrain/override parameters</span></span><br><span class="line">                .build();</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">Runner</span>(opt).run();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>值得注意的是，如果设置了非常多的参数，这些参数将执行多次，通常会运行很长时间。比如参数 1 有 M 个，参数 2 有 N 个，那么总共要执行 <code>M * N</code> 次。</p>
+<p>执行结果示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">Benchmark                 (arg)  (certainty)  Mode  Cnt    Score    Error  Units</span><br><span class="line">BenchmarkParamTest.bench      1            0  avgt    5    3.320 ±  0.068  ns/op</span><br><span class="line">BenchmarkParamTest.bench      1            1  avgt    5    5.166 ±  0.326  ns/op</span><br><span class="line">BenchmarkParamTest.bench      1            4  avgt    5    5.092 ±  0.064  ns/op</span><br><span class="line">BenchmarkParamTest.bench     31            0  avgt    5    5.769 ±  0.501  ns/op</span><br><span class="line">BenchmarkParamTest.bench     31            1  avgt    5  517.943 ± 54.459  ns/op</span><br><span class="line">BenchmarkParamTest.bench     31            4  avgt    5  964.887 ± 43.358  ns/op</span><br></pre></td></tr></table></figure>
+
+<h2 id="CompilerControl"><a href="#CompilerControl" class="headerlink" title="@CompilerControl"></a>@CompilerControl</h2><p>样例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@CompilerControl(CompilerControl.Mode.INLINE)</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>value</code>： CompilerControl.Mode 类型</li>
+</ul>
+<p>这可以说是一个非常有用的功能了。</p>
+<p>Java 中方法调用的开销是比较大的，尤其是在调用量非常大的情况下。拿简单的 getter&#x2F;setter 方法来说，这种方法在 Java 代码中大量存在。我们在访问的时候，就需要创建相应的栈帧，访问到需要的字段后，再弹出栈帧，恢复原程序的执行。</p>
+<p>如果能够把这些对象的访问和操作，纳入到目标方法的调用范围之内，就少了一次方法调用，速度就能得到提升，这就是方法内联的概念。 代码经过 JIT 编译之后，效率会有大的提升，如图所示：</p>
+<p><img src="/imgs/java-test-jmh/java-test-jmh-3.png" alt="java-test-jmh-3"></p>
+<p>这个注解可以用在类或者方法上，能够控制方法的编译行为，常用的有 3 种模式。</p>
+<ul>
+<li><strong>INLINE</strong> ： 强制使用内联</li>
+<li><strong>DONT_INLINE</strong> ： 禁止使用内联</li>
+<li><strong>EXCLUDE</strong> ： 禁止方法编译</li>
+</ul>
+<p>更多模式见源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * Compilation mode.</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">enum</span> <span class="title class_">Mode</span> &#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Insert the breakpoint into the generated compiled code.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    BREAK(<span class="string">&quot;break&quot;</span>),</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Print the method and it&#x27;s profile.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    PRINT(<span class="string">&quot;print&quot;</span>),</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Exclude the method from the compilation.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    EXCLUDE(<span class="string">&quot;exclude&quot;</span>),</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Force inline.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    INLINE(<span class="string">&quot;inline&quot;</span>),</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Force skip inline.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    DONT_INLINE(<span class="string">&quot;dontinline&quot;</span>),</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * Compile only this method, and nothing else.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    COMPILE_ONLY(<span class="string">&quot;compileonly&quot;</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="将结果图形化"><a href="#将结果图形化" class="headerlink" title="将结果图形化"></a>将结果图形化</h1><p>使用 JMH 测试的结果，可以二次加工，进行图形化展示。结合图表数据，更加直观。通过运行时，指定输出的格式文件，即可获得相应格式的性能测试结果。</p>
+<p>比如下面这行代码，就是指定输出 JSON 格式的数据。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Options</span> <span class="variable">opts</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">OptionsBuilder</span>()</span><br><span class="line">        .resultFormat(ResultFormatType.JSON)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
+
+<p>JMH 支持以下 5 种格式的结果：</p>
+<ul>
+<li><strong>TEXT</strong> 导出文本文件。</li>
+<li><strong>CSV</strong> 导出 csv 格式文件。</li>
+<li><strong>SCSV</strong> 导出 scsv 等格式的文件。</li>
+<li><strong>JSON</strong> 导出成 json 文件。</li>
+<li><strong>LATEX</strong> 导出到 latex，一种基于 ΤΕΧ 的排版系统。</li>
+</ul>
+<p>一般来说，我们导出成 CSV 文件，直接在 Excel 中操作，生成相应的图形就可以了。</p>
+<p>另外介绍几个可以做图的工具：</p>
+<ol>
+<li><strong><a target="_blank" rel="noopener" href="https://jmh.morethan.io/">JMH Visualizer</a></strong><br> 通过导出 json 文件，上传之后，可得到简单的统计结果。 个人认为它的展示方式并不是很好。</li>
+<li><strong><a target="_blank" rel="noopener" href="https://deepoove.com/jmh-visual-chart/">JMH Visual Chart</a></strong><br> 相比较而言，这个工具就相对直观一些。</li>
+<li><strong><a target="_blank" rel="noopener" href="https://www.meta-chart.com/">meta-chart</a></strong><br> 一个通用的在线图表生成器。</li>
+</ol>
+<p>像 Jenkins 等一些持续集成工具，也提供了相应的插件，用来直接显示这些测试结果。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/7031008727645831176">顶级 Java 才懂的，基准测试 JMH！</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/test/" rel="tag"># test</a>
+              <a href="/tags/jmh/" rel="tag"># jmh</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2022/06/22/distributed-algorithm/" rel="prev" title="分布式算法">
+                  <i class="fa fa-angle-left"></i> 分布式算法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2023/02/08/serialize-compare/" rel="next" title="序列化框架对比">
+                  序列化框架对比 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Apomelo</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.19.1/algoliasearch-lite.umd.js" integrity="sha256-qzlNbRtZWHoUV5I2mI2t9QR7oYXlS9oNctX+0pECXI0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.56.8/instantsearch.production.min.js" integrity="sha256-xUys6KCuRGBxFaRaYZlWulRUjY48XFv6/Q2s0mb1dmc=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+
+</body>
+</html>

@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="简介分散式算法（英语：Distributed algorithm），一种算法类型。为分散式计算而设计，它运行在一群相互连结的处理器所构成的计算机硬件平台上。分散式算法以并行方式执行，是平行算法下的子类别。因为同时运行在不同处理器上，对算法其他部分运行情况的资讯所知有限，使得这类型的算法较为困难。">
 <meta property="og:type" content="article">
@@ -45,7 +45,7 @@
 <meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-paxos-8.jpg">
 <meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-1.jpg">
 <meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-2.jpg">
-<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-3">
+<meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-3.jpg">
 <meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-4.jpg">
 <meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-5.jpg">
 <meta property="og:image" content="https://apomelo.cc/imgs/distributed-algorithm/distributed-algorithm-raft-6.jpg">
@@ -188,18 +188,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-count">59</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -465,7 +465,7 @@
 <li>收到了 Leader 的消息，表示有其它服务器已经抢先当选了 Leader；</li>
 <li>没有服务器赢得多数的选票，Leader 选举失败，等待选举时间超时后发起下一次选举。</li>
 </ul>
-<p><img src="/imgs/distributed-algorithm/distributed-algorithm-raft-3" alt="distributed-algorithm-raft-3"></p>
+<p><img src="/imgs/distributed-algorithm/distributed-algorithm-raft-3.jpg" alt="distributed-algorithm-raft-3"></p>
 <p>选举出 Leader 后，Leader 通过定期向所有 Followers 发送心跳信息维持其统治。若 Follower 一段时间未收到 Leader 的心跳则认为 Leader 可能已经挂了，再次发起 Leader 选举过程。</p>
 <p>Raft 保证选举出的 Leader 上一定具有最新的已提交的日志，这一点将在四、安全性中说明。</p>
 <h3 id="日志同步"><a href="#日志同步" class="headerlink" title="日志同步"></a>日志同步</h3><p>Leader 选出后，就开始接收客户端的请求。Leader 把请求作为日志条目(Log entries)加入到它的日志中，然后并行的向其他服务器发起 AppendEntries RPC (RPC 细节参见八、Raft 算法总结)复制日志条目。当这条日志被复制到大多数服务器上，Leader 将这条日志应用到它的状态机并向客户端返回执行结果。</p>
@@ -735,12 +735,12 @@
           <div class="post-nav">
             <div class="post-nav-item">
                 <a href="/posts/2022/02/20/java-lock/" rel="prev" title="java锁">
-                  <i class="fa fa-chevron-left"></i> java锁
+                  <i class="fa fa-angle-left"></i> java锁
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/posts/2023/02/08/serialize-compare/" rel="next" title="序列化框架对比">
-                  序列化框架对比 <i class="fa fa-chevron-right"></i>
+                <a href="/posts/2022/10/07/java-test-jmh/" rel="next" title="使用 JMH 做 Benchmark 基准测试">
+                  使用 JMH 做 Benchmark 基准测试 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -804,11 +804,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.18.0/algoliasearch-lite.umd.js" integrity="sha256-V3GHVlMSAsogT3wL0OY/l4d3fRLa56gNzlnzdIMBIWg=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.56.3/instantsearch.production.min.js" integrity="sha256-mWvjWAfZylKMOg+S3HLq+wng1HHRnl2Idr2r8NsUzIU=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.19.1/algoliasearch-lite.umd.js" integrity="sha256-qzlNbRtZWHoUV5I2mI2t9QR7oYXlS9oNctX+0pECXI0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.56.8/instantsearch.production.min.js" integrity="sha256-xUys6KCuRGBxFaRaYZlWulRUjY48XFv6/Q2s0mb1dmc=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.2.3/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
 
 

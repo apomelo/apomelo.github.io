@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="JCTools 简介早在 96 年就有论文提出了无锁队列的概念，再到后来 Disruptor，高性能已得到生产的验证。此处介绍的 Jctools 中的高性能队列，其性能丝毫不输于 Disruptor。 JCTools (Java Concurrency Tools) 提供了一系列非阻塞并发数据结构（标准 Java 中缺失的），当存在线程争抢的时候，非阻塞并发数据结构比阻塞并发数据结构能提供更好的性">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JCTools - 增强的并发工具">
+<meta property="og:url" content="https://apomelo.cc/posts/2023/08/02/queue-jctools/index.html">
+<meta property="og:site_name" content="Apomelo - 追逐">
+<meta property="og:description" content="JCTools 简介早在 96 年就有论文提出了无锁队列的概念，再到后来 Disruptor，高性能已得到生产的验证。此处介绍的 Jctools 中的高性能队列，其性能丝毫不输于 Disruptor。 JCTools (Java Concurrency Tools) 提供了一系列非阻塞并发数据结构（标准 Java 中缺失的），当存在线程争抢的时候，非阻塞并发数据结构比阻塞并发数据结构能提供更好的性">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://apomelo.cc/imgs/queue-jctools/queue-jctools-MpscArrayQueue-1.png">
+<meta property="article:published_time" content="2023-08-01T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-08-01T16:00:00.000Z">
+<meta property="article:author" content="Apomelo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="queue">
+<meta property="article:tag" content="jctools">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://apomelo.cc/imgs/queue-jctools/queue-jctools-MpscArrayQueue-1.png">
+
+
+<link rel="canonical" href="https://apomelo.cc/posts/2023/08/02/queue-jctools/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.cc/posts/2023/08/02/queue-jctools/","path":"posts/2023/08/02/queue-jctools/","title":"JCTools - 增强的并发工具"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>JCTools - 增强的并发工具 | Apomelo - 追逐</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container"></div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container">
+  <div class="algolia-stats"><hr></div>
+  <div class="algolia-hits"></div>
+  <div class="algolia-pagination"></div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#JCTools-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">JCTools 简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E9%98%BB%E5%A1%9E-Map"><span class="nav-number">1.1.</span> <span class="nav-text">非阻塞 Map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9D%9E%E9%98%BB%E5%A1%9E-Queue"><span class="nav-number">1.2.</span> <span class="nav-text">非阻塞 Queue</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Mpsc-Queue"><span class="nav-number">2.</span> <span class="nav-text">Mpsc Queue</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#MpscArrayQueue"><span class="nav-number">2.1.</span> <span class="nav-text">MpscArrayQueue</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MpscUnboundedArrayQueue"><span class="nav-number">2.2.</span> <span class="nav-text">MpscUnboundedArrayQueue</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">2.2.1.</span> <span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%85%A5%E9%98%9F-offer-%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">2.2.1.1.</span> <span class="nav-text">入队 offer 的源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#offerSlowPath"><span class="nav-number">2.2.1.1.1.</span> <span class="nav-text">offerSlowPath()</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#resize"><span class="nav-number">2.2.1.1.2.</span> <span class="nav-text">resize()</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%87%BA%E9%98%9F-poll-%E7%9A%84%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-number">2.2.1.2.</span> <span class="nav-text">出队 poll 的源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#nextBuffer"><span class="nav-number">2.2.1.2.1.</span> <span class="nav-text">nextBuffer()</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MpscArrayQueue-%E7%9A%84%E4%BC%98%E7%82%B9%E6%80%BB%E7%BB%93"><span class="nav-number">2.3.</span> <span class="nav-text">MpscArrayQueue 的优点总结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ConcurrentAutoTable"><span class="nav-number">3.</span> <span class="nav-text">ConcurrentAutoTable</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81"><span class="nav-number">3.1.</span> <span class="nav-text">源码</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">34</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">16</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">59</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.cc/posts/2023/08/02/queue-jctools/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="JCTools - 增强的并发工具 | Apomelo - 追逐">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          JCTools - 增强的并发工具
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-08-02 00:00:00" itemprop="dateCreated datePublished" datetime="2023-08-02T00:00:00+08:00">2023-08-02</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/queue/" itemprop="url" rel="index"><span itemprop="name">queue</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2023/08/02/queue-jctools/" class="post-meta-item leancloud_visitors" data-flag-title="JCTools - 增强的并发工具" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="JCTools-简介"><a href="#JCTools-简介" class="headerlink" title="JCTools 简介"></a>JCTools 简介</h1><p>早在 96 年就有论文提出了无锁队列的概念，再到后来 Disruptor，高性能已得到生产的验证。此处介绍的 Jctools 中的高性能队列，其性能丝毫不输于 Disruptor。</p>
+<p>JCTools (Java Concurrency Tools) 提供了一系列非阻塞并发数据结构（标准 Java 中缺失的），当存在线程争抢的时候，非阻塞并发数据结构比阻塞并发数据结构能提供更好的性能。</p>
+<p>JCTools 是一个开源工具包，在 <a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=Apache&spm=1001.2101.3001.7020">Apache</a> License 2.0 下发布，并在 Netty、Rxjava 等诸多框架中被广泛使用。</p>
+<p>JCTools 的开源 Github 仓库：<a target="_blank" rel="noopener" href="https://github.com/JCTools/JCTools">https://github.com/JCTools/JCTools</a></p>
+<p>在 Maven 中引入 JCtools jar 包就能使用 JCTools 了：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/org.jctools/jctools-core --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.jctools<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jctools-core<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>4.0.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>Netty 中直接引入了 JCTools 的 Mpsc Queue，Caffeine 中引入了 JCTools 的 Mpsc Queue，复制了其中的代码，然后简单改了下。</p>
+<span id="more"></span>
+
+<p>JCTools 中主要提供了 Map 以及 Queue 的非阻塞并发数据结构</p>
+<h2 id="非阻塞-Map"><a href="#非阻塞-Map" class="headerlink" title="非阻塞 Map"></a>非阻塞 Map</h2><ul>
+<li>ConcurrentAutoTable（后面几个 map&#x2F;set 结构的基础）</li>
+<li>NonBlockingHashMap</li>
+<li>NonBlockingHashMapLong</li>
+<li>NonBlockingHashSet</li>
+<li>NonBlockingIdentityHashMap</li>
+<li>NonBlockingSetInt</li>
+</ul>
+<p>NonBlockingHashMap 是对 ConcurrentHashMap 的增强，对多 CPU 的支持以及高并发更新提供更好的性能。</p>
+<p>NonBlockingHashMapLong 是 key 为 Long 型的 NonBlockingHashMap。</p>
+<p>NonBlockingHashSet 是对 NonBlockingHashMap 的简单包装以支持 set 的接口。</p>
+<p>NonBlockingIdentityHashMap 是从 NonBlockingHashMap 改造来的，使用 System.identityHashCode() 来计算哈希。</p>
+<p>NonBlockingSetInt 是一个使用 CAS 的简单的 bit-vector。</p>
+<h2 id="非阻塞-Queue"><a href="#非阻塞-Queue" class="headerlink" title="非阻塞 Queue"></a>非阻塞 Queue</h2><p>JCTools 提供的非阻塞队列分为 4 类，可以根据不同的应用场景选择使用：</p>
+<ul>
+<li>SPSC-单一生产者单一消费者（有界和无界）</li>
+<li>MPSC-多生产者单一消费者（有界和无界）</li>
+<li>SPMC-单生产者多消费者（有界）</li>
+<li>MPMC-多生产者多消费者（有界）</li>
+</ul>
+<p>这里解释一下 MSPC 的含义，如下：</p>
+<ul>
+<li>M：Multiple，多个的</li>
+<li>S：Single，单个的</li>
+<li>P：Producer，生产者</li>
+<li>C：Consumer，消费者</li>
+</ul>
+<p>“生产者”和“消费者”是指“生产线程”和“消费线程”。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// spsc-有界/无界队列</span></span><br><span class="line">Queue&lt;String&gt; spscArrayQueue = <span class="keyword">new</span> <span class="title class_">SpscArrayQueue</span>(<span class="number">16</span>);</span><br><span class="line">Queue&lt;String&gt; spscUnboundedArrayQueue = <span class="keyword">new</span> <span class="title class_">SpscUnboundedArrayQueue</span>(<span class="number">2</span>);</span><br><span class="line"><span class="comment">// spmc-有界队列</span></span><br><span class="line">Queue&lt;String&gt; spmcArrayQueue = <span class="keyword">new</span> <span class="title class_">SpmcArrayQueue</span>&lt;&gt;(<span class="number">16</span>);</span><br><span class="line"><span class="comment">// mpsc-有界/无界队列</span></span><br><span class="line">Queue&lt;String&gt; mpscArrayQueue = <span class="keyword">new</span> <span class="title class_">MpscArrayQueue</span>&lt;&gt;(<span class="number">16</span>);</span><br><span class="line">Queue&lt;String&gt; mpscChunkedArrayQueue = <span class="keyword">new</span> <span class="title class_">MpscChunkedArrayQueue</span>&lt;&gt;(<span class="number">1024</span>, <span class="number">8</span> * <span class="number">1024</span>);</span><br><span class="line">Queue&lt;String&gt; mpscUnboundedArrayQueue = <span class="keyword">new</span> <span class="title class_">MpscUnboundedArrayQueue</span>&lt;&gt;(<span class="number">2</span>);</span><br><span class="line"><span class="comment">// mpmc-有界队列</span></span><br><span class="line">Queue&lt;String&gt; mpmcArrayQueue = <span class="keyword">new</span> <span class="title class_">MpmcArrayQueue</span>&lt;&gt;(<span class="number">16</span>);</span><br></pre></td></tr></table></figure>
+
+<p>JCTools 是一款对 jdk 并发数据结构进行增强的并发工具，主要提供了 map 以及 queue 的增强数据结构。原来 netty 还是自己写的 MpscLinkedQueueNode，后来新版本就换成使用 JCTools 的并发队列了。</p>
+<h1 id="Mpsc-Queue"><a href="#Mpsc-Queue" class="headerlink" title="Mpsc Queue"></a>Mpsc Queue</h1><p>多生产者单消费者的使用场景，最佳的案例有：</p>
+<ul>
+<li>Netty Reactor 线程中任务队列 taskQueue 必须满足多个生产者可以同时提交任务</li>
+<li>Caffeine 中多个生产者业务线程，去进行缓存写入操作， 而只有单个的维护线程，基于 W-TinyLRU 进行访问记录的维护</li>
+</ul>
+<p>所以 JCTools 提供的 Mpsc Queue 非常适合:</p>
+<ul>
+<li>Netty 异步任务场景</li>
+<li>Caffeine 的写入操作访问记录维护场景</li>
+</ul>
+<p>Mpsc Queue 有多种的实现类，例如 MpscArrayQueue, MpscUnboundedArrayQueue, MpscChunkedArrayQueue 等。</p>
+<h2 id="MpscArrayQueue"><a href="#MpscArrayQueue" class="headerlink" title="MpscArrayQueue"></a>MpscArrayQueue</h2><p>MpscArrayQueue 的继承关系如下图：</p>
+<p><img src="/imgs/queue-jctools/queue-jctools-MpscArrayQueue-1.png" alt="queue-jctools-MpscArrayQueue-1"></p>
+<p><strong>从上图我们可以看到每个有包含属性的类后面都会被 MpscXxxPad 类隔开</strong></p>
+<p>这是 jctools 中用到的缓存行填充技术</p>
+<p>缓存行填充解决了伪共享（False Sharing）问题，提高多线程并发访问共享变量时的性能。</p>
+<p>在现代计算机系统中，CPU 缓存以缓存行（Cache Line）为单位进行数据加载和存储。缓存行是一个固定大小的数据块，在 x86 架构中通常为 64 字节。当一个线程访问一个共享变量时，它会加载所在缓存行的数据到 CPU 缓存中。如果多个线程同时访问位于同一缓存行的不同变量，会导致伪共享问题。</p>
+<p>伪共享问题的产生是由于多个线程的缓存行之间存在数据竞争，即它们共享同一缓存行，但实际上它们操作的变量是不同的。由于缓存一致性协议的限制，一个线程对共享变量的修改会导致整个缓存行的数据无效，从而迫使其他线程重新加载整个缓存行的数据，这会导致严重的性能下降。</p>
+<p>缓存行填充的作用是通过在变量之间插入空白字段，使得共享变量被放置在不同的缓存行中，从而避免了多个线程之间对同一缓存行的竞争。这样，即使多个线程同时访问不同的共享变量，它们的操作不会影响彼此，也不会导致缓存行失效，从而显著提高了并发访问性能。</p>
+<p><strong>缓存行填充详细原因及原理:</strong> <a href="/posts/2019/04/18/java-jvm/#对齐填充的应用">对齐填充的应用</a></p>
+<h2 id="MpscUnboundedArrayQueue"><a href="#MpscUnboundedArrayQueue" class="headerlink" title="MpscUnboundedArrayQueue"></a>MpscUnboundedArrayQueue</h2><p>Caffeine 和 Netty，所使用的并不是原始的 MpscArrayQueue ，而是其高性能的子类 MpscGrowableArrayQueue ，来看看其数据结构。</p>
+<p>MpscGrowableArrayQueue 是基于数组 + 链表的复合结构。</p>
+<p>基于数组 + 链表的复合结构的优势：</p>
+<ol>
+<li>不会像链表那样分配过多的 Node，吞吐量比传统的链表高</li>
+<li>扩容的时候，也不存在数组复制，扩容的速度，也比传统的数组快</li>
+</ol>
+<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><h4 id="入队-offer-的源码分析"><a href="#入队-offer-的源码分析" class="headerlink" title="入队 offer 的源码分析"></a>入队 offer 的源码分析</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">BaseMpscLinkedArrayQueue</span>&lt;E&gt; <span class="keyword">extends</span> <span class="title class_">BaseMpscLinkedArrayQueueColdProducerFields</span>&lt;E&gt;</span><br><span class="line">    <span class="keyword">implements</span> <span class="title class_">MessagePassingQueue</span>&lt;E&gt;, QueueProgressIndicators</span><br><span class="line">&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">offer</span><span class="params">(<span class="keyword">final</span> E e)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="literal">null</span> == e)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">NullPointerException</span>();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="type">long</span> mask;</span><br><span class="line">        E[] buffer;    <span class="comment">// 生产者指向的数组</span></span><br><span class="line">        <span class="type">long</span> pIndex;   <span class="comment">// 生产索引</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (<span class="literal">true</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 获取生产者索引最大限制</span></span><br><span class="line">            <span class="type">long</span> <span class="variable">producerLimit</span> <span class="operator">=</span> lvProducerLimit();</span><br><span class="line">            <span class="comment">// 获取生产者索引</span></span><br><span class="line">            pIndex = lvProducerIndex();</span><br><span class="line">            <span class="comment">// 生产索引以 2 为步长递增，</span></span><br><span class="line">            <span class="comment">// 第 0 位标识为 resize ，所以非扩容场景，不会是奇数，</span></span><br><span class="line">            <span class="comment">// 扩容的时候，会在 offerSlowPath() 中扩容线程会将其设为奇数</span></span><br><span class="line">            <span class="comment">// lower bit is indicative of resize, if we see it we spin until it&#x27;s cleared</span></span><br><span class="line">            <span class="keyword">if</span> ((pIndex &amp; <span class="number">1</span>) == <span class="number">1</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 奇数代表正在扩容，自旋，等待扩容完成</span></span><br><span class="line">                <span class="keyword">continue</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// pIndex is even (lower bit is 0) -&gt; actual index is (pIndex &gt;&gt; 1)</span></span><br><span class="line">            <span class="comment">// pIndex 是偶数, 实际的索引值需要除以 2</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">// mask/buffer may get changed by resizing -&gt; only use for array access after successful CAS.</span></span><br><span class="line">            mask = <span class="built_in">this</span>.producerMask;</span><br><span class="line">            buffer = <span class="built_in">this</span>.producerBuffer;</span><br><span class="line">            <span class="comment">// a successful CAS ties the ordering, lv(pIndex) - [mask/buffer] -&gt; cas(pIndex)</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">// assumption behind this optimization is that queue is almost always empty or near empty</span></span><br><span class="line">            <span class="comment">// 阈值 producerLimit 小于等于生产者指针位置 pIndex, 需要扩容</span></span><br><span class="line">            <span class="keyword">if</span> (producerLimit &lt;= pIndex)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 通过 offerSlowPath 返回状态值，来查看怎么来处理这个待添加的元素</span></span><br><span class="line">                <span class="type">int</span> <span class="variable">result</span> <span class="operator">=</span> offerSlowPath(mask, pIndex, producerLimit);</span><br><span class="line">                <span class="keyword">switch</span> (result)</span><br><span class="line">                &#123;</span><br><span class="line">                    <span class="comment">// producerLimit 虽然达到了 limit,</span></span><br><span class="line">                    <span class="comment">// 但是当前数组已经被消费了部分数据，暂时不会扩容，会使用已被消费的槽位</span></span><br><span class="line">                    <span class="keyword">case</span> CONTINUE_TO_P_INDEX_CAS:</span><br><span class="line">                        <span class="keyword">break</span>;</span><br><span class="line">                    <span class="comment">// 可能由于并发原因导致 CAS 失败，那么则再次重新尝试添加元素</span></span><br><span class="line">                    <span class="keyword">case</span> RETRY:</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    <span class="comment">// 队列已满，直接返回false操作</span></span><br><span class="line">                    <span class="keyword">case</span> QUEUE_FULL:</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                    <span class="comment">// 队列需要扩容操作</span></span><br><span class="line">                    <span class="keyword">case</span> QUEUE_RESIZE:</span><br><span class="line">                        <span class="comment">// 对队列进行直接扩容操作</span></span><br><span class="line">                        resize(mask, buffer, pIndex, e, <span class="literal">null</span>);</span><br><span class="line">                        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">// 运行到这里，阈值 producerLimit 一定大于生产者指针位置 pIndex</span></span><br><span class="line">            <span class="comment">// 直接通过 CAS 操作对 pIndex 做加 2 处理</span></span><br><span class="line">            <span class="keyword">if</span> (casProducerIndex(pIndex, pIndex + <span class="number">2</span>))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 有序写入数组元素</span></span><br><span class="line">        <span class="comment">// INDEX visible before ELEMENT</span></span><br><span class="line">        <span class="keyword">final</span> <span class="type">long</span> <span class="variable">offset</span> <span class="operator">=</span> modifiedCalcCircularRefElementOffset(pIndex, mask);</span><br><span class="line">        <span class="comment">// 将 buffer 数组的指定位置替换为 e,</span></span><br><span class="line">        <span class="comment">// 不是根据下标来设置的，是根据槽位的地址偏移量 offset, UNSAFE 操作</span></span><br><span class="line">        soRefElement(buffer, offset, e); <span class="comment">// release element e</span></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从上面源码可以看出 offer 是有序写入数组元素</p>
+<p>offer 写入的时候，jctool 根据 pIndex 进行位运算计算得到数组对应的下标，然后通过 soRefElement 方法将数据写入到数组中</p>
+<p>MpscUnboundedArrayQueue 的 <code>offer(final E e)</code> 是调用的父类 BaseMpscLinkedArrayQueue 的 <code>offer(final E e)</code> 方法</p>
+<h5 id="offerSlowPath"><a href="#offerSlowPath" class="headerlink" title="offerSlowPath()"></a>offerSlowPath()</h5><p><code>offerSlowPath()</code> 会告诉线程队列是满了，还是需要扩容，还是需要自旋重试。</p>
+<p>总之，这个一条慢路径，所以叫做 slow path。</p>
+<p>虽然 producerIndex 达到了 producerLimit ，但不代表队列就非得扩容。</p>
+<p>如果消费者已经消费了部分生产者指向的数组元素，就意味这当前数组还是有槽位可以继续用的，暂时不用扩容。</p>
+<p>下面是 <code>offerSlowPath()</code> 方法源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">BaseMpscLinkedArrayQueue</span>&lt;E&gt; <span class="keyword">extends</span> <span class="title class_">BaseMpscLinkedArrayQueueColdProducerFields</span>&lt;E&gt;</span><br><span class="line">    <span class="keyword">implements</span> <span class="title class_">MessagePassingQueue</span>&lt;E&gt;, QueueProgressIndicators</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * We do not inline resize into this method because we do not resize on fill.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="type">int</span> <span class="title function_">offerSlowPath</span><span class="params">(<span class="type">long</span> mask, <span class="type">long</span> pIndex, <span class="type">long</span> producerLimit)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 消费者索引</span></span><br><span class="line">        <span class="keyword">final</span> <span class="type">long</span> <span class="variable">cIndex</span> <span class="operator">=</span> lvConsumerIndex();</span><br><span class="line">        <span class="comment">// 数组缓冲的容量，(长度-1) * 2</span></span><br><span class="line">        <span class="type">long</span> <span class="variable">bufferCapacity</span> <span class="operator">=</span> getCurrentBufferCapacity(mask);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 消费索引 + 当前数组的容量 &gt; 生产索引，代表当前数组已有部分元素被消费了，</span></span><br><span class="line">        <span class="comment">// 所以不会扩容，会使用已被消费的槽位。</span></span><br><span class="line">        <span class="keyword">if</span> (cIndex + bufferCapacity &gt; pIndex)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> (!casProducerLimit(producerLimit, cIndex + bufferCapacity))</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// CAS失败，自旋重试</span></span><br><span class="line">                <span class="comment">// retry from top</span></span><br><span class="line">                <span class="keyword">return</span> RETRY;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">                <span class="comment">// 重试用 CAS 方式修改生产索引</span></span><br><span class="line">                <span class="comment">// continue to pIndex CAS</span></span><br><span class="line">                <span class="keyword">return</span> CONTINUE_TO_P_INDEX_CAS;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 根据生产者和消费者索引判断 Queue 是否已满，无界队列永不会满</span></span><br><span class="line">        <span class="comment">// full and cannot grow</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (availableInQueue(pIndex, cIndex) &lt;= <span class="number">0</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// offer should return false;</span></span><br><span class="line">            <span class="keyword">return</span> QUEUE_FULL;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">// 用 CAS 的方式将 producerIndex 加 1, 奇数代表正在 resize</span></span><br><span class="line">        <span class="comment">// grab index for resize -&gt; set lower bit</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (casProducerIndex(pIndex, pIndex + <span class="number">1</span>))</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// trigger a resize</span></span><br><span class="line">            <span class="keyword">return</span> QUEUE_RESIZE;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// failed resize attempt, retry from top</span></span><br><span class="line">            <span class="keyword">return</span> RETRY;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>如果需要扩容，线程会 CAS 操作将 producerIndex 改为奇数，让其它线程能感知到队列正在扩容，要生产数据的线程先自旋，等待扩容完成再继续操作。</p>
+<p><code>offer()</code> 过程中，通过 CAS 抢槽位，CAS 失败的线程自旋重试。</p>
+<p>如果遇到队列需要扩容，则将 producerIndex 设为奇数，其他线程自旋等待，一直等到扩容完成，扩容后再设为偶数，通知其它线程继续生产。</p>
+<h5 id="resize"><a href="#resize" class="headerlink" title="resize()"></a>resize()</h5><p><code>resize()</code> 是扩容的核心方法，</p>
+<p>它首先会创建一个相同长度的新数组，将 producerBuffer 指向新数组，然后将元素 e 放到新数组中，</p>
+<p>旧元素的最后一个元素指向新数组，形成链表。</p>
+<p>还会将旧元素的槽位填充 <code>JUMP</code> 元素，代表队列扩容了。</p>
+<p>下面是 <code>resize()</code> 方法源码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">BaseMpscLinkedArrayQueue</span>&lt;E&gt; <span class="keyword">extends</span> <span class="title class_">BaseMpscLinkedArrayQueueColdProducerFields</span>&lt;E&gt;</span><br><span class="line">    <span class="keyword">implements</span> <span class="title class_">MessagePassingQueue</span>&lt;E&gt;, QueueProgressIndicators</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 扩容:</span></span><br><span class="line"><span class="comment">     * 新建一个 E[], 将 oldBuffer 和 newBuffer 建立连接。</span></span><br><span class="line"><span class="comment">     * 将 producerBuffer 指向新数组，然后将元素 e 放到新数组中，</span></span><br><span class="line"><span class="comment">     * 旧元素的最后一个元素指向新数组，形成链表。</span></span><br><span class="line"><span class="comment">     * 还会将旧元素的槽位填充 JUMP 元素，代表队列扩容了。</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">resize</span><span class="params">(<span class="type">long</span> oldMask, E[] oldBuffer, <span class="type">long</span> pIndex, E e, Supplier&lt;E&gt; s)</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">assert</span> (e != <span class="literal">null</span> &amp;&amp; s == <span class="literal">null</span>) || (e == <span class="literal">null</span> || s != <span class="literal">null</span>);</span><br><span class="line">        <span class="comment">// 下一个 Buffer 的长度, MpscQueue 会构建一个相同长度的 Buffer</span></span><br><span class="line">        <span class="type">int</span> <span class="variable">newBufferLength</span> <span class="operator">=</span> getNextBufferSize(oldBuffer);</span><br><span class="line">        <span class="keyword">final</span> E[] newBuffer;</span><br><span class="line">        <span class="keyword">try</span></span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 创建一个新的 E[]</span></span><br><span class="line">            newBuffer = allocateRefArray(newBufferLength);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">catch</span> (OutOfMemoryError oom)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">assert</span> <span class="title function_">lvProducerIndex</span><span class="params">()</span> == pIndex + <span class="number">1</span>;</span><br><span class="line">            soProducerIndex(pIndex);</span><br><span class="line">            <span class="keyword">throw</span> oom;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 生产者 Buffer 指向新的 E[]</span></span><br><span class="line">        producerBuffer = newBuffer;</span><br><span class="line">        <span class="comment">// 计算新的 mask, Buffer 长度不变的情况下, mask 也不变</span></span><br><span class="line">        <span class="keyword">final</span> <span class="type">int</span> <span class="variable">newMask</span> <span class="operator">=</span> (newBufferLength - <span class="number">2</span>) &lt;&lt; <span class="number">1</span>;</span><br><span class="line">        producerMask = newMask;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 根据该偏移量设置 oldBuffer 的 JUMP 元素，会递增然后重置，不断循环</span></span><br><span class="line">        <span class="keyword">final</span> <span class="type">long</span> <span class="variable">offsetInOld</span> <span class="operator">=</span> modifiedCalcCircularRefElementOffset(pIndex, oldMask);</span><br><span class="line">        <span class="comment">// mask 不变的情况下, oldBuffer 的 JUMP 对应的位置，就是 newBuffer 中要消费的位置</span></span><br><span class="line">        <span class="keyword">final</span> <span class="type">long</span> <span class="variable">offsetInNew</span> <span class="operator">=</span> modifiedCalcCircularRefElementOffset(pIndex, newMask);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 元素 e 放到新数组中</span></span><br><span class="line">        soRefElement(newBuffer, offsetInNew, e == <span class="literal">null</span> ? s.get() : e);<span class="comment">// element in new array</span></span><br><span class="line">        <span class="comment">// 旧数组和新数组建立连接，旧数组的最后一个元素保存新数组的地址</span></span><br><span class="line">        soRefElement(oldBuffer, nextArrayOffset(oldMask), newBuffer);<span class="comment">// buffer linked</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// ASSERT code</span></span><br><span class="line">        <span class="keyword">final</span> <span class="type">long</span> <span class="variable">cIndex</span> <span class="operator">=</span> lvConsumerIndex();</span><br><span class="line">        <span class="keyword">final</span> <span class="type">long</span> <span class="variable">availableInQueue</span> <span class="operator">=</span> availableInQueue(pIndex, cIndex);</span><br><span class="line">        RangeUtil.checkPositive(availableInQueue, <span class="string">&quot;availableInQueue&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// Invalidate racing CASs</span></span><br><span class="line">        <span class="comment">// We never set the limit beyond the bounds of a buffer</span></span><br><span class="line">        soProducerLimit(pIndex + Math.min(newMask, availableInQueue));</span><br><span class="line"></span><br><span class="line">        <span class="comment">// make resize visible to the other producers</span></span><br><span class="line">        soProducerIndex(pIndex + <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// INDEX visible before ELEMENT, consistent with consumer expectation</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// make resize visible to consumer</span></span><br><span class="line">        soRefElement(oldBuffer, offsetInOld, JUMP);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="出队-poll-的源码分析"><a href="#出队-poll-的源码分析" class="headerlink" title="出队 poll 的源码分析"></a>出队 poll 的源码分析</h4><p><code>poll()</code> 方法核心思路是获取消费者索引 consumerIndex ，然后根据 consumerIndex 计算得出数组对应的偏移量，然后将数组对应位置的元素取出并返回，最后将 consumerIndex 移动到环形数组下一个位置。</p>
+<p>如果元素为 null，并不代表队列是空的，还要比较 consumerIndex 和 producerIndex ，如果两者索引不同，那么 producerIndex 肯定是大于 consumerIndex 的，说明生产者已经在生产了，移动了 producerIndex ，只是还没来得及将元素填充到数组而已。</p>
+<p>因为生产者是先 CAS 递增 producerIndex，再将元素填充到数组的，两步之间存在一个非常短的时间差，如果消费者恰好在这个时间差内去消费数据，那么就自旋等待一下，等待生产者填充元素到数组。</p>
+<p>如果元素为 <code>JUMP</code> ，说明队列扩容了，消费者需要根据数组的最后一个元素找到扩容后的新数组，消费新数组的元素。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">BaseMpscLinkedArrayQueue</span>&lt;E&gt; <span class="keyword">extends</span> <span class="title class_">BaseMpscLinkedArrayQueueColdProducerFields</span>&lt;E&gt;</span><br><span class="line">    <span class="keyword">implements</span> <span class="title class_">MessagePassingQueue</span>&lt;E&gt;, QueueProgressIndicators</span><br><span class="line">&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * &#123;<span class="doctag">@inheritDoc</span>&#125;</span></span><br><span class="line"><span class="comment">     * &lt;p&gt;</span></span><br><span class="line"><span class="comment">     * This implementation is correct for single consumer thread use only.</span></span><br><span class="line"><span class="comment">     * poll() 没有做并发控制， MpscQueue 是多生产单消费者的 Queue ，只有一个消费者，这个也是 netty 换成 MSPCQueue 的主要原因</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@SuppressWarnings(&quot;unchecked&quot;)</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> E <span class="title function_">poll</span><span class="params">()</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">final</span> E[] buffer = consumerBuffer;</span><br><span class="line">        <span class="keyword">final</span> <span class="type">long</span> <span class="variable">cIndex</span> <span class="operator">=</span> lpConsumerIndex();</span><br><span class="line">        <span class="keyword">final</span> <span class="type">long</span> <span class="variable">mask</span> <span class="operator">=</span> consumerMask;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">final</span> <span class="type">long</span> <span class="variable">offset</span> <span class="operator">=</span> modifiedCalcCircularRefElementOffset(cIndex, mask);</span><br><span class="line">        <span class="type">Object</span> <span class="variable">e</span> <span class="operator">=</span> lvRefElement(buffer, offset);</span><br><span class="line">        <span class="keyword">if</span> (e == <span class="literal">null</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="type">long</span> <span class="variable">pIndex</span> <span class="operator">=</span> lvProducerIndex();</span><br><span class="line">            <span class="comment">// isEmpty?</span></span><br><span class="line">            <span class="comment">// 元素已经消费完</span></span><br><span class="line">            <span class="keyword">if</span> ((cIndex - pIndex) / <span class="number">2</span> == <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// offer() 时生产者先 CAS 改 producerIndex，再设置元素，中间会有一个时间差，此时会自旋，等待元素设置完成</span></span><br><span class="line">            <span class="comment">// poll() == null iff queue is empty, null element is not strong enough indicator, so we must</span></span><br><span class="line">            <span class="comment">// spin until element is visible.</span></span><br><span class="line">            <span class="keyword">do</span></span><br><span class="line">            &#123;</span><br><span class="line">                e = lvRefElement(buffer, offset);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">while</span> (e == <span class="literal">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 队列扩容了</span></span><br><span class="line">        <span class="keyword">if</span> (e == JUMP)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="comment">// 获取下一个数组</span></span><br><span class="line">            <span class="keyword">final</span> E[] nextBuffer = nextBuffer(buffer, mask);</span><br><span class="line">            <span class="comment">// 从下一个数组中消费</span></span><br><span class="line">            <span class="keyword">return</span> newBufferPoll(nextBuffer, cIndex);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 取出元素后，将原来的槽位设为 null</span></span><br><span class="line">        soRefElement(buffer, offset, <span class="literal">null</span>); <span class="comment">// release element null</span></span><br><span class="line">        <span class="comment">// 递增 consumerIndex</span></span><br><span class="line">        soConsumerIndex(cIndex + <span class="number">2</span>); <span class="comment">// release cIndex</span></span><br><span class="line">        <span class="keyword">return</span> (E) e;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h5 id="nextBuffer"><a href="#nextBuffer" class="headerlink" title="nextBuffer()"></a>nextBuffer()</h5><p>如果队列扩容了，nextBuffer() 会找到扩容后的新数组，同时它还会将旧数组的最后一个元素设为 BUFFER_CONSUMED，代表当前数组已经被消费完了，也就从链表中剔除了。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="keyword">class</span> <span class="title class_">BaseMpscLinkedArrayQueue</span>&lt;E&gt; <span class="keyword">extends</span> <span class="title class_">BaseMpscLinkedArrayQueueColdProducerFields</span>&lt;E&gt;</span><br><span class="line">    <span class="keyword">implements</span> <span class="title class_">MessagePassingQueue</span>&lt;E&gt;, QueueProgressIndicators</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">private</span> E[] nextBuffer(<span class="keyword">final</span> E[] buffer, <span class="keyword">final</span> <span class="type">long</span> mask)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="comment">// 通过当前数组的最后一个元素，获取下一个待消费的数组，</span></span><br><span class="line">        <span class="comment">// 将当前数组最后一个元素设为 BUFFER_CONSUMED，代表当前数组已经消费完毕。</span></span><br><span class="line">        <span class="keyword">final</span> <span class="type">long</span> <span class="variable">offset</span> <span class="operator">=</span> nextArrayOffset(mask);</span><br><span class="line">        <span class="keyword">final</span> E[] nextBuffer = (E[]) lvRefElement(buffer, offset);</span><br><span class="line">        consumerBuffer = nextBuffer;</span><br><span class="line">        consumerMask = (length(nextBuffer) - <span class="number">2</span>) &lt;&lt; <span class="number">1</span>;</span><br><span class="line">        soRefElement(buffer, offset, BUFFER_CONSUMED);</span><br><span class="line">        <span class="keyword">return</span> nextBuffer;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="MpscArrayQueue-的优点总结"><a href="#MpscArrayQueue-的优点总结" class="headerlink" title="MpscArrayQueue 的优点总结"></a>MpscArrayQueue 的优点总结</h2><p>MpscQueue 由一系列数组构成，数组的最后一个元素指向下一个数组，形成单向链表。</p>
+<p>MpscQueue 全程无锁化，非阻塞，相较于 JDK 提供的同步阻塞队列，性能有很好的提升，这也是 Netty 后来的版本将任务队列替换为 JCtools 的重要原因。</p>
+<p>在生产过程中，它用到了大量的 CAS 操作，对于需要做并发控制的地方，确保只有一个线程会执行成功，其他 CAS 失败的线程会自旋重试，全程都是无锁非阻塞的。</p>
+<p>不管是扩容，还是等待元素被填充到数组，这些过程都是会极快完成的，因此短暂的自旋会比线程挂起再唤醒效率更高。 数组扩容后会在原槽位填充 <code>JUMP</code> 元素，消费者遇到该元素就知道要寻找新数组继续消费了。</p>
+<ul>
+<li>通过 cacheline padding 解决核心属性的伪共享问题。</li>
+<li>数组的容量设置为 2 的次幂，可以通过位运算快速定位到数组对应下标。</li>
+<li>入队操作通过 CAS 无锁编程实现，并且通过链式数组结构，和数组节点的动态增加，解决扩容时的元素复制的问题，完成数组的快速扩容，减少 CAS 空自旋。</li>
+<li>在消费者 poll 过程中，因为只有一个消费者线程，所以整个 poll() 的过程没有 CAS 操作。</li>
+<li>通过有序的写入元素，去掉 volatile 的 StoreLoad 屏障，实现纳米级别的写入。 当然， 读取的时候，如果间隔太短，需要进行短时间的自旋。</li>
+</ul>
+<p>这个是非常高性能的。 这也是 Netty、Caffeine 使用 mpsc 队列的原因。</p>
+<h1 id="ConcurrentAutoTable"><a href="#ConcurrentAutoTable" class="headerlink" title="ConcurrentAutoTable"></a>ConcurrentAutoTable</h1><h2 id="源码"><a href="#源码" class="headerlink" title="源码"></a>源码</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">ConcurrentAutoTable</span> <span class="keyword">implements</span> <span class="title class_">Serializable</span> &#123;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// --- public interface ---</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Add the given value to current counter value.  Concurrent updates will</span></span><br><span class="line"><span class="comment">   * not be lost, but addAndGet or getAndAdd are not implemented because the</span></span><br><span class="line"><span class="comment">   * total counter value (i.e., &#123;<span class="doctag">@link</span> #get&#125;) is not atomically updated.</span></span><br><span class="line"><span class="comment">   * Updates are striped across an array of counters to avoid cache contention</span></span><br><span class="line"><span class="comment">   * and has been tested with performance scaling linearly up to 768 CPUs.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">add</span><span class="params">( <span class="type">long</span> x )</span> &#123; add_if(  x); &#125;</span><br><span class="line">  <span class="comment">/** &#123;<span class="doctag">@link</span> #add&#125; with -1 */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">decrement</span><span class="params">()</span>   &#123; add_if(-<span class="number">1L</span>); &#125;</span><br><span class="line">  <span class="comment">/** &#123;<span class="doctag">@link</span> #add&#125; with +1 */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">increment</span><span class="params">()</span>   &#123; add_if( <span class="number">1L</span>); &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/** Atomically set the sum of the striped counters to specified value.</span></span><br><span class="line"><span class="comment">   *  Rather more expensive than a simple store, in order to remain atomic.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">set</span><span class="params">( <span class="type">long</span> x )</span> &#123;</span><br><span class="line">    <span class="type">CAT</span> <span class="variable">newcat</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CAT</span>(<span class="literal">null</span>,<span class="number">4</span>,x);</span><br><span class="line">    <span class="comment">// Spin until CAS works</span></span><br><span class="line">    <span class="keyword">while</span>( !CAS_cat(_cat,newcat) ) &#123;<span class="comment">/*empty*/</span>&#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Current value of the counter.  Since other threads are updating furiously</span></span><br><span class="line"><span class="comment">   * the value is only approximate, but it includes all counts made by the</span></span><br><span class="line"><span class="comment">   * current thread.  Requires a pass over the internally striped counters.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">get</span><span class="params">()</span>       &#123; <span class="keyword">return</span>      _cat.sum(); &#125;</span><br><span class="line">  <span class="comment">/** Same as &#123;<span class="doctag">@link</span> #get&#125;, included for completeness. */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span>  <span class="title function_">intValue</span><span class="params">()</span>  &#123; <span class="keyword">return</span> (<span class="type">int</span>)_cat.sum(); &#125;</span><br><span class="line">  <span class="comment">/** Same as &#123;<span class="doctag">@link</span> #get&#125;, included for completeness. */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">longValue</span><span class="params">()</span> &#123; <span class="keyword">return</span>      _cat.sum(); &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * A cheaper &#123;<span class="doctag">@link</span> #get&#125;.  Updated only once/millisecond, but as fast as a</span></span><br><span class="line"><span class="comment">   * simple load instruction when not updating.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="type">long</span> <span class="title function_">estimate_get</span><span class="params">( )</span> &#123; <span class="keyword">return</span> _cat.estimate_sum(); &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Return the counter&#x27;s &#123;<span class="doctag">@code</span> long&#125; value converted to a string.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> String <span class="title function_">toString</span><span class="params">()</span> &#123; <span class="keyword">return</span> _cat.toString(); &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * A more verbose print than &#123;<span class="doctag">@link</span> #toString&#125;, showing internal structure.</span></span><br><span class="line"><span class="comment">   * Useful for debugging.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">print</span><span class="params">()</span> &#123; _cat.print(); &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">/**</span></span><br><span class="line"><span class="comment">   * Return the internal counter striping factor.  Useful for diagnosing</span></span><br><span class="line"><span class="comment">   * performance problems.</span></span><br><span class="line"><span class="comment">   */</span></span><br><span class="line">  <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">internal_size</span><span class="params">()</span> &#123; <span class="keyword">return</span> _cat._t.length; &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Only add &#x27;x&#x27; to some slot in table, hinted at by &#x27;hash&#x27;.  The sum can</span></span><br><span class="line">  <span class="comment">// overflow.  Value is CAS&#x27;d so no counts are lost.  The CAS is retried until</span></span><br><span class="line">  <span class="comment">// it succeeds.  Returned value is the old value.</span></span><br><span class="line">  <span class="keyword">private</span> <span class="type">long</span> <span class="title function_">add_if</span><span class="params">( <span class="type">long</span> x )</span> &#123; <span class="keyword">return</span> _cat.add_if(x,hash(),<span class="built_in">this</span>); &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// The underlying array of concurrently updated long counters</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">volatile</span> <span class="type">CAT</span> <span class="variable">_cat</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">CAT</span>(<span class="literal">null</span>,<span class="number">16</span><span class="comment">/*Start Small, Think Big!*/</span>,<span class="number">0L</span>);</span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> AtomicReferenceFieldUpdater&lt;ConcurrentAutoTable,CAT&gt; _catUpdater =</span><br><span class="line">    AtomicReferenceFieldUpdater.newUpdater(ConcurrentAutoTable.class,CAT.class, <span class="string">&quot;_cat&quot;</span>);</span><br><span class="line">  <span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">CAS_cat</span><span class="params">( CAT oldcat, CAT newcat )</span> &#123; <span class="keyword">return</span> _catUpdater.compareAndSet(<span class="built_in">this</span>,oldcat,newcat); &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// Hash spreader</span></span><br><span class="line">  <span class="keyword">private</span> <span class="keyword">static</span> <span class="type">int</span> <span class="title function_">hash</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="comment">//int h = (int)Thread.currentThread().getId();</span></span><br><span class="line">    <span class="type">int</span> <span class="variable">h</span> <span class="operator">=</span> System.identityHashCode(Thread.currentThread());</span><br><span class="line">    <span class="keyword">return</span> h&lt;&lt;<span class="number">3</span>;                <span class="comment">// Pad out cache lines.  The goal is to avoid cache-line contention</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/tianshan2010/article/details/106749921">JCTools 简介-增强的并发工具</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/crazymakercircle/p/16977089.html#autoid-h4-1-14-5">超高性能无锁队列 Mpsc Queue</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/queue/" rel="tag"># queue</a>
+              <a href="/tags/jctools/" rel="tag"># jctools</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2023/07/19/big-data-bloomfilter/" rel="prev" title="布隆过滤器">
+                  <i class="fa fa-angle-left"></i> 布隆过滤器
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2023</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Apomelo</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.19.1/algoliasearch-lite.umd.js" integrity="sha256-qzlNbRtZWHoUV5I2mI2t9QR7oYXlS9oNctX+0pECXI0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.56.8/instantsearch.production.min.js" integrity="sha256-xUys6KCuRGBxFaRaYZlWulRUjY48XFv6/Q2s0mb1dmc=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
+  <script src="/js/third-party/tags/mermaid.js"></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js"></script>
+
+
+
+</body>
+</html>

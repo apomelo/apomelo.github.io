@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="netty 简介Netty 是一个高性能、异步事件驱动的 NIO 网络应用框架, 它提供了对 TCP、UDP 和文件传输的支持. 基于 Netty, 可以快速的开发和部署高性能、 高可用的网络服务端和客户端应用.">
 <meta property="og:type" content="article">
@@ -183,18 +183,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-count">59</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -349,7 +349,7 @@
 <h1 id="NIO-简介"><a href="#NIO-简介" class="headerlink" title="NIO 简介"></a>NIO 简介</h1><p>NIO 主要有三大核心部分: Channel(通道), Buffer(缓冲区), Selector.</p>
 <p>传统 IO 基于字节流和字符流进行操作, 而 NIO 基于 Channel 和 Buffer(缓冲区)进行操作, 数据总是从通道读取到缓冲区中, 或者从缓冲区写入到通道中.</p>
 <p>Selector(选择区)用于监听多个通道的事件 (比如: 连接打开, 数据到达) . 因此, 单个线程可以监听多个数据通道</p>
-<p>NIO 详细介绍参考: <a href="/posts/2022/01/09/IO%E6%B5%81/" title="IO流">[io流]</a></p>
+<p>NIO 详细介绍参考: <a href="/posts/2022/01/09/io-stream/" title="IO流">[io流]</a></p>
 <h2 id="NIO-与-IO-的区别"><a href="#NIO-与-IO-的区别" class="headerlink" title="NIO 与 IO 的区别"></a>NIO 与 IO 的区别</h2><ul>
 <li>IO 是面向流的, NIO 是面向缓冲区的</li>
 <li>IO 流是阻塞的, NIO 流是不阻塞的</li>
@@ -513,7 +513,7 @@
 <p>在 Linux 中系统调用 sendfile() 可以实现将数据从一个文件描述符传输到另一个文件描述符, 从而实现了零拷贝技术. 在 Java 中也使用了零拷贝技术, 它就是 NIO FileChannel 类中的 transferTo() 方法, transferTo() 底层就依赖了操作系统零拷贝的机制, 它可以将数据从 FileChannel 直接传输到另外一个 Channel. transferTo() 方法的定义如下:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 把数据从当前通道复制给目标通道</span></span><br><span class="line"><span class="keyword">public</span> <span class="type">long</span> <span class="title function_">transferTo</span><span class="params">(<span class="type">long</span> position, <span class="type">long</span> count, WriteableByteChannel target)</span></span><br></pre></td></tr></table></figure>
 
-<p><code>transferTo()</code> 详细用法可以参考: <a href="/posts/2022/01/09/IO%E6%B5%81/" title="IO流">[io流]</a> 中的 <code>通道间数据复制</code> 模块</p>
+<p><code>transferTo()</code> 详细用法可以参考: <a href="/posts/2022/01/09/io-stream/" title="IO流">[io流]</a> 中的 <code>通道间数据复制</code> 模块</p>
 <p>在使用了 FileChannel#transferTo() 传输数据之后, 我们看下数据拷贝流程发生了哪些变化, 如下图所示:</p>
 <p><img src="/imgs/netty/netty-memory-linux%E5%86%85%E5%AD%98%E9%9B%B6%E6%8B%B7%E8%B4%9D.png" alt="netty-memory-linux内存零拷贝"></p>
 <p>比较大的一个变化是, DMA 引擎从文件中读取数据拷贝到内核态缓冲区之后, 由操作系统直接拷贝到 Socket 缓冲区, 不再拷贝到用户态缓冲区, 所以数据拷贝的次数从之前的 4 次减少到 3 次.</p>
@@ -1073,12 +1073,12 @@
           <div class="post-nav">
             <div class="post-nav-item">
                 <a href="/posts/2021/11/06/mq/" rel="prev" title="消息队列">
-                  <i class="fa fa-chevron-left"></i> 消息队列
+                  <i class="fa fa-angle-left"></i> 消息队列
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/posts/2022/01/09/IO%E6%B5%81/" rel="next" title="IO流">
-                  IO流 <i class="fa fa-chevron-right"></i>
+                <a href="/posts/2022/01/09/io-stream/" rel="next" title="IO流">
+                  IO流 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -1142,11 +1142,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.18.0/algoliasearch-lite.umd.js" integrity="sha256-V3GHVlMSAsogT3wL0OY/l4d3fRLa56gNzlnzdIMBIWg=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.56.3/instantsearch.production.min.js" integrity="sha256-mWvjWAfZylKMOg+S3HLq+wng1HHRnl2Idr2r8NsUzIU=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.19.1/algoliasearch-lite.umd.js" integrity="sha256-qzlNbRtZWHoUV5I2mI2t9QR7oYXlS9oNctX+0pECXI0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.56.8/instantsearch.production.min.js" integrity="sha256-xUys6KCuRGBxFaRaYZlWulRUjY48XFv6/Q2s0mb1dmc=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.2.3/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
 
 

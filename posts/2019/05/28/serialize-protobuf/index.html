@@ -17,7 +17,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.17.1","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.cc","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.18.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="简介protobuf(Google Protocol Buffers), 官方文档对 protobuf 的定义: protocol buffers 是一种语言无关、平台无关、可扩展的序列化结构数据的方法, 可用于数据通信协议和数据存储等, 它是 Google 提供的一个具有高效协议数据交换格式工具库, 是一种灵活、高效和自动化机制的结构数据序列化方法。 相比 XML, 有编码后体积更小, 编解码速">
 <meta property="og:type" content="article">
@@ -142,7 +142,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#protobuf-%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">protobuf 优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E7%82%B9"><span class="nav-number">2.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9"><span class="nav-number">2.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#proto-%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">proto 文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#proto-%E7%89%88%E6%9C%AC"><span class="nav-number">3.1.</span> <span class="nav-text">proto 版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E4%BD%93"><span class="nav-number">3.2.</span> <span class="nav-text">消息体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.2.1.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">3.2.2.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E5%9F%9F%E7%B1%BB%E5%9E%8B%EF%BC%88Specifying-Field-Rules%EF%BC%89"><span class="nav-number">3.3.1.</span> <span class="nav-text">字段域类型（Specifying Field Rules）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E5%80%BC%E7%B1%BB%E5%9E%8B%EF%BC%88Scalar-Value-Types%EF%BC%89"><span class="nav-number">3.3.2.</span> <span class="nav-text">字段值类型（Scalar Value Types）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proto2-%E5%92%8C-proto-%E5%8C%BA%E5%88%AB"><span class="nav-number">3.4.</span> <span class="nav-text">proto2 和 proto 区别</span></a></li></ol></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#protobuf-%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">2.</span> <span class="nav-text">protobuf 优缺点</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BC%98%E7%82%B9"><span class="nav-number">2.1.</span> <span class="nav-text">优点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%BA%E7%82%B9"><span class="nav-number">2.2.</span> <span class="nav-text">缺点</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#proto-%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">proto 文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#proto-%E7%89%88%E6%9C%AC"><span class="nav-number">3.1.</span> <span class="nav-text">proto 版本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B6%88%E6%81%AF%E4%BD%93"><span class="nav-number">3.2.</span> <span class="nav-text">消息体</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.2.1.</span> <span class="nav-text">示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">3.2.2.</span> <span class="nav-text">注意事项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%AD%E6%B3%95"><span class="nav-number">3.3.</span> <span class="nav-text">语法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E5%9F%9F%E7%B1%BB%E5%9E%8B%EF%BC%88Specifying-Field-Rules%EF%BC%89"><span class="nav-number">3.3.1.</span> <span class="nav-text">字段域类型（Specifying Field Rules）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E6%AE%B5%E5%80%BC%E7%B1%BB%E5%9E%8B%EF%BC%88Scalar-Value-Types%EF%BC%89"><span class="nav-number">3.3.2.</span> <span class="nav-text">字段值类型（Scalar Value Types）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#proto2-%E5%92%8C-proto-%E5%8C%BA%E5%88%AB"><span class="nav-number">3.4.</span> <span class="nav-text">proto2 和 proto 区别</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BC%96%E7%A0%81%E6%96%B9%E5%BC%8F"><span class="nav-number">4.</span> <span class="nav-text">编码方式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Varint"><span class="nav-number">4.1.</span> <span class="nav-text">Varint</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ZigZag"><span class="nav-number">4.2.</span> <span class="nav-text">ZigZag</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#float-double"><span class="nav-number">4.3.</span> <span class="nav-text">float double</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#string"><span class="nav-number">4.4.</span> <span class="nav-text">string</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#repeated"><span class="nav-number">4.5.</span> <span class="nav-text">repeated</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -155,18 +155,18 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">32</span>
+          <span class="site-state-item-count">34</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
           <a href="/categories/">
-        <span class="site-state-item-count">15</span>
+        <span class="site-state-item-count">16</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
       <div class="site-state-item site-state-tags">
           <a href="/tags/">
-        <span class="site-state-item-count">57</span>
+        <span class="site-state-item-count">59</span>
         <span class="site-state-item-name">标签</span></a>
       </div>
   </nav>
@@ -471,20 +471,6 @@
 <li>proto3 在 3.5 版本之前会丢弃未知字段。 但在 3.5 版本中, 重新引入了未知字段的保留以匹配 proto2 行为。 在 3.5 及更高版本中, 未知字段在解析过程中保留并包含在序列化输出中。<br>移除了对扩展的支持, 新增了 Any 类型；</li>
 <li>proto3 移除了 proto2 的扩展, 新增了 Any（仍在开发中）和 JSON 映射。</li>
 </ol>
-<!-- #### 程序中请求定义
-
-**示例**
-<figure class="highlight protobuf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">syntax = <span class="string">&quot;proto2&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">package</span> com.apomelo.test.protobuf;</span><br><span class="line"><span class="keyword">option</span> java_outer_classname = <span class="string">&quot;TestMessage&quot;</span>;</span><br><span class="line"><span class="comment">//range: 101---199</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">TestReq</span> &#123;</span><br><span class="line">    <span class="keyword">required</span> <span class="type">int32</span> query = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">message </span><span class="title class_">TestResp</span> &#123;</span><br><span class="line">    <span class="keyword">required</span> <span class="type">int32</span> query = <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>注意事项</strong></p>
-<ol>
-<li>&#x2F;&#x2F;range: 101—199 这个必须有, 格式也要一样, 数值可以更改, 如: &#x2F;&#x2F;range: 201—299<br> 原因: proto生成工具需要用到</li>
-<li>请求必须以Req结尾, 响应必须以Resp结尾<br> 原因: 这样定义之后可以直接用工具生成相应的请求处理器</li>
-</ol>
-<h2 id="工具使用"><a href="#工具使用" class="headerlink" title="工具使用"></a>工具使用</h2><h4 id="proto编译工具"><a href="#proto编译工具" class="headerlink" title="proto编译工具"></a>proto编译工具</h4><ol>
-<li>根据请求生成请求类型<br> 工具: src&#x2F;main&#x2F;resources&#x2F;bin&#x2F;build&#x2F;proto_handler_generate.py<br> 命令: python proto_handler_generate.py<br> 可选参数: proto_path（proto文件所在目录）, build_path（生成的Java请求处理器所在的目录）, rebuild（是否重新构建所有的请求, 默认false）</li>
-<li>编译proto<br> 工具: src&#x2F;main&#x2F;resources&#x2F;proto&#x2F;build.bat<br> 命令: 直接运行（根据需求自己修改生成的目录）</li>
-<li>复制proto文件并提交到项目的proto文件夹中<br> 工具: src&#x2F;main&#x2F;resources&#x2F;proto&#x2F;copy.bat<br> 命令: 直接运行（根据需求自己修改复制的目录） –&gt;</li>
-</ol>
 <h1 id="编码方式"><a href="#编码方式" class="headerlink" title="编码方式"></a>编码方式</h1><p>消息经过序列化后会成为一个二进制数据流，该流中的数据为一系列的 Key-Value 对，定义好结构体的优势就是不用多余的数据来分隔不同的键值对。Key 用来标识具体的 field，在解包的时候，Protocol Buffer 根据 Key 就可以知道相应的 Value 应该对应于消息中的哪一个 field。</p>
 <p>Key 定义：<code>(field_number &lt;&lt; 3) | wire_type</code></p>
 <p>field_number 代表在 .proto 中定义的编号，1<del>15 用一个字节，16</del>2047 用两个字节，结合公式 (field_number &lt;&lt; 3) | wire_type ，如果 filed_number 大于等于 16，两个字节共 16 位，去掉移位的 3 位，去掉两个字节中第一个比特位(msb, most significant bit: 最高有效位)，总共 16 个比特位只有 16-5&#x3D;11 个比特位用来表示 Key，所以 Key 的 filed_number 要小于 2^11&#x3D;&#x3D; 2048。</p>
@@ -564,12 +550,12 @@
           <div class="post-nav">
             <div class="post-nav-item">
                 <a href="/posts/2019/04/18/java-jvm/" rel="prev" title="JVM">
-                  <i class="fa fa-chevron-left"></i> JVM
+                  <i class="fa fa-angle-left"></i> JVM
                 </a>
             </div>
             <div class="post-nav-item">
                 <a href="/posts/2019/06/29/%E6%9D%82%E4%B8%83%E6%9D%82%E5%85%AB%E7%AC%94%E8%AE%B0/" rel="next" title="杂七杂八笔记">
-                  杂七杂八笔记 <i class="fa fa-chevron-right"></i>
+                  杂七杂八笔记 <i class="fa fa-angle-right"></i>
                 </a>
             </div>
           </div>
@@ -633,11 +619,11 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
 <script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.18.0/algoliasearch-lite.umd.js" integrity="sha256-V3GHVlMSAsogT3wL0OY/l4d3fRLa56gNzlnzdIMBIWg=" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.56.3/instantsearch.production.min.js" integrity="sha256-mWvjWAfZylKMOg+S3HLq+wng1HHRnl2Idr2r8NsUzIU=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/4.19.1/algoliasearch-lite.umd.js" integrity="sha256-qzlNbRtZWHoUV5I2mI2t9QR7oYXlS9oNctX+0pECXI0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/instantsearch.js/4.56.8/instantsearch.production.min.js" integrity="sha256-xUys6KCuRGBxFaRaYZlWulRUjY48XFv6/Q2s0mb1dmc=" crossorigin="anonymous"></script><script src="/js/third-party/search/algolia-search.js"></script>
 
 
-  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.2.3/mermaid.min.js","integrity":"sha256-JFptYy4KzJ5OQP+Q9fubNf3cxpPPmZKqUOovyEONKrQ="}}</script>
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.3.0/mermaid.min.js","integrity":"sha256-9y71g5Lz/KLsHjB8uXwnkuWDtAMDSzD/HdIbqhJfTAI="}}</script>
   <script src="/js/third-party/tags/mermaid.js"></script>
 
 
