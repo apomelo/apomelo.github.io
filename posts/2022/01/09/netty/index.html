@@ -290,49 +290,42 @@
 <span id="more"></span>
 
 <h1 id="netty-优点"><a href="#netty-优点" class="headerlink" title="netty 优点"></a>netty 优点</h1><ol>
-<li><p>设计</p>
-<ul>
+<li>设计<ul>
 <li>针对多种传输类型的统一接口 - 阻塞和非阻塞</li>
 <li>简单但更强大的线程模型</li>
 <li>真正的无连接的数据报套接字支持</li>
 <li>链接逻辑支持复用</li>
 </ul>
 </li>
-<li><p>易用性</p>
-<ul>
+<li>易用性<ul>
 <li>大量的 Javadoc 和 代码实例</li>
 <li>API 使用简单, 开发门槛低 (对 IO 读写以及线程安全做了大量封装)</li>
 <li>基于事件模式, 对网络事件进行串行化处理, 在保证高效的同时, 又降低了编程的复杂度</li>
 <li>除了在 JDK 1.6 + 额外的限制. (一些特征是只支持在 Java 1.7 +. 可选的功能可能有额外的限制. )</li>
 </ul>
 </li>
-<li><p>功能</p>
-<ul>
+<li>功能<ul>
 <li>预置了多种编解码功能, 支持多种主流协议</li>
 <li>定制能力强, 可以通过 ChannelHandler 对通信框架进行灵活地扩展</li>
 </ul>
 </li>
-<li><p>性能</p>
-<ul>
+<li>性能<ul>
 <li>比核心 Java API 更好的吞吐量, 较低的延时</li>
 <li>资源消耗更少, 这个得益于共享池和重用</li>
 <li>减少内存拷贝</li>
 </ul>
 </li>
-<li><p>健壮性</p>
-<ul>
+<li>健壮性<ul>
 <li>消除由于慢, 快, 或重载连接产生的 OutOfMemoryError</li>
 <li>消除经常发现在 NIO 在高速网络中的应用中的不公平的读&#x2F;写比</li>
 </ul>
 </li>
-<li><p>安全</p>
-<ul>
+<li>安全<ul>
 <li>完整的 SSL &#x2F; TLS 和 StartTLS 的支持</li>
 <li>运行在受限的环境例如 Applet 或 OSGI</li>
 </ul>
 </li>
-<li><p>社区</p>
-<ul>
+<li>社区<ul>
 <li>发布的更早和更频繁</li>
 <li>社区驱动</li>
 </ul>
@@ -379,13 +372,13 @@
 <p>Channel 提供异步的网络 IO 操作, 调用后立即返回 ChannelFuture, 通过注册监听, 或者同步等待, 最终获取结果</p>
 <p>Channel 根据不同的协议、不同的阻塞类型, 分为不同的 Channel 类型</p>
 <h2 id="ChannelHandler"><a href="#ChannelHandler" class="headerlink" title="ChannelHandler"></a>ChannelHandler</h2><p>ChannelHandler 属于业务的核心接口, 用于处理 IO 事件或者拦截 IO 操作 (业务请求), 并将其转发到 ChannelPipeline (业务处理链) 中的下一个处理程序</p>
-<h3 id="ServerBootstrap-的-childHandler-与-handler-的区别"><a href="#ServerBootstrap-的-childHandler-与-handler-的区别" class="headerlink" title="ServerBootstrap 的 childHandler()与 handler()的区别"></a>ServerBootstrap 的 childHandler()与 handler()的区别</h3><p>ServerBootstrap 的 childHandler() 与 handler() 添加的 handlers 是针对不同的 EventLoopGroup 起作用</p>
+<h3 id="ServerBootstrap-的-childHandler-与-handler-的区别"><a href="#ServerBootstrap-的-childHandler-与-handler-的区别" class="headerlink" title="ServerBootstrap 的 childHandler()与 handler()的区别"></a>ServerBootstrap 的 childHandler()与 handler()的区别</h3><p><strong>ServerBootstrap 的 childHandler() 与 handler() 添加的 handlers 是针对不同的 EventLoopGroup 起作用</strong>：</p>
 <ol>
 <li>通过 handler 添加的 handlers 是对 bossGroup 线程组起作用</li>
 <li>通过 childHandler 添加的 handlers 是对 workerGroup 线程组起作用</li>
 <li><strong>handler 在初始化时就会执行, 而 childHandler 会在客户端成功 connect 后才执行, 这是两者的区别</strong></li>
 </ol>
-<p>Bootstrap 的 handler()</p>
+<p>**Bootstrap 的 handler()**：</p>
 <ol>
 <li>客户端 Bootstrap 只有 handler()方法, 因为客户端只需要一个事件线程组</li>
 </ol>
@@ -396,7 +389,7 @@
 <li>打印日志</li>
 <li>关闭 channel</li>
 </ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">exceptionCaught</span><span class="params">(ChannelHandlerContext ctx, Throwable cause)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="comment">//1. 打印日志</span></span><br><span class="line">    logger.warn(<span class="string">&quot;Failed to initialize a channel. Closing: &quot;</span> + ctx.channel(), cause);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">ChannelPipeline</span> <span class="variable">pipeline</span> <span class="operator">=</span> ctx.pipeline();</span><br><span class="line">        <span class="comment">// 在关闭channel之前, 检查channel的pipeline中是否还包含当前ChannelInitializer的handler</span></span><br><span class="line">        <span class="keyword">if</span> (pipeline.context(<span class="built_in">this</span>) != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 如果有, 去除它</span></span><br><span class="line">            pipeline.remove(<span class="built_in">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">// 2. 关闭channel</span></span><br><span class="line">        ctx.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">exceptionCaught</span><span class="params">(ChannelHandlerContext ctx, Throwable cause)</span> <span class="keyword">throws</span> Exception &#123;</span><br><span class="line">    <span class="comment">// 1. 打印日志</span></span><br><span class="line">    logger.warn(<span class="string">&quot;Failed to initialize a channel. Closing: &quot;</span> + ctx.channel(), cause);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="type">ChannelPipeline</span> <span class="variable">pipeline</span> <span class="operator">=</span> ctx.pipeline();</span><br><span class="line">        <span class="comment">// 在关闭channel之前, 检查channel的pipeline中是否还包含当前ChannelInitializer的handler</span></span><br><span class="line">        <span class="keyword">if</span> (pipeline.context(<span class="built_in">this</span>) != <span class="literal">null</span>) &#123;</span><br><span class="line">            <span class="comment">// 如果有, 去除它</span></span><br><span class="line">            pipeline.remove(<span class="built_in">this</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="comment">// 2. 关闭channel</span></span><br><span class="line">        ctx.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>当然子类可以继续覆盖这个实现. 不过一般都够用了.</p>
 <h1 id="netty-编解码"><a href="#netty-编解码" class="headerlink" title="netty 编解码"></a>netty 编解码</h1><p>netty 涉及到编解码的组件有 Channel、ChannelHandler、ChannelPipe</p>
@@ -560,7 +553,7 @@
 
 <p>为了方便理解上述 Component 中的属性含义, 我同样以 HTTP 协议中 header 和 body 为示例, 通过一张图来描述 CompositeByteBuf 组合后其中 Component 的布局情况, 如下所示:</p>
 <p><img src="/imgs/netty/netty-memory-CompositeByteBuf2.png" alt="netty-memory-CompositeByteBuf2"></p>
-<p>从图中可以看出, header 和 body 分别对应两个 ByteBuf, 假设 ByteBuf 的内容分别为 “header” 和 “body”, 那么 header ByteBuf 中 offset<del>endOffset 为 0</del>6, body ByteBuf 对应的 offset<del>endOffset 为 6</del>10. 由此可见, Component 中的 offset 和 endOffset 可以表示当前 ByteBuf 可以读取的范围, 通过 offset 和 endOffset 可以将每一个 Component 所对应的 ByteBuf 连接起来, 形成一个逻辑整体.</p>
+<p>从图中可以看出, header 和 body 分别对应两个 ByteBuf, 假设 ByteBuf 的内容分别为 “header” 和 “body”, 那么 header ByteBuf 中 offset ~ endOffset 为 0 ~ 6, body ByteBuf 对应的 offset ~ endOffset 为 6 ~ 10. 由此可见, Component 中的 offset 和 endOffset 可以表示当前 ByteBuf 可以读取的范围, 通过 offset 和 endOffset 可以将每一个 Component 所对应的 ByteBuf 连接起来, 形成一个逻辑整体.</p>
 <p>此外 Component 中 srcAdjustment 和 adjustment 表示这个 CompositeByteBuf 相对于 srcBuf 的起始索引. 初始 adjustment &#x3D; readIndex - offset, 这样通过 ByteBuf 在 CompositeByteBuf 的起始索引就可以直接定位到 Component 中 ByteBuf 的读索引位置. 例如: 当 header ByteBuf 读取 1 个字节, body ByteBuf 读取 2 个字节, 此时每个 Component 的属性如下图所示.</p>
 <p><img src="/imgs/netty/netty-memory-CompositeByteBuf3.png" alt="netty-memory-CompositeByteBuf3"></p>
 <h4 id="Unpooled-wrappedBuffer-操作"><a href="#Unpooled-wrappedBuffer-操作" class="headerlink" title="Unpooled.wrappedBuffer 操作"></a>Unpooled.wrappedBuffer 操作</h4><p>介绍完 CompositeByteBuf 之后, 再来理解 Unpooled.wrappedBuffer 操作就非常容易了.</p>

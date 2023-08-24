@@ -304,7 +304,7 @@
 <li>简单易用, 面向接口, 通过接口暴露服务, jar 包只有 200, 300k, 不需要配置防火墙</li>
 <li>效率高, 复杂对象序列化速度仅次于 RMI, 简单对象序列化优于 RMI, 二进制传输</li>
 <li>多语言支持: wiki, Java, Flash&#x2F;Flex, Python, C++, .NET C#, PHP, Ruby, Objective-C</li>
-<li>可与 spring 集成, 配置简单, HessianServiceExporte</li>
+<li>可与 spring 集成, 配置简单, HessianServiceExporter</li>
 </ol>
 <h4 id="Hessian-缺点"><a href="#Hessian-缺点" class="headerlink" title="Hessian 缺点"></a>Hessian 缺点</h4><ol>
 <li>缺乏安全机制, 传输没有加密处理</li>
@@ -314,7 +314,7 @@
 </ol>
 <h2 id="FST-全称-Fast-Serialization-不支持跨语言"><a href="#FST-全称-Fast-Serialization-不支持跨语言" class="headerlink" title="FST (全称: Fast Serialization, 不支持跨语言)"></a>FST (全称: Fast Serialization, 不支持跨语言)</h2><p>FST 序列化全称是 Fast Serialization Tool, 它是对 Java 序列化的替换实现, 在 dubbo 中有使用。<br>官方文档: <a target="_blank" rel="noopener" href="https://github.com/RuedigerMoeller/fast-serialization/wiki#2x-documentation">fast-serialization-wiki#2x-documentation</a></p>
 <h3 id="FST-优缺点"><a href="#FST-优缺点" class="headerlink" title="FST 优缺点"></a>FST 优缺点</h3><h4 id="FST-优点"><a href="#FST-优点" class="headerlink" title="FST 优点"></a>FST 优点</h4><ol>
-<li>比 JDK 提供的序列化提升了 10 倍, 体积也减少 3-4 倍多</li>
+<li>比 JDK 提供的序列化提升了 10 倍, 体积也减少至 1&#x2F;3 —— 1&#x2F;4</li>
 <li>支持堆外 Maps, 和堆外 Maps 的持久化</li>
 <li>支持序列化为 JSON</li>
 </ol>
