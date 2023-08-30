@@ -285,17 +285,17 @@
 <h3 id="单例bean"><a href="#单例bean" class="headerlink" title="单例bean"></a>单例bean</h3><p>spring中的单例bean，不等同于java中的单例模式。</p>
 <p>spring单例bean，允许同一个类有多个名称不相同的实例。</p>
 <h4 id="单例bean查找过程"><a href="#单例bean查找过程" class="headerlink" title="单例bean查找过程"></a>单例bean查找过程</h4><pre class="mermaid">graph TB
-    A((开始查找)) --> B("byType, 根据type从spring容器里找到多个bean") 
-    B -- 通过一系列筛选 --> C
-    C -- true --> D
+    A((开始查找)) --> B("byType,根据type从spring容器里找到多个bean") 
+    B -- 通过一系列筛选 --> C(是不是isAutowireCandidate)
+    C -- true --> D(是不是符合Qualifier)
     C -- false --> A1([忽略掉false的bean])
     D -- 符合 --> AA((找到bean))
-    D -- 不符合 --> E
+    D -- 不符合 --> E(是否有Primary标注的bean)
     E -- 有 --> AA
-    E -- 没有 --> F查找优先级, Priority值大的优先级高
+    E -- 没有 --> F("查找优先级,Priority值大的优先级高")
     F -- 找到优先级高的 --> AA
-    F -- 多个优先级相同 --> GbyName, 根据属性名字选出一个
-    G -- "找到对应名字 (名字完全相同)" --> AA
+    F -- 多个优先级相同 --> G("byName,根据属性名字选出一个")
+    G -- "找到对应名字(名字完全相同)" --> AA
     G -- 没有找到 --> A2([报错])</pre>
 
 <h3 id="属性填充"><a href="#属性填充" class="headerlink" title="属性填充"></a>属性填充</h3><h4 id="Autowired-注解"><a href="#Autowired-注解" class="headerlink" title="Autowired 注解"></a>Autowired 注解</h4><ol>
@@ -346,9 +346,9 @@
 </tr>
 </tbody></table>
 <ol>
-<li>一级缓存解决循环依赖的问题（一级缓存读取肯定完整的Bean）</li>
-<li>二级缓存解决防止多线程下会读取到不成熟的Bean（分隔成熟Bean和不成熟的Bean）</li>
-<li>三级缓存是解决</li>
+<li>一级缓存： 用于存储已创建的单例 Bean 实例，提高访问效率。</li>
+<li>二级缓存： 是为了分离成熟bean和未注入属性bean的存放，防止多线程在bean还未创建完成时读取到，所以也是为了保证我们getbean是完整的bean。还有一个作用是为了存储三级缓存创建出来的早期bean，防止三级缓存重复执行。</li>
+<li>三级缓存： 存储的是一个函数接口，函数接口实现创建动态代理调用beanPostProcessor，为了避免重复创建，调用把返回的动态对象或者原实例放到二级缓存中。</li>
 </ol>
 <p>三级缓存的源码结构：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/** Cache of singleton objects: bean name to bean instance. */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; singletonObjects = <span class="keyword">new</span> <span class="title class_">ConcurrentHashMap</span>&lt;&gt;(<span class="number">256</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Cache of singleton factories: bean name to ObjectFactory. */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, ObjectFactory&lt;?&gt;&gt; singletonFactories = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;(<span class="number">16</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">/** Cache of early singleton objects: bean name to bean instance. */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> Map&lt;String, Object&gt; earlySingletonObjects = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;&gt;(<span class="number">16</span>);</span><br></pre></td></tr></table></figure>
