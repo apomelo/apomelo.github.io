@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="简介splunk 是什么? Splunk 是一款用于搜索、监控和分析大规模实时生成的日志和数据的软件。它可以帮助组织从日志、事件和其他数据源中提取有价值的信息，用于监控系统状态、分析应用程序性能、发现安全事件等用途。Splunk 提供了强大的搜索和查询功能，可以帮助用户快速准确地找到需要的信息，并提供可视化和报告工具，用于展示和分析数据趋势、模式和异常。 Splunk 可以与各种数据源集成，包括服">
+<meta property="og:type" content="article">
+<meta property="og:title" content="splunk">
+<meta property="og:url" content="https://apomelo.github.io/posts/2024/03/21/splunk%20%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Apomelo - 追逐">
+<meta property="og:description" content="简介splunk 是什么? Splunk 是一款用于搜索、监控和分析大规模实时生成的日志和数据的软件。它可以帮助组织从日志、事件和其他数据源中提取有价值的信息，用于监控系统状态、分析应用程序性能、发现安全事件等用途。Splunk 提供了强大的搜索和查询功能，可以帮助用户快速准确地找到需要的信息，并提供可视化和报告工具，用于展示和分析数据趋势、模式和异常。 Splunk 可以与各种数据源集成，包括服">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-20T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-20T16:00:00.000Z">
+<meta property="article:author" content="Apomelo">
+<meta property="article:tag" content="splunk">
+<meta property="article:tag" content="tool">
+<meta property="article:tag" content="log">
+<meta property="article:tag" content="data analysis">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://apomelo.github.io/posts/2024/03/21/splunk%20%E7%AC%94%E8%AE%B0/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.github.io/posts/2024/03/21/splunk%20%E7%AC%94%E8%AE%B0/","path":"posts/2024/03/21/splunk 笔记/","title":"splunk"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>splunk | Apomelo - 追逐</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js" defer></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js" defer></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/5.36.0/lite/builds/browser.umd.js" integrity="sha256-o49zoHLDPBm9WLg6AiliAVi3axCRTqe3ltTxLvhzAVg=" crossorigin="anonymous" defer></script><script src="/js/third-party/search/algolia-search.js" defer></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fab fa-algolia fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E6%9E%B6%E6%9E%84"><span class="nav-number">2.</span> <span class="nav-text">服务架构</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%91%BD%E4%BB%A4"><span class="nav-number">3.</span> <span class="nav-text">命令</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Common-Eval-Functions"><span class="nav-number">3.1.</span> <span class="nav-text">Common Eval Functions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Common-Stats-Functions"><span class="nav-number">3.2.</span> <span class="nav-text">Common Stats Functions</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Commands-by-category"><span class="nav-number">3.3.</span> <span class="nav-text">Commands by category</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Correlation"><span class="nav-number">3.3.1.</span> <span class="nav-text">Correlation</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Data-and-indexes"><span class="nav-number">3.3.2.</span> <span class="nav-text">Data and indexes</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#View-data"><span class="nav-number">3.3.2.1.</span> <span class="nav-text">View data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Manage-data"><span class="nav-number">3.3.2.2.</span> <span class="nav-text">Manage data</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Manage-summary-indexes"><span class="nav-number">3.3.2.3.</span> <span class="nav-text">Manage summary indexes</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Fields"><span class="nav-number">3.3.3.</span> <span class="nav-text">Fields</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Add-fields"><span class="nav-number">3.3.3.1.</span> <span class="nav-text">Add fields</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Extract-fields"><span class="nav-number">3.3.3.2.</span> <span class="nav-text">Extract fields</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Modify-fields-and-field-values"><span class="nav-number">3.3.3.3.</span> <span class="nav-text">Modify fields and field values</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Find-anomalies"><span class="nav-number">3.3.4.</span> <span class="nav-text">Find anomalies</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Geographic-and-location"><span class="nav-number">3.3.5.</span> <span class="nav-text">Geographic and location</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Metrics"><span class="nav-number">3.3.6.</span> <span class="nav-text">Metrics</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Prediction-and-trending"><span class="nav-number">3.3.7.</span> <span class="nav-text">Prediction and trending</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Reports"><span class="nav-number">3.3.8.</span> <span class="nav-text">Reports</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Results"><span class="nav-number">3.3.9.</span> <span class="nav-text">Results</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Alerting"><span class="nav-number">3.3.9.1.</span> <span class="nav-text">Alerting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Appending"><span class="nav-number">3.3.9.2.</span> <span class="nav-text">Appending</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Filtering"><span class="nav-number">3.3.9.3.</span> <span class="nav-text">Filtering</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Formatting"><span class="nav-number">3.3.9.4.</span> <span class="nav-text">Formatting</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Generating"><span class="nav-number">3.3.9.5.</span> <span class="nav-text">Generating</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Grouping"><span class="nav-number">3.3.9.6.</span> <span class="nav-text">Grouping</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Reordering"><span class="nav-number">3.3.9.7.</span> <span class="nav-text">Reordering</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Reading"><span class="nav-number">3.3.9.8.</span> <span class="nav-text">Reading</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Writing"><span class="nav-number">3.3.9.9.</span> <span class="nav-text">Writing</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Search"><span class="nav-number">3.3.10.</span> <span class="nav-text">Search</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Subsearch"><span class="nav-number">3.3.11.</span> <span class="nav-text">Subsearch</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Time"><span class="nav-number">3.3.12.</span> <span class="nav-text">Time</span></a></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">83</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.github.io/posts/2024/03/21/splunk%20%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="splunk | Apomelo - 追逐">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          splunk
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-21 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-21T00:00:00+08:00">2024-03-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/tool/" itemprop="url" rel="index"><span itemprop="name">tool</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2024/03/21/splunk%20%E7%AC%94%E8%AE%B0/" class="post-meta-item leancloud_visitors" data-flag-title="splunk" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>splunk 是什么?</p>
+<p>Splunk 是一款用于搜索、监控和分析大规模实时生成的日志和数据的软件。它可以帮助组织从日志、事件和其他数据源中提取有价值的信息，用于监控系统状态、分析应用程序性能、发现安全事件等用途。Splunk 提供了强大的搜索和查询功能，可以帮助用户快速准确地找到需要的信息，并提供可视化和报告工具，用于展示和分析数据趋势、模式和异常。</p>
+<p>Splunk 可以与各种数据源集成，包括服务器日志、应用程序日志、网络数据、传感器数据等，支持多种数据格式和协议。它还提供了丰富的应用程序和插件，用于扩展和定制功能，满足不同领域和行业的需求。</p>
+<p>Splunk 是一款强大、灵活、易于使用的日志和数据分析工具，广泛应用于 IT 运维、安全监控、业务分析等领域，帮助组织实现数据驱动的决策和运营管理。</p>
+<span id="more"></span>
+
+<h1 id="服务架构"><a href="#服务架构" class="headerlink" title="服务架构"></a>服务架构</h1><p>Splunk 是一个用于搜索、监控和分析大规模数据的平台，其架构可以根据需求进行扩展和定制。以下是 Splunk 的典型服务架构：</p>
+<ul>
+<li><strong>Universal Forwarder</strong>：<ul>
+<li><strong>功能</strong>：Universal Forwarder 是 Splunk 中的轻量级代理程序，负责收集和转发数据。</li>
+<li><strong>工作原理</strong>：Universal Forwarder 安装在数据源服务器上，监视本地文件、网络流量或其他数据源，并将数据转发到 Splunk 索引器或集群。</li>
+<li><strong>特点</strong>：它具有低资源消耗、高性能和配置灵活性的特点，可以定制为满足不同数据源类型和需求。</li>
+</ul>
+</li>
+<li><strong>Heavy Forwarder</strong>：<ul>
+<li><strong>功能</strong>：Heavy Forwarder 是 Universal Forwarder 的增强版，具有更多的功能和处理能力。</li>
+<li><strong>工作原理</strong>：与 Universal Forwarder 类似，但 Heavy Forwarder 具有更多的数据处理和转换功能，例如字段提取、日志格式解析等。</li>
+<li><strong>特点</strong>：适用于需要在数据转发前对数据进行预处理或转换的场景，如数据清洗、格式转换等。</li>
+</ul>
+</li>
+<li><strong>Indexer</strong>：<ul>
+<li><strong>功能</strong>：Indexer 负责接收、索引和存储数据，以便后续的搜索和分析。</li>
+<li><strong>工作原理</strong>：当数据到达 Indexer 时，它将数据进行索引并存储在本地磁盘上，以支持后续的搜索查询。</li>
+<li><strong>特点</strong>：具有高度可扩展性，可以构建成集群以提高性能和可用性。</li>
+</ul>
+</li>
+<li><strong>Search Head</strong>：<ul>
+<li><strong>功能</strong>：Search Head 是用于执行搜索、分析和可视化数据的用户界面。</li>
+<li><strong>工作原理</strong>：用户通过 Web 界面与 Search Head 交互，执行搜索查询、查看报表、创建仪表盘等操作。</li>
+<li><strong>特点</strong>：支持高级搜索查询语言、可视化图表和报表功能，提供丰富的数据分析和可视化能力。</li>
+</ul>
+</li>
+<li><strong>Deployment Server</strong>：<ul>
+<li><strong>功能</strong>：Deployment Server 用于集中管理 Splunk 部署的配置和应用程序。</li>
+<li><strong>工作原理</strong>：管理员可以使用 Deployment Server 将配置文件、应用程序和更新传输到 Splunk 环境中的所有组件，以确保部署的一致性和管理。</li>
+<li><strong>特点</strong>：支持集中化管理和配置自动化，可以根据需要轻松部署和管理大规模 Splunk 环境。</li>
+</ul>
+</li>
+<li><strong>Cluster Master</strong>：<ul>
+<li><strong>功能</strong>：Cluster Master 用于管理和协调 Indexer 集群中的数据复制、索引管理和集群配置。</li>
+<li><strong>工作原理</strong>：Cluster Master 监视索引器的状态、执行数据复制和重新平衡任务，并管理集群中的拓扑结构和配置。</li>
+<li><strong>特点</strong>：支持高可用性、自动化和集群优化，可以实现集群中索引器的自动发现和管理。</li>
+</ul>
+</li>
+<li><strong>License Master</strong>：<ul>
+<li><strong>功能</strong>：License Master 用于管理 Splunk 环境中的许可证。</li>
+<li><strong>工作原理</strong>：License Master 负责分配和管理许可证，监视许可证使用情况，并确保环境中的所有组件都具有有效的许可证。</li>
+<li><strong>特点</strong>：支持许可证的集中管理和监控，确保 Splunk 环境的合规性和许可证使用效率。</li>
+</ul>
+</li>
+</ul>
+<h1 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h1><h2 id="Common-Eval-Functions"><a href="#Common-Eval-Functions" class="headerlink" title="Common Eval Functions"></a>Common Eval Functions</h2><p>The eval command calculates an expression and puts the resulting value into a field (e.g. “…| eval force &#x3D; mass * acceleration”). The following table lists some of the functions used with the eval command. You can also use basic arithmetic operators (+ - * &#x2F; %), string concatenation (e.g., “…| eval name &#x3D; last . “,” . first”), and Boolean operations (AND OR NOT XOR &lt; &gt; &lt;&#x3D; &gt;&#x3D; !&#x3D; &#x3D; &#x3D;&#x3D; LIKE).</p>
+<p>| <strong>Function</strong>              | <strong>Description</strong>                                                                                                                                                                                                                                                                                                                                                                                   | <strong>Examples</strong>                                                                                                                                                                              |<br>| ————————- | :———————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————— | :—————————————————————————————————————————————————————————————- | —————————————————————————————————————— |<br>| <strong>abs(X)</strong>                | Returns the absolute value of X.                                                                                                                                                                                                                                                                                                                                                                  | abs(number)                                                                                                                                                                               |<br>| <strong>case(X,”Y”,…)</strong>         | Takes pairs of arguments X and Y, where X arguments are Boolean expressions. When evaluated to TRUE, the arguments return the corresponding Y argument.                                                                                                                                                                                                                                           | case(error &#x3D;&#x3D; 404, “Not found”, error &#x3D;&#x3D; 500,”Internal Server Error”, error &#x3D;&#x3D; 200, “OK”)                                                                                                 |<br>| <strong>ceil(X)</strong>               | Ceiling of a number X.                                                                                                                                                                                                                                                                                                                                                                            | ceil(1.9)                                                                                                                                                                                 |<br>| <strong>cidrmatch(“X”,Y)</strong>      | Identifies IP addresses that belong to a particular subnet.                                                                                                                                                                                                                                                                                                                                       | cidrmatch(“123.132.32.0&#x2F;25”,ip)                                                                                                                                                           |<br>| <strong>coalesce(X,…)</strong>         | Returns the first value that is not null.                                                                                                                                                                                                                                                                                                                                                         | coalesce(null(), “Returned val”, null())                                                                                                                                                  |<br>| <strong>cos(X)</strong>                | Calculates the cosine of X.                                                                                                                                                                                                                                                                                                                                                                       | n&#x3D;cos(0)                                                                                                                                                                                  |<br>| <strong>exact(X)</strong>              | Evaluates an expression X using double precision floating point arithmetic.                                                                                                                                                                                                                                                                                                                       | exact(3.14*num)                                                                                                                                                                          |<br>| <strong>exp(X)</strong>                | Returns eX.                                                                                                                                                                                                                                                                                                                                                                                       | exp(3)                                                                                                                                                                                    |<br>| <strong>if(X,Y,Z)</strong>             | If X evaluates to TRUE, the result is the second argument Y. If X evaluates to FALSE, the result evaluates to the third argument Z.                                                                                                                                                                                                                                                               | if(error&#x3D;&#x3D;200, “OK”, “Error”)                                                                                                                                                             |<br>| <strong>in(field,value list)</strong>  | Returns TRUE if a value in “value-list” matches a value in “field”. You must use the “in” function inside the “if” function.                                                                                                                                                                                                                                                                      | if(in(status, “404”,”500”,”503”),”true”,”false”)                                                                                                                                          |<br>| <strong>isbool(X)</strong>             | Returns TRUE if X is Boolean.                                                                                                                                                                                                                                                                                                                                                                     | isbool(field)                                                                                                                                                                             |<br>| <strong>isint(X)</strong>              | Returns TRUE if X is an integer.                                                                                                                                                                                                                                                                                                                                                                  | isint(field)                                                                                                                                                                              |<br>| <strong>isnull(X)</strong>             | Returns TRUE if X is NULL.                                                                                                                                                                                                                                                                                                                                                                        | isnull(field)                                                                                                                                                                             |<br>| <strong>isstr()</strong>               | Returns TRUE if X is a string.                                                                                                                                                                                                                                                                                                                                                                    | isstr(field)                                                                                                                                                                              |<br>| <strong>len(X)</strong>                | This function returns the character length of a string X.                                                                                                                                                                                                                                                                                                                                         | len(field)                                                                                                                                                                                |<br>| <strong>like(X,”Y”)</strong>           | Returns TRUE if and only if X is like the SQLite pattern in Y.                                                                                                                                                                                                                                                                                                                                    | like(field, “addr%”)                                                                                                                                                                      |<br>| <strong>log(X,Y)</strong>              | Returns the log of the first argument X using the second argument Y as the base. Y defaults to 10.                                                                                                                                                                                                                                                                                                | log(number,2)                                                                                                                                                                             |<br>| <strong>lower(X)</strong>              | Returns the lowercase of X.                                                                                                                                                                                                                                                                                                                                                                       | lower(username)                                                                                                                                                                           |<br>| <strong>ltrim(X,Y)</strong>            | Returns X with the characters in Y trimmed from the left side. Y defaults to spaces and tabs.                                                                                                                                                                                                                                                                                                     | ltrim(“ ZZZabcZZ “, “ Z”)                                                                                                                                                                 |<br>| <strong>match(X,Y)</strong>            | Returns if X matches the regex pattern Y.                                                                                                                                                                                                                                                                                                                                                         | match(field, “^\d{1,3}.\d$”)                                                                                                                                                             |<br>| <strong>max(X,…)</strong>              | Returns the maximum.                                                                                                                                                                                                                                                                                                                                                                              | max(delay, mydelay)                                                                                                                                                                       |<br>| <strong>md5(X)</strong>                | Returns the MD5 hash of a string value X.                                                                                                                                                                                                                                                                                                                                                         | md5(field)                                                                                                                                                                                |<br>| <strong>min(X,…)</strong>              | Returns the minimum.                                                                                                                                                                                                                                                                                                                                                                              | min(delay, mydelay)                                                                                                                                                                       |<br>| <strong>mvcount(X)</strong>            | Returns the number of values of X.                                                                                                                                                                                                                                                                                                                                                                | mvcount(multifield)                                                                                                                                                                       |<br>| <strong>mvfilter(X)</strong>           | Filters a multi-valued field based on the Boolean expression X.                                                                                                                                                                                                                                                                                                                                   | mvfilter(match(email, “net$”))                                                                                                                                                            |<br>| <strong>mvindex(X,Y,Z)</strong>        | Returns a subset of the multivalued field X from start position (zero-based) Y to Z (optional).                                                                                                                                                                                                                                                                                                   | mvindex(multifield, 2)                                                                                                                                                                    |<br>| <strong>mvjoin(X,Y)</strong>           | Given a multi-valued field X and string delimiter Y, and joins the individual values of X using Y.                                                                                                                                                                                                                                                                                                | mvjoin(address, “;”)                                                                                                                                                                      |<br>| <strong>now()</strong>                 | Returns the current time, represented in Unix time.                                                                                                                                                                                                                                                                                                                                               | now()                                                                                                                                                                                     |<br>| <strong>null()</strong>                | This function takes no arguments and returns NULL.                                                                                                                                                                                                                                                                                                                                                | null()                                                                                                                                                                                    |<br>| <strong>nullif(X,Y)</strong>           | Given two arguments, fields X and Y, and returns the X if the arguments are different. Otherwise returns NULL.                                                                                                                                                                                                                                                                                    | nullif(fieldA, fieldB)                                                                                                                                                                    |<br>| <strong>random()</strong>              | Returns a pseudo-random number ranging from 0 to 2178367.                                                                                                                                                                                                                                                                                                                                         | random()                                                                                                                                                                                  |<br>| <strong>relative_ time (X,Y)</strong> | Given epochtime time X and relative time specifier Y, returns the epochtime value of Y applied to X.                                                                                                                                                                                                                                                                                              | relative_time(now(),”-1d@d”)                                                                                                                                                              |<br>| <strong>replace(X,Y,Z)</strong>        | Returns a string formed by substituting string Z for every occurrence of regex string Y in string X.                                                                                                                                                                                                                                                                                              | Returns date with the month and day numbers switched, so if the input was 4&#x2F;30&#x2F;2021 the return value would be 30&#x2F;4&#x2F;2021: replace(date, “^(\d{1,2})&#x2F;(\d{1,2})&#x2F;“, “\2&#x2F;\1&#x2F;“)                 |<br>| <strong>round(X,Y)</strong>            | Returns X rounded to the amount of decimal places specified by Y. The default is to round to an integer.                                                                                                                                                                                                                                                                                          | round(3.5)                                                                                                                                                                                |<br>| <strong>rtrim(X,Y)</strong>            | Returns X with the characters in Y trimmed from the right side. If Y is not specified, spaces and tabs are trimmed.                                                                                                                                                                                                                                                                               | rtrim(“ ZZZZabcZZ “, “ Z”)                                                                                                                                                                |<br>| <strong>split(X,”Y”)</strong>          | Returns X as a multi-valued field, split by delimiter Y.                                                                                                                                                                                                                                                                                                                                          | split(address, “;”)                                                                                                                                                                       |<br>| <strong>sqrt(X)</strong>               | Returns the square root of X.                                                                                                                                                                                                                                                                                                                                                                     | sqrt(9)                                                                                                                                                                                   |<br>| <strong>strftime(X,Y)</strong>         | Returns epochtime value X rendered using the format specified by Y.                                                                                                                                                                                                                                                                                                                               | strftime(_time, “%H:%M”)                                                                                                                                                                 |<br>| <strong>strptime(X,Y)</strong>         | Given a time represented by a string X, returns value parsed from format Y.                                                                                                                                                                                                                                                                                                                       | strptime(timeStr, “%H:%M”)                                                                                                                                                                |<br>| <strong>substr(X,Y,Z)</strong>         | Returns a substring field X from start position (1-based) Y for Z (optional) characters.                                                                                                                                                                                                                                                                                                          | substr(“string”, 1, 3)                                                                                                                                                                    |<br>| <strong>time()</strong>                | Returns the wall-clock time with microsecond resolution.                                                                                                                                                                                                                                                                                                                                          | time()                                                                                                                                                                                    |<br>| <strong>tonumber(X,Y)</strong>         | Converts input string X to a number, where Y (optional, defaults to 10) defines the base of the number to convert to.                                                                                                                                                                                                                                                                             | tonumber(“0A4”,16)                                                                                                                                                                        |<br>| <strong>tostring(X,Y)</strong>         | Returns a field value of X as a string. If the value of X is a number, it reformats it as a string. If X is a Boolean value,, reformats to “True” or “False”. If X is a number, the second argument Y is optional and can either be “hex” (convert X to hexadecimal), “commas” (formats X with commas and 2 decimal places), or “duration” (converts seconds X to readable time format HH:MM:SS). | This example returns: foo&#x3D;615 and foo2&#x3D;00:10:15: … | eval foo&#x3D;615 | eval foo2 &#x3D; tostring(foo, “duration”)                                                                               |<br>| <strong>typeof(X)</strong>             | Returns a string representation of the field type.                                                                                                                                                                                                                                                                                                                                                | This example returns: “NumberStringBoolInvalid”: typeof(12)+ typeof(“string”)+                                                                                                            |<br>| <strong>urldecode(X)</strong>          | Returns the URL X decoded.                                                                                                                                                                                                                                                                                                                                                                        | urldecode(“http%3A%2F%2F<a target="_blank" rel="noopener" href="http://www.splunk/">www.splunk</a>. com%2Fdownload%3Fr%3Dheader”)                                                                                                                         |<br>| **validate              | (X,Y,…)**                                                                                                                                                                                                                                                                                                                                                                                       | Given pairs of arguments, Boolean expressions X and strings Y, returns the string Y corresponding to the first expression X that evaluates to False and defaults to NULL if all are True. | validate(isint(port), “ERROR: Port is not an integer”, port &gt;&#x3D; 1 AND port &lt;&#x3D; 65535, “ERROR: Port is out of range”) |</p>
+<h2 id="Common-Stats-Functions"><a href="#Common-Stats-Functions" class="headerlink" title="Common Stats Functions"></a>Common Stats Functions</h2><p>Common statistical functions used with the chart, stats, and timechart commands. Field names can be wildcarded, so avg(*delay) might calculate the average of the delay and xdelay fields.</p>
+<table>
+<thead>
+<tr>
+<th><strong>Function</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>avg(X)</strong></td>
+<td>Returns the average of the values of field X.</td>
+</tr>
+<tr>
+<td><strong>count(X)</strong></td>
+<td>Returns the number of occurrences of the field X. To indicate a specific field value to match, format X as eval(field&#x3D;”value”).</td>
+</tr>
+<tr>
+<td><strong>dc(X)</strong></td>
+<td>Returns the count of distinct values of the field X.</td>
+</tr>
+<tr>
+<td><strong>earliest(X)</strong></td>
+<td>Returns the chronologically earliest seen value of X.</td>
+</tr>
+<tr>
+<td><strong>latest(X)</strong></td>
+<td>Returns the chronologically latest seen value of X.</td>
+</tr>
+<tr>
+<td><strong>max(X)</strong></td>
+<td>Returns the maximum value of the field X. If the values of X are non-numeric, the max is found from alphabetical ordering.</td>
+</tr>
+<tr>
+<td><strong>median(X)</strong></td>
+<td>Returns the middle-most value of the field X.</td>
+</tr>
+<tr>
+<td><strong>min(X)</strong></td>
+<td>Returns the minimum value of the field X. If the values of X are non-numeric, the min is found from alphabetical ordering.</td>
+</tr>
+<tr>
+<td><strong>mode(X)</strong></td>
+<td>Returns the most frequent value of the field X.</td>
+</tr>
+<tr>
+<td><strong>perc<X>(Y)</strong></td>
+<td>Returns the X-th percentile value of the field Y. For example, perc5(total) returns the 5th percentile value of a field “total”.</td>
+</tr>
+<tr>
+<td><strong>range(X)</strong></td>
+<td>Returns the difference between the max and min values of the field X.</td>
+</tr>
+<tr>
+<td><strong>stdev(X)</strong></td>
+<td>Returns the sample standard deviation of the field X.</td>
+</tr>
+<tr>
+<td><strong>stdevp(X)</strong></td>
+<td>Returns the population standard deviation of the field X.</td>
+</tr>
+<tr>
+<td><strong>sum(X)</strong></td>
+<td>Returns the sum of the values of the field X.</td>
+</tr>
+<tr>
+<td><strong>sumsq(X)</strong></td>
+<td>Returns the sum of the squares of the values of the field X.</td>
+</tr>
+<tr>
+<td><strong>values(X)</strong></td>
+<td>Returns the list of all distinct values of the field X as a multi-value entry. The order of the values is alphabetical.</td>
+</tr>
+<tr>
+<td><strong>var(X)</strong></td>
+<td>Returns the sample variance of the field X.</td>
+</tr>
+</tbody></table>
+<h2 id="Commands-by-category"><a href="#Commands-by-category" class="headerlink" title="Commands by category"></a>Commands by category</h2><p>The following tables list all the search commands, categorized by their usage. Some commands fit into more than one category based on the options that you specify.</p>
+<h3 id="Correlation"><a href="#Correlation" class="headerlink" title="Correlation"></a>Correlation</h3><p>These commands can be used to build correlation searches.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Append"><code>append</code></a></td>
+<td>Appends subsearch results to current results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Appendcols"><code>appendcols</code></a></td>
+<td>Appends the fields of the subsearch results to current results, first results to first result, second to second, etc.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Appendpipe"><code>appendpipe</code></a></td>
+<td>Appends the result of the subpipeline applied to the current result set to results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Arules"><code>arules</code></a></td>
+<td>Finds association rules between field values.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Associate"><code>associate</code></a></td>
+<td>Identifies correlations between fields.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Contingency"><code>contingency, counttable, ctable</code></a></td>
+<td>Builds a contingency table for two fields.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Correlate"><code>correlate</code></a></td>
+<td>Calculates the correlation between different fields.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Diff"><code>diff</code></a></td>
+<td>Returns the difference between two search results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Join"><code>join</code></a></td>
+<td>Combines the results from the main results pipeline with the results from a subsearch.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Lookup"><code>lookup</code></a></td>
+<td>Explicitly invokes field value lookups.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Selfjoin"><code>selfjoin</code></a></td>
+<td>Joins results with itself.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Set"><code>set</code></a></td>
+<td>Performs set operations (union, diff, intersect) on subsearches.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Stats"><code>stats</code></a></td>
+<td>Provides statistics, grouped optionally by fields. See <a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/CommonStatsFunctions"><code>Statistical and charting functions</code></a>.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Transaction"><code>transaction</code></a></td>
+<td>Groups search results into transactions.</td>
+</tr>
+</tbody></table>
+<h3 id="Data-and-indexes"><a href="#Data-and-indexes" class="headerlink" title="Data and indexes"></a>Data and indexes</h3><p>These commands can be used to learn more about your data, add and delete data sources, or manage the data in your summary indexes.</p>
+<h4 id="View-data"><a href="#View-data" class="headerlink" title="View data"></a>View data</h4><p>These commands return information about the data you have in your indexes. They do not modify your data or indexes in any way.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Datamodel"><code>datamodel</code></a></td>
+<td>Return information about a data model or data model object.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Dbinspect"><code>dbinspect</code></a></td>
+<td>Returns information about the specified index.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Eventcount"><code>eventcount</code></a></td>
+<td>Returns the number of events in an index.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Metadata"><code>metadata</code></a></td>
+<td>Returns a list of source, sourcetypes, or hosts from a specified index or distributed search peer.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Typeahead"><code>typeahead</code></a></td>
+<td>Returns typeahead information on a specified prefix.</td>
+</tr>
+</tbody></table>
+<h4 id="Manage-data"><a href="#Manage-data" class="headerlink" title="Manage data"></a>Manage data</h4><p>These are some commands you can use to add data sources to or delete specific data from your indexes.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Delete"><code>delete</code></a></td>
+<td>Delete specific events or search results.</td>
+</tr>
+</tbody></table>
+<h4 id="Manage-summary-indexes"><a href="#Manage-summary-indexes" class="headerlink" title="Manage summary indexes"></a>Manage summary indexes</h4><p>These commands are used to create and manage your summary indexes.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Collect"><code>collect, stash</code></a></td>
+<td>Puts search results into a summary index.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Overlap"><code>overlap</code></a></td>
+<td>Finds events in a summary index that overlap in time or have missed events.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Sichart"><code>sichart</code></a></td>
+<td>Summary indexing version of chart. Computes the necessary information for you to later run a chart search on the summary index.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Sirare"><code>sirare</code></a></td>
+<td>Summary indexing version of rare. Computes the necessary information for you to later run a rare search on the summary index.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Sistats"><code>sistats</code></a></td>
+<td>Summary indexing version of stats. Computes the necessary information for you to later run a stats search on the summary index.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Sitimechart"><code>sitimechart</code></a></td>
+<td>Summary indexing version of timechart. Computes the necessary information for you to later run a timechart search on the summary index.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Sitop"><code>sitop</code></a></td>
+<td>Summary indexing version of top. Computes the necessary information for you to later run a top search on the summary index.</td>
+</tr>
+</tbody></table>
+<h3 id="Fields"><a href="#Fields" class="headerlink" title="Fields"></a>Fields</h3><p>These are commands you can use to add, extract, and modify fields or field values. The most useful command for manipulating fields is <a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Eval"><code>eval</code></a> and its <a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/CommonEvalFunctions"><code>statistical and charting functions</code></a>.</p>
+<h4 id="Add-fields"><a href="#Add-fields" class="headerlink" title="Add fields"></a>Add fields</h4><p>Use these commands to add new fields.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Accum"><code>accum</code></a></td>
+<td>Keeps a running total of the specified numeric field.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Addinfo"><code>addinfo</code></a></td>
+<td>Add fields that contain common information about the current search.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Addtotals"><code>addtotals</code></a></td>
+<td>Computes the sum of all numeric fields for each result.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Delta"><code>delta</code></a></td>
+<td>Computes the difference in field value between nearby results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Eval"><code>eval</code></a></td>
+<td>Calculates an expression and puts the value into a field. See also, <a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/CommonEvalFunctions"><code>evaluation functions</code></a>.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Iplocation"><code>iplocation</code></a></td>
+<td>Adds location information, such as city, country, latitude, longitude, and so on, based on IP addresses.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Lookup"><code>lookup</code></a></td>
+<td>For configured lookup tables, explicitly invokes the field value lookup and adds fields from the lookup table to the events.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Multikv"><code>multikv</code></a></td>
+<td>Extracts field-values from table-formatted events.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Rangemap"><code>rangemap</code></a></td>
+<td>Sets RANGE field to the name of the ranges that match.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Strcat"><code>strcat</code></a></td>
+<td>Concatenates string values and saves the result to a specified field.</td>
+</tr>
+</tbody></table>
+<h4 id="Extract-fields"><a href="#Extract-fields" class="headerlink" title="Extract fields"></a>Extract fields</h4><p>These commands provide different ways to extract new fields from search results.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Erex"><code>erex</code></a></td>
+<td>Allows you to specify example or counter example values to automatically extract fields that have similar values.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Extract"><code>extract, kv</code></a></td>
+<td>Extracts field-value pairs from search results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Kvform"><code>kvform</code></a></td>
+<td>Extracts values from search results, using a form template.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Rex"><code>rex</code></a></td>
+<td>Specify a Perl regular expression named groups to extract fields while you search.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Spath"><code>spath</code></a></td>
+<td>Provides a straightforward means for extracting fields from structured data formats, XML and JSON.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Xmlkv"><code>xmlkv</code></a></td>
+<td>Extracts XML key-value pairs.</td>
+</tr>
+</tbody></table>
+<h4 id="Modify-fields-and-field-values"><a href="#Modify-fields-and-field-values" class="headerlink" title="Modify fields and field values"></a>Modify fields and field values</h4><p>Use these commands to modify fields or their values.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Convert"><code>convert</code></a></td>
+<td>Converts field values into numerical values.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Filldown"><code>filldown</code></a></td>
+<td>Replaces NULL values with the last non-NULL value.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Fillnull"><code>fillnull</code></a></td>
+<td>Replaces null values with a specified value.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Makemv"><code>makemv</code></a></td>
+<td>Change a specified field into a multivalue field during a search.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Nomv"><code>nomv</code></a></td>
+<td>Changes a specified multivalue field into a single-value field at search time.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Reltime"><code>reltime</code></a></td>
+<td>Converts the difference between ‘now’ and ‘_time’ to a human-readable value and adds adds this value to the field, ‘reltime’, in your search results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Rename"><code>rename</code></a></td>
+<td>Renames a specified field. Use wildcards to specify multiple fields.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Replace"><code>replace</code></a></td>
+<td>Replaces values of specified fields with a specified new value.</td>
+</tr>
+</tbody></table>
+<h3 id="Find-anomalies"><a href="#Find-anomalies" class="headerlink" title="Find anomalies"></a>Find anomalies</h3><p>These commands are used to find anomalies in your data. Either search for uncommon or outlying events and fields or cluster similar events together.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/analyzefields"><code>analyzefields, af</code></a></td>
+<td>Analyze numerical fields for their ability to predict another discrete field.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Anomalies"><code>anomalies</code></a></td>
+<td>Computes an “unexpectedness” score for an event.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Anomalousvalue"><code>anomalousvalue</code></a></td>
+<td>Finds and summarizes irregular, or uncommon, search results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Anomalydetection"><code>anomalydetection</code></a></td>
+<td>Identifies anomalous events by computing a probability for each event and then detecting unusually small probabilities.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Cluster"><code>cluster</code></a></td>
+<td>Clusters similar events together.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Kmeans"><code>kmeans</code></a></td>
+<td>Performs k-means clustering on selected fields.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Outlier"><code>outlier</code></a></td>
+<td>Removes outlying numerical values.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Rare"><code>rare</code></a></td>
+<td>Displays the least common values of a field.</td>
+</tr>
+</tbody></table>
+<h3 id="Geographic-and-location"><a href="#Geographic-and-location" class="headerlink" title="Geographic and location"></a>Geographic and location</h3><p>These commands add geographical information to your search results.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Iplocation"><code>iplocation</code></a></td>
+<td>Returns location information, such as city, country, latitude, longitude, and so on, based on IP addresses.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Geom"><code>geom</code></a></td>
+<td>Adds a field, named “geom”, to each event. This field contains geographic data structures for polygon geometry in JSON and is used for choropleth map visualization. This command requires an external lookup with <code>external_type=geo</code> to be installed.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Geomfilter"><code>geomfilter</code></a></td>
+<td>Accepts two points that specify a bounding box for clipping choropleth maps. Points that fall outside of the bounding box are filtered out.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Geostats"><code>geostats</code></a></td>
+<td>Generate statistics which are clustered into geographical bins to be rendered on a world map.</td>
+</tr>
+</tbody></table>
+<h3 id="Metrics"><a href="#Metrics" class="headerlink" title="Metrics"></a>Metrics</h3><p>These commands work with metrics data.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Mcollect"><code>mcollect</code></a></td>
+<td>Converts events into metric data points and inserts the data points into a metric index on the search head.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Meventcollect"><code>meventcollect</code></a></td>
+<td>Converts events into metric data points and inserts the data points into a metric index on indexer tier.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Mpreview"><code>mpreview, msearch</code></a></td>
+<td>Provides samples of the raw metric data points in the metric time series in your metrics indexes. Helps you troubleshoot your metrics data.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Mstats"><code>mstats</code></a></td>
+<td>Calculates visualization-ready statistics for the <code>measurement</code>, <code>metric_name</code>, and <code>dimension</code> fields in metric indexes.</td>
+</tr>
+</tbody></table>
+<h3 id="Prediction-and-trending"><a href="#Prediction-and-trending" class="headerlink" title="Prediction and trending"></a>Prediction and trending</h3><p>These commands predict future values and calculate trendlines that can be used to create visualizations.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Predict"><code>predict</code></a></td>
+<td>Enables you to use time series algorithms to predict future values of fields.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Trendline"><code>trendline</code></a></td>
+<td>Computes moving averages of fields.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/X11"><code>x11</code></a></td>
+<td>Enables you to determine the trend in your data by removing the seasonal pattern.</td>
+</tr>
+</tbody></table>
+<h3 id="Reports"><a href="#Reports" class="headerlink" title="Reports"></a>Reports</h3><p>These commands are used to build <strong><a target="_blank" rel="noopener" href="https://docs.splunk.com/Splexicon:Transformingsearch" title="Splexicon:Transformingsearch">transforming searches</a></strong>. These commands return statistical data tables that are required for charts and other kinds of data visualizations.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Addtotals"><code>addtotals</code></a></td>
+<td>Computes the sum of all numeric fields for each result.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Autoregress"><code>autoregress</code></a></td>
+<td>Prepares your events for calculating the autoregression, or moving average, based on a field that you specify.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Bucket"><code>bin, discretize</code></a></td>
+<td>Puts continuous numerical values into discrete sets.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Chart"><code>chart</code></a></td>
+<td>Returns results in a tabular output for charting. See also, <a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/CommonStatsFunctions"><code>Statistical and charting functions</code></a>.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Contingency"><code>contingency, counttable, ctable</code></a></td>
+<td>Builds a contingency table for two fields.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Correlate"><code>correlate</code></a></td>
+<td>Calculates the correlation between different fields.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Eventcount"><code>eventcount</code></a></td>
+<td>Returns the number of events in an index.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Eventstats"><code>eventstats</code></a></td>
+<td>Adds summary statistics to all search results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Gauge"><code>gauge</code></a></td>
+<td>Transforms results into a format suitable for display by the Gauge chart types.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Makecontinuous"><code>makecontinuous</code></a></td>
+<td>Makes a field that is supposed to be the x-axis continuous (invoked by <code>chart</code>&#x2F;<code>timechart</code>)</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Mstats"><code>mstats</code></a></td>
+<td>Calculates statistics for the measurement, metric_name, and dimension fields in metric indexes.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Outlier"><code>outlier</code></a></td>
+<td>Removes outlying numerical values.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Rare"><code>rare</code></a></td>
+<td>Displays the least common values of a field.</td>
+</tr>
+<tr>
+<td>[&#96;stats](<a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Stats">http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Stats</a>)</td>
+<td>Provides statistics, grouped optionally by fields. See also, [Statistical and charting functions&#96;](<a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/CommonStatsFunctions">http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/CommonStatsFunctions</a>).</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Streamstats"><code>streamstats</code></a></td>
+<td>Adds summary statistics to all search results in a streaming manner.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Timechart"><code>timechart</code></a></td>
+<td>Create a time series chart and corresponding table of statistics. See also, <a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/CommonStatsFunctions"><code>Statistical and charting functions</code></a>.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Top"><code>top</code></a></td>
+<td>Displays the most common values of a field.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Trendline"><code>trendline</code></a></td>
+<td>Computes moving averages of fields.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Tstats"><code>tstats</code></a></td>
+<td>Performs statistical queries on indexed fields in <code>tsidx</code> files.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Untable"><code>untable</code></a></td>
+<td>Converts results from a tabular format to a format similar to <code>stats</code> output. Inverse of <code>xyseries</code> and <code>maketable</code>.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Xyseries"><code>xyseries</code></a></td>
+<td>Converts results into a format suitable for graphing.</td>
+</tr>
+</tbody></table>
+<h3 id="Results"><a href="#Results" class="headerlink" title="Results"></a>Results</h3><p>These commands can be used to manage search results. For example, you can append one set of results with another, filter more events from the results, reformat the results, and so on.</p>
+<h4 id="Alerting"><a href="#Alerting" class="headerlink" title="Alerting"></a>Alerting</h4><p>Use this command to email the results of a search.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Sendemail"><code>sendemail</code></a></td>
+<td>Emails search results, either inline or as an attachment, to one or more specified email addresses.</td>
+</tr>
+</tbody></table>
+<h4 id="Appending"><a href="#Appending" class="headerlink" title="Appending"></a>Appending</h4><p>Use these commands to append one set of results with another set or to itself.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Append"><code>append</code></a></td>
+<td>Appends subsearch results to current results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Appendcols"><code>appendcols</code></a></td>
+<td>Appends the fields of the subsearch results to current results, first results to first result, second to second, and so on.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Join"><code>join</code></a></td>
+<td>SQL-like joining of results from the main results pipeline with the results from the subpipeline.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Selfjoin"><code>selfjoin</code></a></td>
+<td>Joins results with itself.</td>
+</tr>
+</tbody></table>
+<h4 id="Filtering"><a href="#Filtering" class="headerlink" title="Filtering"></a>Filtering</h4><p>Use these commands to remove more events or fields from your current results.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Dedup"><code>dedup</code></a></td>
+<td>Removes subsequent results that match a specified criteria.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Fields"><code>fields</code></a></td>
+<td>Removes fields from search results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/From"><code>from</code></a></td>
+<td>Retrieves data from a dataset, such as a data model dataset, a CSV lookup, a KV Store lookup, a saved search, or a table dataset.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Mvcombine"><code>mvcombine</code></a></td>
+<td>Combines events in search results that have a single differing field value into one result with a multivalue field of the differing field.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Regex"><code>regex</code></a></td>
+<td>Removes results that do not match the specified regular expression.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Searchtxn"><code>searchtxn</code></a></td>
+<td>Finds transaction events within specified search constraints.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Table"><code>table</code></a></td>
+<td>Creates a table using the specified fields.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Uniq"><code>uniq</code></a></td>
+<td>Removes any search that is an exact duplicate with a previous result.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Where"><code>where</code></a></td>
+<td>Performs arbitrary filtering on your data. See also, <a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/CommonEvalFunctions"><code>Evaluation functions</code></a>.</td>
+</tr>
+</tbody></table>
+<h4 id="Formatting"><a href="#Formatting" class="headerlink" title="Formatting"></a>Formatting</h4><p>Use these commands to reformat your current results.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/fieldformat"><code>fieldformat</code></a></td>
+<td>Uses <code>eval</code> expressions to change the format of field values when they are rendered without changing their underlying values. Does not apply to exported data.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/transpose"><code>transpose</code></a></td>
+<td>Reformats rows of search results as columns. Useful for fixing X- and Y-axis display issues with charts, or for turning sets of data into a series to produce a chart.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Untable"><code>untable</code></a></td>
+<td>Converts results from a tabular format to a format similar to <code>stats</code> output. Inverse of <code>xyseries</code> and <code>maketable</code>.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Xyseries"><code>xyseries</code></a></td>
+<td>Converts results into a format suitable for graphing.</td>
+</tr>
+</tbody></table>
+<h4 id="Generating"><a href="#Generating" class="headerlink" title="Generating"></a>Generating</h4><p>Use these commands to generate or return events.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Gentimes"><code>gentimes</code></a></td>
+<td>Returns results that match a time-range.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Loadjob"><code>loadjob</code></a></td>
+<td>Loads events or results of a previously completed search job.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Makeresults"><code>makeresults</code></a></td>
+<td>Creates a specified number of empty search results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Mvexpand"><code>mvexpand</code></a></td>
+<td>Expands the values of a multivalue field into separate events for each value of the multivalue field.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Savedsearch"><code>savedsearch</code></a></td>
+<td>Returns the search results of a saved search.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Search"><code>search</code></a></td>
+<td>Searches indexes for matching events. This command is implicit at the start of every search pipeline that does not begin with another generating command.</td>
+</tr>
+</tbody></table>
+<h4 id="Grouping"><a href="#Grouping" class="headerlink" title="Grouping"></a>Grouping</h4><p>Use these commands to group or classify the current results.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Cluster"><code>cluster</code></a></td>
+<td>Clusters similar events together.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Kmeans"><code>kmeans</code></a></td>
+<td>Performs k-means clustering on selected fields.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Mvexpand"><code>mvexpand</code></a></td>
+<td>Expands the values of a multivalue field into separate events for each value of the multivalue field.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Transaction"><code>transaction</code></a></td>
+<td>Groups search results into transactions.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Typelearner"><code>typelearner</code></a></td>
+<td>Generates suggested eventtypes.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Typer"><code>typer</code></a></td>
+<td>Calculates the eventtypes for the search results.</td>
+</tr>
+</tbody></table>
+<h4 id="Reordering"><a href="#Reordering" class="headerlink" title="Reordering"></a>Reordering</h4><p>Use these commands to change the order of the current search results.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Head"><code>head</code></a></td>
+<td>Returns the first number n of specified results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Mvreverse"><code>mvreverse</code></a></td>
+<td>Reverses the order of the values in a multivalue field.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Reverse"><code>reverse</code></a></td>
+<td>Reverses the order of the results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Sort"><code>sort</code></a></td>
+<td>Sorts search results by the specified fields.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Tail"><code>tail</code></a></td>
+<td>Returns the last number N of specified results</td>
+</tr>
+</tbody></table>
+<h4 id="Reading"><a href="#Reading" class="headerlink" title="Reading"></a>Reading</h4><p>Use these commands to read in results from external files or previous searches.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Inputcsv"><code>inputcsv</code></a></td>
+<td>Loads search results from the specified CSV file.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Inputlookup"><code>inputlookup</code></a></td>
+<td>Loads search results from a specified static lookup table.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Loadjob"><code>loadjob</code></a></td>
+<td>Loads events or results of a previously completed search job.</td>
+</tr>
+</tbody></table>
+<h4 id="Writing"><a href="#Writing" class="headerlink" title="Writing"></a>Writing</h4><p>Use these commands to define how to output current search results.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Collect"><code>collect, stash</code></a></td>
+<td>Puts search results into a summary index.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Meventcollect"><code>meventcollect</code></a></td>
+<td>Converts events into metric data points and inserts the data points into a metric index on indexer tier.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Mcollect"><code>mcollect</code></a></td>
+<td>Converts events into metric data points and inserts the data points into a metric index on the search head.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Outputcsv"><code>outputcsv</code></a></td>
+<td>Outputs search results to a specified CSV file.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Outputlookup"><code>outputlookup</code></a></td>
+<td>Writes search results to the specified static lookup table.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Outputtext"><code>outputtext</code></a></td>
+<td>Ouputs the raw text field (<code>_raw</code>) of results into the <code>_xml</code> field.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Sendemail"><code>sendemail</code></a></td>
+<td>Emails search results, either inline or as an attachment, to one or more specified email addresses.</td>
+</tr>
+</tbody></table>
+<h3 id="Search"><a href="#Search" class="headerlink" title="Search"></a>Search</h3><table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Localop"><code>localop</code></a></td>
+<td>Run subsequent commands, that is all commands following this, locally and not on a remote peer.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Map"><code>map</code></a></td>
+<td>A looping operator, performs a search over each search result.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Redistribute"><code>redistribute</code></a></td>
+<td>Invokes parallel reduce search processing to shorten the search runtime of a set of supported SPL commands.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Search"><code>search</code></a></td>
+<td>Searches indexes for matching events. This command is implicit at the start of every search pipeline that does not begin with another generating command.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Sendemail"><code>sendemail</code></a></td>
+<td>Emails search results, either inline or as an attachment, to one or more specified email addresses.</td>
+</tr>
+</tbody></table>
+<h3 id="Subsearch"><a href="#Subsearch" class="headerlink" title="Subsearch"></a>Subsearch</h3><p>These are commands that you can use with <strong><a target="_blank" rel="noopener" href="https://docs.splunk.com/Splexicon:Subsearch" title="Splexicon:Subsearch">subsearches</a></strong>.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Append"><code>append</code></a></td>
+<td>Appends subsearch results to current results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Appendcols"><code>appendcols</code></a></td>
+<td>Appends the fields of the subsearch results to current results, first results to first result, second to second, and so on.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Appendpipe"><code>appendpipe</code></a></td>
+<td>Appends the result of the subpipeline applied to the current result set to results.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Foreach"><code>foreach</code></a></td>
+<td>Runs a templated streaming subsearch for each field in a wildcarded field list.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Format"><code>format</code></a></td>
+<td>Takes the results of a subsearch and formats them into a single result.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Join"><code>join</code></a></td>
+<td>Combine the results of a subsearch with the results of a main search.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Return"><code>return</code></a></td>
+<td>Specify the values to return from a subsearch.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Set"><code>set</code></a></td>
+<td>Performs set operations (union, diff, intersect) on subsearches.</td>
+</tr>
+</tbody></table>
+<h3 id="Time"><a href="#Time" class="headerlink" title="Time"></a>Time</h3><p>Use these commands to search based on time ranges or add time information to your events.</p>
+<table>
+<thead>
+<tr>
+<th>Command</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Gentimes"><code>gentimes</code></a></td>
+<td>Returns results that match a time-range.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Localize"><code>localize</code></a></td>
+<td>Returns a list of the time ranges in which the search results were found.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="http://docs.splunk.com/Documentation/Splunk/9.2.0/SearchReference/Reltime"><code>reltime</code></a></td>
+<td>Converts the difference between ‘now’ and ‘_time’ to a human-readable value and adds adds this value to the field, ‘reltime’, in your search results.</td>
+</tr>
+</tbody></table>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://www.splunk.com/zh_cn/get-started/enterprise.html">Splunk 软件入门指南</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.splunk.com/en_us/resources/splunk-quick-reference-guide.html">Splunk Quick Reference Guide</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.splunk.com/Documentation/Splunk/latest/SearchReference/Commandsbycategory">Commands by category</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/splunk/" rel="tag"># splunk</a>
+              <a href="/tags/tool/" rel="tag"># tool</a>
+              <a href="/tags/log/" rel="tag"># log</a>
+              <a href="/tags/data-analysis/" rel="tag"># data analysis</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2024/03/12/jetty/" rel="prev" title="jetty 笔记">
+                  <i class="fa fa-angle-left"></i> jetty 笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2024/04/08/vba/" rel="next" title="VBA(Visual Basic for Applications) 笔记">
+                  VBA(Visual Basic for Applications) 笔记 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Apomelo</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

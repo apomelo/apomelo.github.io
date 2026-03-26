@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="简介VBA，全名 Visual Basic for Applications，是 Microsoft 为其 Office 系列产品如 Excel、Word、Access 等提供的一种宏语言。它是 Visual Basic 的一个子集，主要用于自动化 Office 应用程序的任务，包括创建用户定义的函数、自动执行复杂任务、创建和管理 Windows 应用程序等。 VBA 是一种面向对象的编程语言，可">
+<meta property="og:type" content="article">
+<meta property="og:title" content="VBA(Visual Basic for Applications) 笔记">
+<meta property="og:url" content="https://apomelo.github.io/posts/2024/04/08/vba/index.html">
+<meta property="og:site_name" content="Apomelo - 追逐">
+<meta property="og:description" content="简介VBA，全名 Visual Basic for Applications，是 Microsoft 为其 Office 系列产品如 Excel、Word、Access 等提供的一种宏语言。它是 Visual Basic 的一个子集，主要用于自动化 Office 应用程序的任务，包括创建用户定义的函数、自动执行复杂任务、创建和管理 Windows 应用程序等。 VBA 是一种面向对象的编程语言，可">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-04-07T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-04-07T16:00:00.000Z">
+<meta property="article:author" content="Apomelo">
+<meta property="article:tag" content="vba">
+<meta property="article:tag" content="language">
+<meta property="article:tag" content="excel">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://apomelo.github.io/posts/2024/04/08/vba/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.github.io/posts/2024/04/08/vba/","path":"posts/2024/04/08/vba/","title":"VBA(Visual Basic for Applications) 笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>VBA(Visual Basic for Applications) 笔记 | Apomelo - 追逐</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js" defer></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js" defer></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/5.36.0/lite/builds/browser.umd.js" integrity="sha256-o49zoHLDPBm9WLg6AiliAVi3axCRTqe3ltTxLvhzAVg=" crossorigin="anonymous" defer></script><script src="/js/third-party/search/algolia-search.js" defer></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fab fa-algolia fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%98%BE%E7%A4%BA-%E2%80%9C%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7%E2%80%9D-%E9%80%89%E9%A1%B9%E5%8D%A1"><span class="nav-number">2.</span> <span class="nav-text">显示 “开发工具” 选项卡</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#VBA-%E8%AF%AD%E8%A8%80%E7%9A%84%E5%9F%BA%E7%A1%80%E8%AE%A4%E8%AF%86"><span class="nav-number">3.</span> <span class="nav-text">VBA 语言的基础认识</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B9%A6%E5%86%99%E8%A7%84%E8%8C%83"><span class="nav-number">3.1.</span> <span class="nav-text">书写规范</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E9%87%8A%E5%92%8C%E8%B5%8B%E5%80%BC%E8%AF%AD%E5%8F%A5"><span class="nav-number">3.2.</span> <span class="nav-text">注释和赋值语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E8%AF%86%E7%AC%A6"><span class="nav-number">3.3.</span> <span class="nav-text">标识符</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89"><span class="nav-number">3.3.1.</span> <span class="nav-text">定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%91%BD%E5%90%8D%E8%A7%84%E5%88%99"><span class="nav-number">3.3.2.</span> <span class="nav-text">命名规则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="nav-number">3.4.</span> <span class="nav-text">运算符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%98%E9%87%8F%E4%B8%8E%E5%B8%B8%E9%87%8F"><span class="nav-number">3.5.</span> <span class="nav-text">变量与常量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="nav-number">3.6.</span> <span class="nav-text">数据类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B8%B8%E7%94%A8%E5%8F%98%E9%87%8F%E5%AE%9A%E4%B9%89%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.6.1.</span> <span class="nav-text">常用变量定义示例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E6%A8%A1%E5%9D%97"><span class="nav-number">3.6.2.</span> <span class="nav-text">自定义类模块</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%B1%BB%E6%A8%A1%E5%9D%97%E6%94%B9%E5%90%8D"><span class="nav-number">3.6.2.1.</span> <span class="nav-text">类模块改名</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E7%A4%BA%E4%BE%8B"><span class="nav-number">3.6.2.2.</span> <span class="nav-text">代码示例</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">83</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.github.io/posts/2024/04/08/vba/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="VBA(Visual Basic for Applications) 笔记 | Apomelo - 追逐">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          VBA(Visual Basic for Applications) 笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-04-08 00:00:00" itemprop="dateCreated datePublished" datetime="2024-04-08T00:00:00+08:00">2024-04-08</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/language/" itemprop="url" rel="index"><span itemprop="name">language</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2024/04/08/vba/" class="post-meta-item leancloud_visitors" data-flag-title="VBA(Visual Basic for Applications) 笔记" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>VBA，全名 Visual Basic for Applications，是 Microsoft 为其 Office 系列产品如 Excel、Word、Access 等提供的一种宏语言。它是 Visual Basic 的一个子集，主要用于自动化 Office 应用程序的任务，包括创建用户定义的函数、自动执行复杂任务、创建和管理 Windows 应用程序等。</p>
+<p>VBA 是一种面向对象的编程语言，可以创建复杂的用户界面和其他高级功能。它具有强大的编程能力，可以访问 Windows API 和其他低级功能，同时还可以使用 SQL 连接数据库。</p>
+<p>VBA 的主要优点是易于学习和使用，尤其是对于那些已经熟悉 Microsoft Office 的用户。此外，由于它是 Office 的内置组件，因此无需另外安装就可以使用。然而，它的缺点是运行速度相对较慢，且只能在 Windows 环境下运行。</p>
+<span id="more"></span>
+
+<h1 id="显示-“开发工具”-选项卡"><a href="#显示-“开发工具”-选项卡" class="headerlink" title="显示 “开发工具” 选项卡"></a>显示 “开发工具” 选项卡</h1><p>需要编写或录制 Excel 宏，需要打开 “开发工具” 选项卡</p>
+<p>默认情况下不显示“ <strong>开发工具</strong> ”选项卡，但你可以将其添加到功能区。</p>
+<ol>
+<li>在 “<strong>文件</strong>” 选项卡上，转到 “<strong>选项</strong>” &gt; “<strong>自定义功能区</strong>”。</li>
+<li>在 “<strong>自定义功能区</strong>” 和 “<strong>主选项卡</strong>” 下，选中 “<strong>开发工具</strong>” 复选框。</li>
+</ol>
+<p>显示选项卡后，除非清除“检查”框或必须重新安装 Microsoft 365 程序，否则<strong>“开发工具</strong>”选项卡将保持可见。</p>
+<p>“<strong>开发工具</strong>” 选项卡是你想要执行或使用以下项时转到的位置：</p>
+<ul>
+<li>编写宏。</li>
+<li>运行以前录制的宏。</li>
+<li>使用 XML 命令。</li>
+<li>使用 ActiveX 控件。</li>
+<li>创建用于 Microsoft 365 程序的应用程序。</li>
+<li>在 Microsoft Excel 中使用表单控件。</li>
+<li>在 Microsoft Visio 中使用形状表。</li>
+<li>在 Microsoft Visio 中创建新的形状和模具。</li>
+</ul>
+<h1 id="VBA-语言的基础认识"><a href="#VBA-语言的基础认识" class="headerlink" title="VBA 语言的基础认识"></a>VBA 语言的基础认识</h1><h2 id="书写规范"><a href="#书写规范" class="headerlink" title="书写规范"></a>书写规范</h2><ol>
+<li>VBA 不区分标识符的字母大小写，<strong>一律认为是小写字母</strong>；</li>
+<li>一行可以书写多条语句，各语句之间以冒号 <code>:</code> 分开；</li>
+<li>一条语句可以多行书写，以空格加下划线 <code> _</code> 来标识下行为续行；<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Dim</span> myLongVariableName <span class="keyword">As</span> <span class="type">String</span></span><br><span class="line">myLongVariableName = <span class="string">&quot;This is a long string that &quot;</span> _</span><br><span class="line">                  &amp; <span class="string">&quot;spans across multiple lines in VBA.&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li>标识符最好能简洁明了，不造成歧义。</li>
+</ol>
+<h2 id="注释和赋值语句"><a href="#注释和赋值语句" class="headerlink" title="注释和赋值语句"></a>注释和赋值语句</h2><ol>
+<li>注释语句是用来说明程序中某些语句的功能和作用；VBA 中有两种方法标识为注释语句。<ol>
+<li>单行注释：使用单引号 <code>&#39;</code> 开头，直到该行结束都会被视为注释。例如：<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&#x27; 这是一个单行注释</span></span><br><span class="line"><span class="keyword">Dim</span> x <span class="keyword">As</span> <span class="type">Integer</span> <span class="comment">&#x27; 这也是一个单行注释</span></span><br></pre></td></tr></table></figure></li>
+<li>多行注释：使用 Rem 关键字，并将注释放置在 Rem 和 End 之间。例如：<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">Rem 这是一个多行注释</span></span><br><span class="line">这是多行注释的第二行</span><br><span class="line">这是多行注释的第三行</span><br><span class="line"><span class="keyword">End</span> Rem</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+</ol>
+<p>需要注意的是，虽然多行注释看起来更结构化，但 VBA 实际上没有原生的多行注释语法，因此 <code>Rem</code> 语句只是一种约定俗成的方式来实现多行注释。</p>
+<ol>
+<li>在 VBA 中，赋值语句可以用来将一个值或表达式赋给变量。常见的赋值语句包括：<ol>
+<li><strong>使用等号 <code>=</code> 进行赋值</strong>：这是最常见的赋值方式，将一个表达式或值赋给一个变量或对象属性。例如：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x = 10</span><br><span class="line">myString = &quot;Hello, world!&quot;</span><br></pre></td></tr></table></figure></li>
+<li><strong>使用 <code>Set</code> 关键字给对象变量赋值</strong>：当将对象引用赋给一个变量时，需要使用 <code>Set</code> 关键字。例如：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Set objRange = Worksheets(&quot;Sheet1&quot;).Range(&quot;A1&quot;)</span><br></pre></td></tr></table></figure></li>
+<li><strong>复合赋值语句</strong>：复合赋值语句将运算符与等号结合起来，用于将变量与另一个值进行运算并将结果赋给该变量。常见的复合赋值语句包括 <code>+=</code>、<code>-=</code>、<code>*=</code>、<code>/=</code> 等。例如：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">x += 5  &#x27; 等同于 x = x + 5</span><br></pre></td></tr></table></figure></li>
+<li><strong>给对象赋值</strong>：给对象赋值通常涉及使用 Set 关键字。这是因为对象变量存储的是对对象的引用，而不是对象本身的值。例如：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Dim obj As Object</span><br><span class="line">Set obj = New SomeObject   &#x27; 创建新对象</span><br><span class="line">&#x27; 或者</span><br><span class="line">Set obj = SomeExistingObject   &#x27; 引用现有对象</span><br></pre></td></tr></table></figure></li>
+</ol>
+</li>
+</ol>
+<h2 id="标识符"><a href="#标识符" class="headerlink" title="标识符"></a>标识符</h2><h3 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h3><p>标识符是一种标识变量、常量、过程、函数、类等语言构成单位的符号，利用它可以完成对变量、常量、过程、函数、类等引用。</p>
+<h3 id="命名规则"><a href="#命名规则" class="headerlink" title="命名规则"></a>命名规则</h3><p>（1）字母打头，由字母、数字和下划线组成，如<code>A987b_23Abc</code></p>
+<p>（2）字符长度小于 40，（Excel2002 以上中文版本等，可以用汉字且长度可达 254 个字符）</p>
+<p>（3）不能与 VB 保留字重名，如 <code>public</code>，<code>private</code>，<code>dim</code>，<code>goto</code>，<code>next</code>，<code>with</code>，<code>integer</code>，<code>single</code> 等</p>
+<h2 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h2><p>定义：运算符是代表 VB 某种运算功能的符号。</p>
+<p>（1）赋值运算符 <code>=</code></p>
+<p>（2）数学运算符 <code>&amp;</code>（强制字符连接）、<code>+</code> （运算符两边都是字符时连接字符）、<code>+</code>（运算符两边都是数字时为加法运算符）、<code>-</code>（减）、<code>Mod</code>（取余）、<code>\</code>（整除）、<code>*</code>（乘）、<code>/</code>（除）、<code>-</code>（负号）、<code>^</code>（指数）</p>
+<p>（3）逻辑运算符 <code>Not</code>（非）、<code>And</code>（与）、<code>Or</code>（或）、<code>Xor</code>（异或）、<code>Eqv</code>（相等）、<code>Imp</code>（隐含）</p>
+<p>（4）关系运算符 <code>=</code> （相同）、<code>&lt;&gt;</code>（不等）、<code>&gt;</code>（大于）、<code>&lt;</code>（小于）、<code>&gt;=</code>（不小于）、<code>&lt;=</code>（不大于）、<code>Like</code>（判断给定的字符串是否与指定的模式相匹配）、<code>Is</code>（判断该数据是数字还是是字符）</p>
+<p>（5）位运算符  <code>Not</code>（逻辑非）、<code>And</code>（逻辑与）、<code>Or</code>（逻辑或）、<code>Xor</code>（逻辑异或）、<code>Eqv</code>（逻辑等）、<code>Imp</code>（蕴含）</p>
+<h2 id="变量与常量"><a href="#变量与常量" class="headerlink" title="变量与常量"></a>变量与常量</h2><p>（1）VBA 允许使用未定义的变量，默认是变体变量</p>
+<p>（2）在模块通用说明部分，加入 Option Explicit 语句可以强迫用户进行变量定义</p>
+<p>（3）变量定义语句及变量作用域</p>
+<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Dim</span> 变量 <span class="keyword">As</span> 类型 <span class="comment">&#x27; 定义为局部变量 如 Dim xyz As Integer</span></span><br><span class="line"><span class="keyword">Private</span> 变量 <span class="keyword">As</span> 类型 <span class="comment">&#x27; 定义为私有变量 如 Private xyz As Byte</span></span><br><span class="line"><span class="keyword">Public</span> 变量 <span class="keyword">As</span> 类型 <span class="comment">&#x27; 定义为公有变量 如 Public xyz As Single</span></span><br><span class="line"><span class="keyword">Global</span> 变量 <span class="keyword">As</span> 类型 <span class="comment">&#x27; 定义为全局变量 如 Global xyz As Date</span></span><br><span class="line"><span class="keyword">Static</span> 变量 <span class="keyword">As</span> 类型 <span class="comment">&#x27; 定义为静态变量 如 Static xyz As Double</span></span><br></pre></td></tr></table></figure>
+
+<p>一般变量作用域的原则是，在哪部分定义就在哪部分起作用，模块中定义则在该模块起作用。</p>
+<p>（4）常量为变量的一种特例，用 Const 定义，且定义时赋值，程序中不能改变值，作用域也如同变量作用域。如下定义：Const Pi&#x3D;3.1415926 as single</p>
+<h2 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h2><p>VBA 共有 12 种数据类型，具体见下表，此外用户还可以根据以下类型用 Type 自定义数据类型。</p>
+<table>
+<thead>
+<tr>
+<th>数据类型</th>
+<th>类型标识符</th>
+<th>字节</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>字符串型 String</td>
+<td>$</td>
+<td>字符长度（0-65400）</td>
+</tr>
+<tr>
+<td>布尔型 Boolean</td>
+<td>无</td>
+<td>2</td>
+</tr>
+<tr>
+<td>字节型 Byte</td>
+<td>无</td>
+<td>1</td>
+</tr>
+<tr>
+<td>整数型 Integer</td>
+<td>%</td>
+<td>2</td>
+</tr>
+<tr>
+<td>长整数型 Long</td>
+<td>&amp;</td>
+<td>4</td>
+</tr>
+<tr>
+<td>单精度型 Single</td>
+<td>！</td>
+<td>4</td>
+</tr>
+<tr>
+<td>双精度型 Double</td>
+<td>#</td>
+<td>8</td>
+</tr>
+<tr>
+<td>日期型 Date</td>
+<td>无</td>
+<td>8 （范围为公元 100&#x2F;1&#x2F;1-99&#x2F;12&#x2F;31）</td>
+</tr>
+<tr>
+<td>货币型 Currency</td>
+<td>@</td>
+<td>8</td>
+</tr>
+<tr>
+<td>小数点型 Decimal</td>
+<td>无</td>
+<td>14</td>
+</tr>
+<tr>
+<td>变体型 Variant</td>
+<td>无</td>
+<td>以上任意类型，可变</td>
+</tr>
+<tr>
+<td>对象型 Object</td>
+<td>无</td>
+<td>4</td>
+</tr>
+</tbody></table>
+<ol>
+<li><strong>User-Defined Types (UDTs)</strong>: 可以自定义的数据类型，由多个不同类型的成员组成。</li>
+<li><strong>Arrays</strong>: 可以存储多个相同类型的值的集合。</li>
+<li><strong>Collection</strong>: 可以存储多个对象的集合。</li>
+<li><strong>Error</strong>: 用于存储错误信息。</li>
+<li><strong>Nothing</strong>: 用于表示对象引用变量未引用任何对象。</li>
+</ol>
+<h3 id="常用变量定义示例"><a href="#常用变量定义示例" class="headerlink" title="常用变量定义示例"></a>常用变量定义示例</h3><p>在 VBA（Visual Basic for Applications）中，变量是用于存储数据的标识符。在使用变量之前，需要使用<code>Dim</code>语句声明它们。以下是 VBA 中常用的变量类型和示例：</p>
+<ol>
+<li><strong>String （字符串类型）</strong>：用于存储文本数据。<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Dim</span> myString <span class="keyword">As</span> <span class="type">String</span></span><br><span class="line">myString = <span class="string">&quot;Hello, world!&quot;</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>Boolean （布尔类型）</strong>：用于存储逻辑值，即 True 或 False。<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Dim</span> myBoolean <span class="keyword">As</span> <span class="type">Boolean</span></span><br><span class="line">myBoolean = <span class="literal">True</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>Byte （布尔类型）</strong>：用于存储 Byte 值，范围为-128 到 127。<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Dim</span> myByte <span class="keyword">As</span> <span class="type">Byte</span></span><br><span class="line">myByte = <span class="literal">True</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>Integer （整数类型）</strong>：用于存储整数值，范围为-32,768 到 32,767。<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Dim</span> myInteger <span class="keyword">As</span> <span class="type">Integer</span></span><br><span class="line">myInteger = <span class="number">10</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>Long （长整型）</strong>：用于存储较大范围的整数值，范围为-2,147,483,648 到 2,147,483,647。<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Dim</span> myLong <span class="keyword">As</span> <span class="type">Long</span></span><br><span class="line">myLong = <span class="number">1000000</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>Single （单精度浮点类型）</strong>：用于存储单精度浮点数，即具有小数点的数字。<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Dim</span> mySingle <span class="keyword">As</span> <span class="type">Single</span></span><br><span class="line">mySingle = <span class="number">3.14</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>Double （双精度浮点类型）</strong>：用于存储双精度浮点数，比单精度更精确。<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Dim</span> myDouble <span class="keyword">As</span> <span class="type">Double</span></span><br><span class="line">myDouble = <span class="number">3.14159</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>Date （日期类型）</strong>：用于存储日期和时间数据。<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Dim</span> myDate <span class="keyword">As</span> <span class="type">Date</span></span><br><span class="line">myDate = <span class="type">Date</span></span><br></pre></td></tr></table></figure></li>
+<li><strong>Object （对象类型）</strong>：用于引用 Excel 工作表、范围或其他对象。<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Dim</span> myObject <span class="keyword">As</span> <span class="type">Object</span></span><br><span class="line"><span class="keyword">Set</span> myObject = Worksheets(<span class="string">&quot;Sheet1&quot;</span>).Range(<span class="string">&quot;A1&quot;</span>)</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="自定义类模块"><a href="#自定义类模块" class="headerlink" title="自定义类模块"></a>自定义类模块</h3><p>要创建一个类模块（Class Module）在 VBA 中，按照以下步骤进行：</p>
+<ol>
+<li>打开你的 Excel 文件。</li>
+<li>打开 Visual Basic 编辑器（Alt + F11）。</li>
+<li>在 “项目资源管理器” 窗口中，右键点击你想要添加类模块的工作簿或 VBA 项目，然后选择 “插入” &gt; “类模块”。这将在项目资源管理器中添加一个新的类模块。</li>
+<li>双击新创建的类模块，打开代码窗口。</li>
+<li>在代码窗口中输入你的类的代码。</li>
+</ol>
+<h4 id="类模块改名"><a href="#类模块改名" class="headerlink" title="类模块改名"></a>类模块改名</h4><ol>
+<li>在 Project Explorer 窗口（Ctrl + R）中选中类模块</li>
+<li>在 Properties Window 窗口（F4）中修改 Name 值</li>
+</ol>
+<h4 id="代码示例"><a href="#代码示例" class="headerlink" title="代码示例"></a>代码示例</h4>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/vba/" rel="tag"># vba</a>
+              <a href="/tags/language/" rel="tag"># language</a>
+              <a href="/tags/excel/" rel="tag"># excel</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2024/03/21/splunk%20%E7%AC%94%E8%AE%B0/" rel="prev" title="splunk">
+                  <i class="fa fa-angle-left"></i> splunk
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2024/05/28/prometheus/" rel="next" title="prometheus">
+                  prometheus <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Apomelo</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

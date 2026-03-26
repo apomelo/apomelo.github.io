@@ -1,0 +1,1576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="简介本文梳理了 Java 8 到 Java 25 各版本的核心特性演进，帮助开发者了解 Java 的发展脉络，为 JDK 升级决策提供参考。 为什么要升级 JDK？许多项目仍在使用 Java 8，但新版本 JDK 带来了显著的改进：    维度 升级收益    性能 新版 GC（ZGC&#x2F;Shenandoah）实现亚毫秒级暂停，JIT 编译优化提升 10-20% 吞吐量   并发 虚拟线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java JDK Upgrade">
+<meta property="og:url" content="https://apomelo.github.io/posts/2025/09/19/java-jdk-upgrade/index.html">
+<meta property="og:site_name" content="Apomelo - 追逐">
+<meta property="og:description" content="简介本文梳理了 Java 8 到 Java 25 各版本的核心特性演进，帮助开发者了解 Java 的发展脉络，为 JDK 升级决策提供参考。 为什么要升级 JDK？许多项目仍在使用 Java 8，但新版本 JDK 带来了显著的改进：    维度 升级收益    性能 新版 GC（ZGC&#x2F;Shenandoah）实现亚毫秒级暂停，JIT 编译优化提升 10-20% 吞吐量   并发 虚拟线程">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-09-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2025-09-18T16:00:00.000Z">
+<meta property="article:author" content="Apomelo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="jdk">
+<meta property="article:tag" content="upgrade">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://apomelo.github.io/posts/2025/09/19/java-jdk-upgrade/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.github.io/posts/2025/09/19/java-jdk-upgrade/","path":"posts/2025/09/19/java-jdk-upgrade/","title":"Java JDK Upgrade"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Java JDK Upgrade | Apomelo - 追逐</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js" defer></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js" defer></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/5.36.0/lite/builds/browser.umd.js" integrity="sha256-o49zoHLDPBm9WLg6AiliAVi3axCRTqe3ltTxLvhzAVg=" crossorigin="anonymous" defer></script><script src="/js/third-party/search/algolia-search.js" defer></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fab fa-algolia fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%8D%87%E7%BA%A7-JDK%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">为什么要升级 JDK？</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%A8%E8%8D%90%E5%8D%87%E7%BA%A7%E8%B7%AF%E5%BE%84"><span class="nav-number">1.2.</span> <span class="nav-text">推荐升级路径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LTS-%E7%89%88%E6%9C%AC%E6%94%AF%E6%8C%81%E5%91%A8%E6%9C%9F"><span class="nav-number">1.3.</span> <span class="nav-text">LTS 版本支持周期</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Java-8-Java-25-%E7%89%B9%E6%80%A7%E5%8D%87%E7%BA%A7"><span class="nav-number">2.</span> <span class="nav-text">Java 8 -&gt; Java 25 特性升级</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">2.1.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#LTS-%E7%89%88%E6%9C%AC%E8%B7%AF%E7%BA%BF%E5%9B%BE"><span class="nav-number">2.1.1.</span> <span class="nav-text">LTS 版本路线图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7%E6%BC%94%E8%BF%9B%E8%A1%A8"><span class="nav-number">2.1.2.</span> <span class="nav-text">核心特性演进表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%87%8D%E7%82%B9%E7%89%B9%E6%80%A7%E5%88%86%E7%B1%BB"><span class="nav-number">2.1.3.</span> <span class="nav-text">重点特性分类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%F0%9F%9A%80-%E8%AF%AD%E8%A8%80%E7%89%B9%E6%80%A7%E6%BC%94%E8%BF%9B"><span class="nav-number">2.1.3.1.</span> <span class="nav-text">🚀 语言特性演进</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E2%9A%A1-%E5%B9%B6%E5%8F%91%E4%B8%8E%E6%80%A7%E8%83%BD"><span class="nav-number">2.1.3.2.</span> <span class="nav-text">⚡ 并发与性能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%F0%9F%97%91%EF%B8%8F-GC-%E6%BC%94%E8%BF%9B"><span class="nav-number">2.1.3.3.</span> <span class="nav-text">🗑️ GC 演进</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%F0%9F%93%A6-API-%E5%A2%9E%E5%BC%BA%E4%BA%AE%E7%82%B9"><span class="nav-number">2.1.3.4.</span> <span class="nav-text">📦 API 增强亮点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%87%E7%BA%A7%E5%BB%BA%E8%AE%AE"><span class="nav-number">2.1.4.</span> <span class="nav-text">升级建议</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-8"><span class="nav-number">2.2.</span> <span class="nav-text">Java 8</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-9"><span class="nav-number">2.3.</span> <span class="nav-text">Java 9</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-10"><span class="nav-number">2.4.</span> <span class="nav-text">Java 10</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-11"><span class="nav-number">2.5.</span> <span class="nav-text">Java 11</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-12"><span class="nav-number">2.6.</span> <span class="nav-text">Java 12</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-13"><span class="nav-number">2.7.</span> <span class="nav-text">Java 13</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-14"><span class="nav-number">2.8.</span> <span class="nav-text">Java 14</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-15"><span class="nav-number">2.9.</span> <span class="nav-text">Java 15</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-16"><span class="nav-number">2.10.</span> <span class="nav-text">Java 16</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-17"><span class="nav-number">2.11.</span> <span class="nav-text">Java 17</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-18"><span class="nav-number">2.12.</span> <span class="nav-text">Java 18</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-19"><span class="nav-number">2.13.</span> <span class="nav-text">Java 19</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-20"><span class="nav-number">2.14.</span> <span class="nav-text">Java 20</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-21"><span class="nav-number">2.15.</span> <span class="nav-text">Java 21</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-22"><span class="nav-number">2.16.</span> <span class="nav-text">Java 22</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-23"><span class="nav-number">2.17.</span> <span class="nav-text">Java 23</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-24"><span class="nav-number">2.18.</span> <span class="nav-text">Java 24</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java-25"><span class="nav-number">2.19.</span> <span class="nav-text">Java 25</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%87%8D%E8%A6%81%E7%89%B9%E6%80%A7%E4%BB%8B%E7%BB%8D"><span class="nav-number">3.</span> <span class="nav-text">重要特性介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B"><span class="nav-number">3.1.</span> <span class="nav-text">虚拟线程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-Java-%E8%BF%9F%E8%BF%9F%E6%B2%A1%E6%9C%89%E6%94%AF%E6%8C%81%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B"><span class="nav-number">3.1.1.</span> <span class="nav-text">为什么 Java 迟迟没有支持虚拟线程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%8E%86%E5%8F%B2%E5%8E%9F%E5%9B%A0"><span class="nav-number">3.1.1.1.</span> <span class="nav-text">历史原因</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Java-%E5%B7%B2%E6%9C%89%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B%E7%9A%84%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">3.1.1.2.</span> <span class="nav-text">Java 已有线程模型的优缺点</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B%E6%B1%A0%E8%AE%BE%E8%AE%A1"><span class="nav-number">3.1.2.</span> <span class="nav-text">Java 虚拟线程池设计</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%94%A8%E4%BB%A3%E7%A0%81%E5%88%9B%E5%BB%BA%E4%B8%80%E4%B8%AA%E8%99%9A%E6%8B%9F%E7%BA%BF%E7%A8%8B"><span class="nav-number">3.1.2.1.</span> <span class="nav-text">用代码创建一个虚拟线程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B"><span class="nav-number">3.1.2.2.</span> <span class="nav-text">线程模型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BA%BF%E7%A8%8B%E6%A0%88"><span class="nav-number">3.1.2.3.</span> <span class="nav-text">线程栈</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#JDK21-%E9%92%88%E5%AF%B9%E9%98%BB%E5%A1%9E%E6%93%8D%E4%BD%9C%E7%9A%84%E6%94%B9%E9%80%A0"><span class="nav-number">3.1.2.4.</span> <span class="nav-text">JDK21 针对阻塞操作的改造</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8A%B6%E6%80%81%E8%BD%AC%E6%8D%A2"><span class="nav-number">3.1.2.5.</span> <span class="nav-text">状态转换</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">4.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">83</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.github.io/posts/2025/09/19/java-jdk-upgrade/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Java JDK Upgrade | Apomelo - 追逐">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Java JDK Upgrade
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-09-19 00:00:00" itemprop="dateCreated datePublished" datetime="2025-09-19T00:00:00+08:00">2025-09-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2025/09/19/java-jdk-upgrade/" class="post-meta-item leancloud_visitors" data-flag-title="Java JDK Upgrade" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>本文梳理了 <strong>Java 8 到 Java 25</strong> 各版本的核心特性演进，帮助开发者了解 Java 的发展脉络，为 JDK 升级决策提供参考。</p>
+<h2 id="为什么要升级-JDK？"><a href="#为什么要升级-JDK？" class="headerlink" title="为什么要升级 JDK？"></a>为什么要升级 JDK？</h2><p>许多项目仍在使用 Java 8，但新版本 JDK 带来了显著的改进：</p>
+<table>
+<thead>
+<tr>
+<th align="left">维度</th>
+<th align="left">升级收益</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>性能</strong></td>
+<td align="left">新版 GC（ZGC&#x2F;Shenandoah）实现亚毫秒级暂停，JIT 编译优化提升 10-20% 吞吐量</td>
+</tr>
+<tr>
+<td align="left"><strong>并发</strong></td>
+<td align="left">虚拟线程（Java 21）支持百万级轻量线程，彻底改变高并发编程模型</td>
+</tr>
+<tr>
+<td align="left"><strong>语法</strong></td>
+<td align="left"><code>var</code>、Record、模式匹配、文本块等特性大幅减少样板代码</td>
+</tr>
+<tr>
+<td align="left"><strong>安全</strong></td>
+<td align="left">持续的安全补丁和漏洞修复，旧版本已停止公开更新</td>
+</tr>
+<tr>
+<td align="left"><strong>生态</strong></td>
+<td align="left">主流框架（Spring 6+、Quarkus、Micronaut）要求 Java 17+</td>
+</tr>
+</tbody></table>
+<h2 id="推荐升级路径"><a href="#推荐升级路径" class="headerlink" title="推荐升级路径"></a>推荐升级路径</h2><ul>
+<li><strong>Java 8 → Java 17</strong>：稳定 LTS，企业首选，Spring Boot 3.x 最低要求</li>
+<li><strong>Java 17 → Java 21</strong>：获得虚拟线程，高并发场景强烈推荐</li>
+<li><strong>Java 21 → Java 25</strong>：最新 LTS，作用域值 + 内存优化</li>
+</ul>
+<h2 id="LTS-版本支持周期"><a href="#LTS-版本支持周期" class="headerlink" title="LTS 版本支持周期"></a>LTS 版本支持周期</h2><table>
+<thead>
+<tr>
+<th align="center">版本</th>
+<th align="center">发布时间</th>
+<th align="center">Oracle 扩展支持</th>
+<th align="left">推荐场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Java 8</td>
+<td align="center">2014.03</td>
+<td align="center">2030.12</td>
+<td align="left">遗留系统维护</td>
+</tr>
+<tr>
+<td align="center">Java 11</td>
+<td align="center">2018.09</td>
+<td align="center">2032.01</td>
+<td align="left">保守升级选择</td>
+</tr>
+<tr>
+<td align="center">Java 17</td>
+<td align="center">2021.09</td>
+<td align="center">2029.09</td>
+<td align="left">当前企业主流</td>
+</tr>
+<tr>
+<td align="center">Java 21</td>
+<td align="center">2023.09</td>
+<td align="center">2031.09</td>
+<td align="left">新项目首选</td>
+</tr>
+<tr>
+<td align="center">Java 25</td>
+<td align="center">2025.09</td>
+<td align="center">2033.09</td>
+<td align="left">前沿技术探索</td>
+</tr>
+</tbody></table>
+<span id="more"></span>
+
+<h1 id="Java-8-Java-25-特性升级"><a href="#Java-8-Java-25-特性升级" class="headerlink" title="Java 8 -&gt; Java 25 特性升级"></a>Java 8 -&gt; Java 25 特性升级</h1><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="LTS-版本路线图"><a href="#LTS-版本路线图" class="headerlink" title="LTS 版本路线图"></a>LTS 版本路线图</h3><pre class="mermaid">timeline
+    title Java LTS 版本演进
+    2014-03 : Java 8 (LTS) : Lambda、Stream API
+    2018-09 : Java 11 (LTS) : HTTP Client、ZGC
+    2021-09 : Java 17 (LTS) : 密封类、模式匹配预览
+    2023-09 : Java 21 (LTS) : 虚拟线程、Record模式
+    2025-09 : Java 25 (LTS) : 作用域值、紧凑对象头</pre>
+
+<h3 id="核心特性演进表"><a href="#核心特性演进表" class="headerlink" title="核心特性演进表"></a>核心特性演进表</h3><table>
+<thead>
+<tr>
+<th align="center">版本</th>
+<th align="center">类型</th>
+<th align="left">🌟 核心特性</th>
+<th align="left">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center"><strong>8</strong></td>
+<td align="center">LTS</td>
+<td align="left">Lambda、Stream API、Optional</td>
+<td align="left">函数式编程，彻底改变 Java 编程范式</td>
+</tr>
+<tr>
+<td align="center"><strong>9</strong></td>
+<td align="center">-</td>
+<td align="left">模块化系统</td>
+<td align="left">Project Jigsaw，JDK 拆分为模块</td>
+</tr>
+<tr>
+<td align="center"><strong>10</strong></td>
+<td align="center">-</td>
+<td align="left"><code>var</code> 局部变量推断</td>
+<td align="left">减少冗余代码，编译器自动推断类型</td>
+</tr>
+<tr>
+<td align="center"><strong>11</strong></td>
+<td align="center">LTS</td>
+<td align="left">HTTP Client、ZGC</td>
+<td align="left">新 HTTP API 正式版；低延迟 GC</td>
+</tr>
+<tr>
+<td align="center"><strong>12</strong></td>
+<td align="center">-</td>
+<td align="left">Switch 表达式（预览）</td>
+<td align="left">箭头语法，支持返回值</td>
+</tr>
+<tr>
+<td align="center"><strong>13</strong></td>
+<td align="center">-</td>
+<td align="left">文本块（预览）</td>
+<td align="left"><code>&quot;&quot;&quot;</code> 多行字符串</td>
+</tr>
+<tr>
+<td align="center"><strong>14</strong></td>
+<td align="center">-</td>
+<td align="left">Record 类（预览）</td>
+<td align="left">简化不可变数据类定义</td>
+</tr>
+<tr>
+<td align="center"><strong>15</strong></td>
+<td align="center">-</td>
+<td align="left">密封类（预览）</td>
+<td align="left">限制类的继承层次</td>
+</tr>
+<tr>
+<td align="center"><strong>16</strong></td>
+<td align="center">-</td>
+<td align="left">Record、instanceof 模式匹配（正式）</td>
+<td align="left">两大特性转正</td>
+</tr>
+<tr>
+<td align="center"><strong>17</strong></td>
+<td align="center">LTS</td>
+<td align="left">密封类（正式）</td>
+<td align="left">企业级 LTS，广泛采用</td>
+</tr>
+<tr>
+<td align="center"><strong>18</strong></td>
+<td align="center">-</td>
+<td align="left">默认 UTF-8</td>
+<td align="left">跨平台字符集统一</td>
+</tr>
+<tr>
+<td align="center"><strong>19</strong></td>
+<td align="center">-</td>
+<td align="left">虚拟线程（预览）</td>
+<td align="left">Project Loom 核心成果</td>
+</tr>
+<tr>
+<td align="center"><strong>20</strong></td>
+<td align="center">-</td>
+<td align="left">作用域值（孵化）</td>
+<td align="left">替代 ThreadLocal</td>
+</tr>
+<tr>
+<td align="center"><strong>21</strong></td>
+<td align="center">LTS</td>
+<td align="left">虚拟线程（正式）、序列化集合</td>
+<td align="left">高并发革命性特性</td>
+</tr>
+<tr>
+<td align="center"><strong>22</strong></td>
+<td align="center">-</td>
+<td align="left">FFM API（正式）</td>
+<td align="left">调用本地代码和堆外内存</td>
+</tr>
+<tr>
+<td align="center"><strong>23</strong></td>
+<td align="center">-</td>
+<td align="left">Markdown 文档注释</td>
+<td align="left">JavaDoc 支持 Markdown</td>
+</tr>
+<tr>
+<td align="center"><strong>24</strong></td>
+<td align="center">-</td>
+<td align="left">Stream Gatherers（正式）</td>
+<td align="left">自定义 Stream 中间操作</td>
+</tr>
+<tr>
+<td align="center"><strong>25</strong></td>
+<td align="center">LTS</td>
+<td align="left">作用域值（正式）、紧凑对象头</td>
+<td align="left">内存优化，并发增强</td>
+</tr>
+</tbody></table>
+<h3 id="重点特性分类"><a href="#重点特性分类" class="headerlink" title="重点特性分类"></a>重点特性分类</h3><h4 id="🚀-语言特性演进"><a href="#🚀-语言特性演进" class="headerlink" title="🚀 语言特性演进"></a>🚀 语言特性演进</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Lambda/Stream (8) → var (10) → Switch表达式 (12→14) → 文本块 (13→15) </span><br><span class="line">               → Record (14→16) → 密封类 (15→17) → 模式匹配 (14→21) → 紧凑源文件 (21→25)</span><br></pre></td></tr></table></figure>
+
+<h4 id="⚡-并发与性能"><a href="#⚡-并发与性能" class="headerlink" title="⚡ 并发与性能"></a>⚡ 并发与性能</h4><table>
+<thead>
+<tr>
+<th align="left">特性</th>
+<th align="center">引入版本</th>
+<th align="center">正式版本</th>
+<th align="left">价值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">虚拟线程</td>
+<td align="center">19 预览</td>
+<td align="center"><strong>21</strong></td>
+<td align="left">百万级轻量线程，高并发革命</td>
+</tr>
+<tr>
+<td align="left">结构化并发</td>
+<td align="center">19 孵化</td>
+<td align="center">25 预览</td>
+<td align="left">简化多线程任务管理</td>
+</tr>
+<tr>
+<td align="left">作用域值</td>
+<td align="center">20 孵化</td>
+<td align="center"><strong>25</strong></td>
+<td align="left">替代 ThreadLocal，更安全</td>
+</tr>
+</tbody></table>
+<h4 id="🗑️-GC-演进"><a href="#🗑️-GC-演进" class="headerlink" title="🗑️ GC 演进"></a>🗑️ GC 演进</h4><table>
+<thead>
+<tr>
+<th align="left">GC</th>
+<th align="left">状态变化</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">G1</td>
+<td align="left">Java 9 成为默认</td>
+</tr>
+<tr>
+<td align="left">ZGC</td>
+<td align="left">Java 11 实验 → Java 15 正式 → Java 21 分代式 → Java 23 默认分代</td>
+</tr>
+<tr>
+<td align="left">Shenandoah</td>
+<td align="left">Java 12 实验 → Java 15 正式 → Java 25 分代式</td>
+</tr>
+<tr>
+<td align="left">CMS</td>
+<td align="left">Java 14 移除</td>
+</tr>
+</tbody></table>
+<h4 id="📦-API-增强亮点"><a href="#📦-API-增强亮点" class="headerlink" title="📦 API 增强亮点"></a>📦 API 增强亮点</h4><table>
+<thead>
+<tr>
+<th align="center">版本</th>
+<th align="left">API</th>
+<th align="left">示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">9</td>
+<td align="left">集合工厂</td>
+<td align="left"><code>List.of()</code>, <code>Set.of()</code>, <code>Map.of()</code></td>
+</tr>
+<tr>
+<td align="center">10</td>
+<td align="left">不可变集合</td>
+<td align="left"><code>List.copyOf()</code>, <code>Collectors.toUnmodifiableList()</code></td>
+</tr>
+<tr>
+<td align="center">11</td>
+<td align="left">字符串</td>
+<td align="left"><code>isBlank()</code>, <code>lines()</code>, <code>repeat()</code>, <code>strip()</code></td>
+</tr>
+<tr>
+<td align="center">11</td>
+<td align="left">文件</td>
+<td align="left"><code>Files.readString()</code>, <code>Files.writeString()</code></td>
+</tr>
+<tr>
+<td align="center">16</td>
+<td align="left">Stream</td>
+<td align="left"><code>Stream.toList()</code></td>
+</tr>
+<tr>
+<td align="center">21</td>
+<td align="left">序列化集合</td>
+<td align="left"><code>getFirst()</code>, <code>getLast()</code>, <code>reversed()</code></td>
+</tr>
+<tr>
+<td align="center">24</td>
+<td align="left">Stream</td>
+<td align="left"><code>Stream.gather()</code> 自定义中间操作</td>
+</tr>
+</tbody></table>
+<h3 id="升级建议"><a href="#升级建议" class="headerlink" title="升级建议"></a>升级建议</h3><ul>
+<li><strong>Java 8 → Java 17</strong>：稳定 LTS，企业首选升级目标</li>
+<li><strong>Java 17 → Java 21</strong>：获得虚拟线程，高并发场景强烈推荐</li>
+<li><strong>Java 21 → Java 25</strong>：最新 LTS，作用域值 + 内存优化</li>
+</ul>
+<h2 id="Java-8"><a href="#Java-8" class="headerlink" title="Java 8"></a>Java 8</h2><p><strong>Java 8</strong> 发布于 2014 年 3 月 18 日，是 Java 历史上最重要的版本之一，也是使用最广泛的 LTS 版本。Java 8 引入了函数式编程特性，彻底改变了 Java 的编程范式。</p>
+<ul>
+<li>Lambda 表达式<ul>
+<li>引入函数式编程，简化匿名内部类的写法：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java 8 之前</span></span><br><span class="line"><span class="type">Runnable</span> <span class="variable">r1</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Runnable</span>() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java 8 Lambda</span></span><br><span class="line"><span class="type">Runnable</span> <span class="variable">r2</span> <span class="operator">=</span> () -&gt; System.out.println(<span class="string">&quot;Hello&quot;</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 集合遍历</span></span><br><span class="line">list.forEach(item -&gt; System.out.println(item));</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>函数式接口<ul>
+<li>新增 <code>@FunctionalInterface</code> 注解，内置 <code>Function</code>、<code>Predicate</code>、<code>Consumer</code>、<code>Supplier</code> 等函数式接口：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Function&lt;String, Integer&gt; strLength = s -&gt; s.length();</span><br><span class="line">Predicate&lt;String&gt; isEmpty = s -&gt; s.isEmpty();</span><br><span class="line">Consumer&lt;String&gt; printer = s -&gt; System.out.println(s);</span><br><span class="line">Supplier&lt;String&gt; supplier = () -&gt; <span class="string">&quot;Hello&quot;</span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Stream API<ul>
+<li>引入流式处理，支持链式操作和并行处理：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; result = list.stream()</span><br><span class="line">    .filter(s -&gt; s.startsWith(<span class="string">&quot;A&quot;</span>))</span><br><span class="line">    .map(String::toUpperCase)</span><br><span class="line">    .sorted()</span><br><span class="line">    .collect(Collectors.toList());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 并行流</span></span><br><span class="line">list.parallelStream().forEach(System.out::println);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>方法引用<ul>
+<li>使用 <code>::</code> 操作符引用方法：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 静态方法引用</span></span><br><span class="line">list.forEach(System.out::println);</span><br><span class="line"><span class="comment">// 实例方法引用</span></span><br><span class="line">list.sort(String::compareToIgnoreCase);</span><br><span class="line"><span class="comment">// 构造方法引用</span></span><br><span class="line">Supplier&lt;List&lt;String&gt;&gt; listSupplier = ArrayList::<span class="keyword">new</span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Optional 类<ul>
+<li>优雅处理空值，避免 <code>NullPointerException</code>：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Optional&lt;String&gt; opt = Optional.ofNullable(getValue());</span><br><span class="line"><span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> opt.orElse(<span class="string">&quot;default&quot;</span>);</span><br><span class="line">opt.ifPresent(System.out::println);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>接口默认方法和静态方法<ul>
+<li>接口可以包含带实现的方法：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">interface</span> <span class="title class_">MyInterface</span> &#123;</span><br><span class="line">    <span class="keyword">default</span> <span class="keyword">void</span> <span class="title function_">defaultMethod</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;default&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">staticMethod</span><span class="params">()</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;static&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>新的日期时间 API（java.time）<ul>
+<li>引入不可变的日期时间类，替代 <code>Date</code> 和 <code>Calendar</code>：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">LocalDate</span> <span class="variable">date</span> <span class="operator">=</span> LocalDate.now();</span><br><span class="line"><span class="type">LocalTime</span> <span class="variable">time</span> <span class="operator">=</span> LocalTime.now();</span><br><span class="line"><span class="type">LocalDateTime</span> <span class="variable">dateTime</span> <span class="operator">=</span> LocalDateTime.now();</span><br><span class="line"><span class="type">ZonedDateTime</span> <span class="variable">zonedDateTime</span> <span class="operator">=</span> ZonedDateTime.now();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 日期计算</span></span><br><span class="line"><span class="type">LocalDate</span> <span class="variable">tomorrow</span> <span class="operator">=</span> date.plusDays(<span class="number">1</span>);</span><br><span class="line"><span class="type">Period</span> <span class="variable">period</span> <span class="operator">=</span> Period.between(date1, date2);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>CompletableFuture<ul>
+<li>增强的异步编程支持：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">CompletableFuture.supplyAsync(() -&gt; fetchData())</span><br><span class="line">    .thenApply(data -&gt; process(data))</span><br><span class="line">    .thenAccept(result -&gt; save(result))</span><br><span class="line">    .exceptionally(ex -&gt; handleError(ex));</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>重复注解和类型注解<ul>
+<li>允许在同一位置多次使用相同注解。</li>
+</ul>
+</li>
+<li>Nashorn JavaScript 引擎<ul>
+<li>内置 JavaScript 引擎（已在 Java 15 移除）。</li>
+</ul>
+</li>
+<li>PermGen 移除<ul>
+<li>永久代被元空间（Metaspace）取代，使用本地内存。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-9"><a href="#Java-9" class="headerlink" title="Java 9"></a>Java 9</h2><p><strong>Java 9</strong> 发布于 2017 年 9 月 21 日。作为 Java 8 之后 3 年半才发布的新版本，Java 9 带来了很多重大的变化，其中最重要的改动是 Java 平台模块系统的引入，其他还有诸如集合、<code>Stream</code> 流等等</p>
+<ul>
+<li><p>模块化系统（Project Jigsaw）</p>
+<ul>
+<li>将 JDK 拆分为多个模块，允许开发者根据需要选择性地引入模块，减少应用程序的体积和复杂性。</li>
+</ul>
+</li>
+<li><p>JShell：交互式编程环境</p>
+<ul>
+<li>允许开发者在命令行中编写和执行 Java 代码，方便学习和测试。</li>
+</ul>
+</li>
+<li><p>G1垃圾回收器成为默认垃圾回收器</p>
+<ul>
+<li>提供更好的性能和更低的延迟，适合大内存应用。</li>
+</ul>
+</li>
+<li><p>快速创建不可变集合</p>
+<ul>
+<li>通过 <code>List.of()</code>, <code>Set.of()</code>, <code>Map.of()</code> 等方法快速创建不可变集合。</li>
+</ul>
+</li>
+<li><p>String 存储结构优化</p>
+<ul>
+<li>Java 8 及之前的版本，String 一直是用 char[] 存储。在 Java 9 之后，String 的实现改用 byte[] 数组存储字符串，节省了空间。</li>
+</ul>
+</li>
+<li><p>接口私有方法</p>
+<ul>
+<li>在 Java 9 之前，接口只能包含抽象方法和默认方法。Java 9 引入了接口私有方法，允许在接口中定义私有方法，以便在默认方法中复用代码。</li>
+</ul>
+</li>
+<li><p>try-with-resources 增强</p>
+<ul>
+<li>Java 9 引入了对 try-with-resources 语句的增强，允许在 try 块中使用已经声明的资源，而不需要在 try 块中重新声明资源。<ul>
+<li>在 Java 9 之前，我们只能在 <code>try-with-resources</code> 块中声明变量：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> (<span class="type">Scanner</span> <span class="variable">scanner</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Scanner</span>(<span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;testRead.txt&quot;</span>));</span><br><span class="line">    <span class="type">PrintWriter</span> <span class="variable">writer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PrintWriter</span>(<span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;testWrite.txt&quot;</span>))) &#123;</span><br><span class="line">    <span class="comment">// omitted</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>在 Java 9 之后，在 <code>try-with-resources</code> 语句中可以使用 effectively-final 变量。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="type">Scanner</span> <span class="variable">scanner</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Scanner</span>(<span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;testRead.txt&quot;</span>));</span><br><span class="line"><span class="type">PrintWriter</span> <span class="variable">writer</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">PrintWriter</span>(<span class="keyword">new</span> <span class="title class_">File</span>(<span class="string">&quot;testWrite.txt&quot;</span>));</span><br><span class="line"><span class="keyword">try</span> (scanner; writer) &#123;</span><br><span class="line">    <span class="comment">// omitted</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>流API增强</p>
+<ul>
+<li>Java 9 对流API进行了增强，新增了 <code>takeWhile()</code>, <code>dropWhile()</code>, <code>ofNullable()</code>, 重载的<code>iterate()</code> 等方法，提供了更多的流操作功能。</li>
+<li>takeWhile(Predicate&lt;? super T&gt; predicate)：从流头开始<strong>保留满足条件</strong>的元素，一旦遇到第一个不满足的元素(不包含这个元素)就<strong>停止</strong>，返回已保留的前缀。</li>
+<li>dropWhile(Predicate&lt;? super T&gt; predicate)：从流头开始<strong>丢弃满足条件</strong>的元素，一旦遇到第一个不满足的元素(包含这个元素)就<strong>停止丢弃</strong>，返回从该位置到流尾的<strong>剩余元素</strong>。</li>
+<li>ofNullable(T t)：返回一个流，如果参数 t 不为 null，则返回包含该元素的流；否则返回一个空流。</li>
+<li>iterate​(T seed, Predicate&lt;? super T&gt; hasNext, UnaryOperator<T> next)：返回一个流，从种子元素开始，按照给定的 next 函数生成后续元素，直到 hasNext 返回 false 为止。</li>
+</ul>
+</li>
+<li><p>Optional 类增强</p>
+<ul>
+<li>Java 9 对 <code>Optional</code> 类进行了增强，新增了 <code>ifPresentOrElse()</code>, <code>or()</code>, <code>stream()</code> 等方法，提供了更多的操作选项的功能。</li>
+</ul>
+</li>
+<li><p>进程 API</p>
+<ul>
+<li>Java 9 引入了新的进程 API <code>java.lang.ProcessHandle</code>，允许开发者更方便地管理和控制操作系统进程。</li>
+</ul>
+</li>
+<li><p>改进的JVM性能和监控工具</p>
+</li>
+</ul>
+<h2 id="Java-10"><a href="#Java-10" class="headerlink" title="Java 10"></a>Java 10</h2><p><strong>Java 10</strong> 发布于 2018 年 3 月 20 日。这是 Java 采用新的发布周期（每 6 个月发布一个新版本）后的第一个版本。Java 10 带来了一些重要的新特性，其中最引人注目的是局部变量类型推断。</p>
+<ul>
+<li>局部变量类型推断（var）<ul>
+<li>Java 10 引入了 <code>var</code> 关键字，允许编译器根据初始化表达式自动推断局部变量的类型，减少冗余代码。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java 10 之前</span></span><br><span class="line">List&lt;String&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;String&gt;();</span><br><span class="line">Map&lt;String, List&lt;Integer&gt;&gt; map = <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String, List&lt;Integer&gt;&gt;();</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java 10 之后</span></span><br><span class="line"><span class="type">var</span> <span class="variable">list</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;String&gt;();</span><br><span class="line"><span class="type">var</span> <span class="variable">map</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">HashMap</span>&lt;String, List&lt;Integer&gt;&gt;();</span><br><span class="line"><span class="type">var</span> <span class="variable">stream</span> <span class="operator">=</span> list.stream();</span><br></pre></td></tr></table></figure></li>
+<li>注意：<code>var</code> 只能用于局部变量，不能用于方法参数、返回类型、字段或 catch 块中的异常类型。</li>
+</ul>
+</li>
+<li>不可变集合增强<ul>
+<li>新增 <code>List.copyOf()</code>, <code>Set.copyOf()</code>, <code>Map.copyOf()</code> 方法，用于创建集合的不可变副本。</li>
+<li><code>Collectors</code> 新增 <code>toUnmodifiableList()</code>, <code>toUnmodifiableSet()</code>, <code>toUnmodifiableMap()</code> 方法。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; copy = List.copyOf(originalList);</span><br><span class="line">Set&lt;Integer&gt; set = Set.copyOf(originalSet);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用 Collectors 创建不可变集合</span></span><br><span class="line">List&lt;String&gt; result = stream.collect(Collectors.toUnmodifiableList());</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Optional 增强<ul>
+<li>新增 <code>orElseThrow()</code> 无参方法，当 Optional 为空时抛出 <code>NoSuchElementException</code>。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Optional&lt;String&gt; optional = Optional.empty();</span><br><span class="line"><span class="comment">// 等价于 optional.orElseThrow(() -&gt; new NoSuchElementException())</span></span><br><span class="line"><span class="type">String</span> <span class="variable">value</span> <span class="operator">=</span> optional.orElseThrow();</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>G1 垃圾回收器并行 Full GC<ul>
+<li>G1 垃圾回收器的 Full GC 改为并行执行，提高了 Full GC 的性能。</li>
+</ul>
+</li>
+<li>应用程序类数据共享（Application Class-Data Sharing）<ul>
+<li>扩展了现有的类数据共享（CDS）功能，允许应用程序类被放置在共享存档中，以缩短启动时间和减少内存占用。</li>
+</ul>
+</li>
+<li>线程本地握手（Thread-Local Handshakes）<ul>
+<li>允许在不执行全局 VM 安全点的情况下对单个线程执行回调，提高了 JVM 的性能和可诊断性。</li>
+</ul>
+</li>
+<li>基于时间的版本发布<ul>
+<li>Java 10 开始采用基于时间的版本发布模式，每 6 个月发布一个新版本，版本号格式为 <code>$FEATURE.$INTERIM.$UPDATE.$PATCH</code>。</li>
+</ul>
+</li>
+<li>根证书<ul>
+<li>在 JDK 中提供一组默认的根证书颁发机构（CA）证书，使 OpenJDK 构建对开发人员更具吸引力。</li>
+</ul>
+</li>
+<li>实验性的基于 Java 的 JIT 编译器（Graal）<ul>
+<li>将基于 Java 的 JIT 编译器 Graal 作为 Linux&#x2F;x64 平台上的实验性 JIT 编译器。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-11"><a href="#Java-11" class="headerlink" title="Java 11"></a>Java 11</h2><p><strong>Java 11</strong> 发布于 2018 年 9 月 25 日。这是继 Java 8 之后的第一个长期支持版本（LTS），也是很多企业从 Java 8 升级的首选目标版本。Java 11 带来了许多实用的新特性和 API 增强。</p>
+<ul>
+<li>字符串 API 增强<ul>
+<li>新增了一系列实用的字符串处理方法：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// isBlank() - 判断字符串是否为空或只包含空白字符</span></span><br><span class="line"><span class="string">&quot;  &quot;</span>.isBlank();  <span class="comment">// true</span></span><br><span class="line"><span class="string">&quot;hello&quot;</span>.isBlank();  <span class="comment">// false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// strip() - 去除首尾空白字符（支持 Unicode 空白）</span></span><br><span class="line"><span class="string">&quot; hello &quot;</span>.strip();  <span class="comment">// &quot;hello&quot;</span></span><br><span class="line"><span class="string">&quot; hello &quot;</span>.stripLeading();  <span class="comment">// &quot;hello &quot;</span></span><br><span class="line"><span class="string">&quot; hello &quot;</span>.stripTrailing();  <span class="comment">// &quot; hello&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// lines() - 按行分割字符串，返回 Stream</span></span><br><span class="line"><span class="string">&quot;line1\nline2\nline3&quot;</span>.lines().forEach(System.out::println);</span><br><span class="line"></span><br><span class="line"><span class="comment">// repeat(int) - 重复字符串</span></span><br><span class="line"><span class="string">&quot;abc&quot;</span>.repeat(<span class="number">3</span>);  <span class="comment">// &quot;abcabcabc&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>集合转数组增强<ul>
+<li><code>Collection.toArray(IntFunction)</code> 方法允许更简洁地将集合转换为数组：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">List&lt;String&gt; list = List.of(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>);</span><br><span class="line"><span class="comment">// Java 11 之前</span></span><br><span class="line">String[] arr1 = list.toArray(<span class="keyword">new</span> <span class="title class_">String</span>[<span class="number">0</span>]);</span><br><span class="line"><span class="comment">// Java 11 之后</span></span><br><span class="line">String[] arr2 = list.toArray(String[]::<span class="keyword">new</span>);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>文件读写 API 增强<ul>
+<li>新增 <code>Files.readString()</code> 和 <code>Files.writeString()</code> 方法，简化文件读写操作：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 读取文件内容为字符串</span></span><br><span class="line"><span class="type">String</span> <span class="variable">content</span> <span class="operator">=</span> Files.readString(Path.of(<span class="string">&quot;test.txt&quot;</span>));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 将字符串写入文件</span></span><br><span class="line">Files.writeString(Path.of(<span class="string">&quot;output.txt&quot;</span>), <span class="string">&quot;Hello, Java 11!&quot;</span>);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Optional 增强<ul>
+<li>新增 <code>isEmpty()</code> 方法，与 <code>isPresent()</code> 相反：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Optional&lt;String&gt; optional = Optional.empty();</span><br><span class="line">optional.isEmpty();  <span class="comment">// true</span></span><br><span class="line">optional.isPresent();  <span class="comment">// false</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Lambda 参数的局部变量语法<ul>
+<li>允许在 Lambda 表达式的参数中使用 <code>var</code>，主要用于添加注解：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 可以在 var 参数上添加注解</span></span><br><span class="line">list.stream()</span><br><span class="line">    .map((<span class="meta">@NotNull</span> <span class="keyword">var</span> s) -&gt; s.toUpperCase())</span><br><span class="line">    .collect(Collectors.toList());</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>HTTP Client API（正式版）<ul>
+<li>Java 9 引入的 HTTP Client API 在 Java 11 中正式发布，支持 HTTP&#x2F;1.1 和 HTTP&#x2F;2，支持同步和异步请求：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">HttpClient</span> <span class="variable">client</span> <span class="operator">=</span> HttpClient.newHttpClient();</span><br><span class="line"><span class="type">HttpRequest</span> <span class="variable">request</span> <span class="operator">=</span> HttpRequest.newBuilder()</span><br><span class="line">    .uri(URI.create(<span class="string">&quot;https://example.com&quot;</span>))</span><br><span class="line">    .GET()</span><br><span class="line">    .build();</span><br><span class="line"></span><br><span class="line"><span class="comment">// 同步请求</span></span><br><span class="line">HttpResponse&lt;String&gt; response = client.send(request, </span><br><span class="line">    HttpResponse.BodyHandlers.ofString());</span><br><span class="line"></span><br><span class="line"><span class="comment">// 异步请求</span></span><br><span class="line">CompletableFuture&lt;HttpResponse&lt;String&gt;&gt; future = client.sendAsync(request,</span><br><span class="line">    HttpResponse.BodyHandlers.ofString());</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>直接运行 Java 文件<ul>
+<li>可以直接使用 <code>java</code> 命令运行单个 Java 源文件，无需先编译：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 直接运行 Java 源文件</span></span><br><span class="line">java HelloWorld.java</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>ZGC 垃圾回收器（实验性）<ul>
+<li>引入了 ZGC（Z Garbage Collector），一个可扩展的低延迟垃圾回收器，目标是将 GC 暂停时间控制在 10ms 以内。</li>
+</ul>
+</li>
+<li>Epsilon 垃圾回收器（实验性）<ul>
+<li>一个”无操作”的垃圾回收器，不执行任何垃圾回收操作，适用于性能测试和短生命周期应用。</li>
+</ul>
+</li>
+<li>Flight Recorder（飞行记录器）<ul>
+<li>Java Flight Recorder（JFR）开源，提供低开销的数据收集框架，用于诊断 Java 应用程序和 JVM。</li>
+</ul>
+</li>
+<li>移除和废弃的功能<ul>
+<li>移除了 Java EE 和 CORBA 模块（如 <code>java.xml.ws</code>, <code>java.xml.bind</code> 等）。</li>
+<li>废弃了 Nashorn JavaScript 引擎。</li>
+<li>移除了 <code>Thread.destroy()</code> 和 <code>Thread.stop(Throwable)</code> 方法。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-12"><a href="#Java-12" class="headerlink" title="Java 12"></a>Java 12</h2><p><strong>Java 12</strong> 发布于 2019 年 3 月 19 日，是短期支持版本，引入了一些预览特性，为后续版本的正式功能奠定基础。</p>
+<ul>
+<li>Switch 表达式（预览）<ul>
+<li>引入了新的 Switch 表达式语法，支持使用箭头语法和返回值：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 传统 switch 语句</span></span><br><span class="line"><span class="type">int</span> numLetters;</span><br><span class="line"><span class="keyword">switch</span> (day) &#123;</span><br><span class="line">    <span class="keyword">case</span> MONDAY:</span><br><span class="line">    <span class="keyword">case</span> FRIDAY:</span><br><span class="line">    <span class="keyword">case</span> SUNDAY:</span><br><span class="line">        numLetters = <span class="number">6</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">case</span> TUESDAY:</span><br><span class="line">        numLetters = <span class="number">7</span>;</span><br><span class="line">        <span class="keyword">break</span>;</span><br><span class="line">    <span class="keyword">default</span>:</span><br><span class="line">        numLetters = <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java 12 switch 表达式（预览）</span></span><br><span class="line"><span class="type">int</span> <span class="variable">numLetters</span> <span class="operator">=</span> <span class="keyword">switch</span> (day) &#123;</span><br><span class="line">    <span class="keyword">case</span> MONDAY, FRIDAY, SUNDAY -&gt; <span class="number">6</span>;</span><br><span class="line">    <span class="keyword">case</span> TUESDAY -&gt; <span class="number">7</span>;</span><br><span class="line">    <span class="keyword">case</span> THURSDAY, SATURDAY -&gt; <span class="number">8</span>;</span><br><span class="line">    <span class="keyword">case</span> WEDNESDAY -&gt; <span class="number">9</span>;</span><br><span class="line">    <span class="keyword">default</span> -&gt; <span class="number">0</span>;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>字符串 API 增强<ul>
+<li>新增 <code>indent(int n)</code> 方法，用于调整字符串的缩进：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">text</span> <span class="operator">=</span> <span class="string">&quot;Hello\nWorld&quot;</span>;</span><br><span class="line">text.indent(<span class="number">4</span>);  <span class="comment">// 每行前面添加 4 个空格</span></span><br><span class="line">text.indent(-<span class="number">2</span>); <span class="comment">// 每行前面移除 2 个空格（如果有的话）</span></span><br></pre></td></tr></table></figure></li>
+<li>新增 <code>transform(Function)</code> 方法，用于对字符串进行转换：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">result</span> <span class="operator">=</span> <span class="string">&quot;hello&quot;</span>.transform(s -&gt; s.toUpperCase())</span><br><span class="line">                       .transform(s -&gt; s + <span class="string">&quot;!&quot;</span>);  <span class="comment">// &quot;HELLO!&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Files.mismatch() 方法<ul>
+<li>新增 <code>Files.mismatch()</code> 方法，用于比较两个文件的内容，返回第一个不匹配的字节位置：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">long</span> <span class="variable">mismatch</span> <span class="operator">=</span> Files.mismatch(Path.of(<span class="string">&quot;file1.txt&quot;</span>), Path.of(<span class="string">&quot;file2.txt&quot;</span>));</span><br><span class="line"><span class="comment">// 返回 -1 表示文件内容相同，否则返回第一个不同字节的位置</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Compact Number Formatting<ul>
+<li>新增紧凑数字格式化，支持将数字格式化为简短形式：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">NumberFormat</span> <span class="variable">fmt</span> <span class="operator">=</span> NumberFormat.getCompactNumberInstance(Locale.US, NumberFormat.Style.SHORT);</span><br><span class="line">fmt.format(<span class="number">1000</span>);    <span class="comment">// &quot;1K&quot;</span></span><br><span class="line">fmt.format(<span class="number">1000000</span>); <span class="comment">// &quot;1M&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Shenandoah 垃圾回收器（实验性）<ul>
+<li>引入 Shenandoah GC，一个低暂停时间的垃圾回收器，通过与运行中的 Java 线程并发执行 GC 操作来减少暂停时间。</li>
+</ul>
+</li>
+<li>G1 垃圾回收器增强<ul>
+<li>可中断的混合收集：G1 可以中止混合收集以满足暂停时间目标。</li>
+<li>及时返回未使用的内存：G1 在空闲时自动将 Java 堆内存返回给操作系统。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-13"><a href="#Java-13" class="headerlink" title="Java 13"></a>Java 13</h2><p><strong>Java 13</strong> 发布于 2019 年 9 月 17 日，是短期支持版本，引入了一些预览特性，为后续版本的正式功能奠定基础。</p>
+<ul>
+<li>Switch 表达式增强（预览）<ul>
+<li>在 Java 12 的基础上，引入 <code>yield</code> 关键字用于从 switch 表达式返回值：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">result</span> <span class="operator">=</span> <span class="keyword">switch</span> (day) &#123;</span><br><span class="line">    <span class="keyword">case</span> MONDAY, FRIDAY, SUNDAY -&gt; <span class="number">6</span>;</span><br><span class="line">    <span class="keyword">case</span> TUESDAY -&gt; <span class="number">7</span>;</span><br><span class="line">    <span class="keyword">default</span> -&gt; &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">len</span> <span class="operator">=</span> day.toString().length();</span><br><span class="line">        <span class="keyword">yield</span> len;  <span class="comment">// 使用 yield 返回值</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>文本块（预览）<ul>
+<li>引入文本块（Text Blocks），使用三引号 <code>&quot;&quot;&quot;</code> 定义多行字符串：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java 13 之前</span></span><br><span class="line"><span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> <span class="string">&quot;&#123;\n&quot;</span> +</span><br><span class="line">              <span class="string">&quot;  \&quot;name\&quot;: \&quot;John\&quot;,\n&quot;</span> +</span><br><span class="line">              <span class="string">&quot;  \&quot;age\&quot;: 30\n&quot;</span> +</span><br><span class="line">              <span class="string">&quot;&#125;&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java 13 文本块</span></span><br><span class="line"><span class="type">String</span> <span class="variable">json</span> <span class="operator">=</span> <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">              &#123;</span></span><br><span class="line"><span class="string">                &quot;name&quot;: &quot;John&quot;,</span></span><br><span class="line"><span class="string">                &quot;age&quot;: 30</span></span><br><span class="line"><span class="string">              &#125;</span></span><br><span class="line"><span class="string">              &quot;&quot;&quot;</span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>动态 CDS 归档<ul>
+<li>扩展应用程序类数据共享（AppCDS），允许在 Java 应用程序执行结束时动态归档类，简化 CDS 的使用。</li>
+</ul>
+</li>
+<li>ZGC 增强<ul>
+<li>ZGC 支持将未使用的堆内存返回给操作系统，减少内存占用。</li>
+</ul>
+</li>
+<li>Socket API 重新实现<ul>
+<li>重新实现了 <code>java.net.Socket</code> 和 <code>java.net.ServerSocket</code> API，使用更简单、更现代的实现替代了 JDK 1.0 时代的旧实现。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-14"><a href="#Java-14" class="headerlink" title="Java 14"></a>Java 14</h2><p><strong>Java 14</strong> 发布于 2020 年 3 月 17 日，是短期支持版本，带来了多项语言增强和预览特性。</p>
+<ul>
+<li>Switch 表达式（正式版）<ul>
+<li>Switch 表达式在经历 Java 12 和 Java 13 的预览后，在 Java 14 中正式成为标准特性。</li>
+</ul>
+</li>
+<li>instanceof 模式匹配（预览）<ul>
+<li>引入 <code>instanceof</code> 的模式匹配，简化类型检查和转换：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java 14 之前</span></span><br><span class="line"><span class="keyword">if</span> (obj <span class="keyword">instanceof</span> String) &#123;</span><br><span class="line">    <span class="type">String</span> <span class="variable">s</span> <span class="operator">=</span> (String) obj;</span><br><span class="line">    System.out.println(s.length());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java 14 模式匹配</span></span><br><span class="line"><span class="keyword">if</span> (obj <span class="keyword">instanceof</span> String s) &#123;</span><br><span class="line">    System.out.println(s.length());  <span class="comment">// 直接使用 s</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Record 类（预览）<ul>
+<li>引入 Record 类，用于简化不可变数据类的定义：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java 14 之前，需要手动编写大量样板代码</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Point</span> &#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> x;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="type">int</span> y;</span><br><span class="line">    <span class="keyword">public</span> <span class="title function_">Point</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span> &#123; <span class="built_in">this</span>.x = x; <span class="built_in">this</span>.y = y; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">x</span><span class="params">()</span> &#123; <span class="keyword">return</span> x; &#125;</span><br><span class="line">    <span class="keyword">public</span> <span class="type">int</span> <span class="title function_">y</span><span class="params">()</span> &#123; <span class="keyword">return</span> y; &#125;</span><br><span class="line">    <span class="comment">// 还需要 equals(), hashCode(), toString()...</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java 14 Record</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">record</span> <span class="title class_">Point</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span> &#123; &#125;</span><br><span class="line"><span class="comment">// 自动生成构造器、访问器、equals()、hashCode()、toString()</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>文本块（二次预览）<ul>
+<li>文本块继续作为预览特性，新增了两个转义序列：<ul>
+<li><code>\</code> 行尾：取消换行</li>
+<li><code>\s</code>：显式空格<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    这是一行很长的文本，\</span></span><br><span class="line"><span class="string">    但实际上不会换行&quot;&quot;&quot;</span>;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>NullPointerException 改进<ul>
+<li>改进了 <code>NullPointerException</code> 的错误信息，精确指出哪个变量为 null：<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 之前：NullPointerException</span><br><span class="line">// 之后：Cannot invoke &quot;String.length()&quot; because &quot;a.b.c&quot; is null</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>JFR 事件流<ul>
+<li>允许应用程序持续消费 JFR 数据，无需转储到磁盘，支持实时监控。</li>
+</ul>
+</li>
+<li>移除 CMS 垃圾回收器<ul>
+<li>正式移除了 Concurrent Mark Sweep (CMS) 垃圾回收器。</li>
+</ul>
+</li>
+<li>ZGC 支持 macOS 和 Windows<ul>
+<li>ZGC 垃圾回收器扩展支持 macOS 和 Windows 平台（实验性）。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-15"><a href="#Java-15" class="headerlink" title="Java 15"></a>Java 15</h2><p><strong>Java 15</strong> 发布于 2020 年 9 月 15 日，是短期支持版本，继续完善多项预览特性。</p>
+<ul>
+<li>文本块（正式版）<ul>
+<li>文本块在经历两次预览后，在 Java 15 中正式成为标准特性。</li>
+</ul>
+</li>
+<li>Sealed Classes（密封类，预览）<ul>
+<li>引入密封类，限制哪些类可以继承或实现：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 只允许 Circle、Rectangle、Square 继承 Shape</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">sealed</span> <span class="keyword">class</span> <span class="title class_">Shape</span> <span class="keyword">permits</span> Circle, Rectangle, Square &#123;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">Circle</span> <span class="keyword">extends</span> <span class="title class_">Shape</span> &#123; &#125;        <span class="comment">// 不可再被继承</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">sealed</span> <span class="keyword">class</span> <span class="title class_">Rectangle</span> <span class="keyword">extends</span> <span class="title class_">Shape</span> <span class="keyword">permits</span> Square &#123; &#125;  <span class="comment">// 限制只能被 Square 继承</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">class</span> <span class="title class_">Square</span> <span class="keyword">extends</span> <span class="title class_">Rectangle</span> &#123; &#125;    <span class="comment">// 不可再被继承</span></span><br><span class="line"><span class="comment">// public non-sealed class Other extends Shape &#123; &#125; // 若在 permits 中，可用 non-sealed 开放继承</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>instanceof 模式匹配（二次预览）<ul>
+<li>继续作为预览特性，无重大变化。</li>
+</ul>
+</li>
+<li>Record 类（二次预览）<ul>
+<li>继续作为预览特性，支持本地 Record 类定义。</li>
+</ul>
+</li>
+<li>隐藏类（Hidden Classes）<ul>
+<li>引入隐藏类，供框架在运行时生成类使用，这些类不能被其他类直接使用，且有较短的生命周期。</li>
+</ul>
+</li>
+<li>ZGC 和 Shenandoah 正式发布<ul>
+<li>ZGC 和 Shenandoah 垃圾回收器从实验性特性转为正式特性。</li>
+</ul>
+</li>
+<li>EdDSA 数字签名算法<ul>
+<li>实现了 Edwards-Curve 数字签名算法（EdDSA），提供更好的性能和安全性。</li>
+</ul>
+</li>
+<li>移除 Nashorn JavaScript 引擎<ul>
+<li>正式移除了在 Java 11 中废弃的 Nashorn JavaScript 引擎。</li>
+</ul>
+</li>
+<li>废弃偏向锁<ul>
+<li>废弃了偏向锁（Biased Locking），因为维护成本高且收益有限。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-16"><a href="#Java-16" class="headerlink" title="Java 16"></a>Java 16</h2><p><strong>Java 16</strong> 发布于 2021 年 3 月 16 日，是短期支持版本，多项预览特性在此版本正式发布。</p>
+<ul>
+<li>instanceof 模式匹配（正式版）<ul>
+<li>在经历两次预览后，<code>instanceof</code> 模式匹配正式成为标准特性。</li>
+</ul>
+</li>
+<li>Record 类（正式版）<ul>
+<li>Record 类正式成为标准特性，可以放心在生产环境使用。</li>
+</ul>
+</li>
+<li>Sealed Classes（密封类，二次预览）<ul>
+<li>继续作为预览特性，进行了一些改进。</li>
+</ul>
+</li>
+<li>Stream.toList() 方法<ul>
+<li>新增 <code>Stream.toList()</code> 方法，简化将 Stream 转换为不可变 List：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java 16 之前</span></span><br><span class="line">List&lt;String&gt; list = stream.collect(Collectors.toList());</span><br><span class="line">List&lt;String&gt; unmodifiable = stream.collect(Collectors.toUnmodifiableList());</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java 16</span></span><br><span class="line">List&lt;String&gt; list = stream.toList();  <span class="comment">// 返回不可变 List</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>日期时间格式化增强<ul>
+<li><code>DateTimeFormatter</code> 新增 <code>B</code> 符号，支持”上午”、”下午”、”晚上”等时段表示：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">DateTimeFormatter</span> <span class="variable">formatter</span> <span class="operator">=</span> DateTimeFormatter.ofPattern(<span class="string">&quot;h B&quot;</span>);</span><br><span class="line">LocalTime.of(<span class="number">8</span>, <span class="number">0</span>).format(formatter);   <span class="comment">// &quot;8 in the morning&quot;</span></span><br><span class="line">LocalTime.of(<span class="number">14</span>, <span class="number">0</span>).format(formatter);  <span class="comment">// &quot;2 in the afternoon&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Vector API（孵化）<ul>
+<li>引入 Vector API，支持 SIMD（单指令多数据）操作，提升数值计算性能。</li>
+</ul>
+</li>
+<li>外部内存访问 API（孵化）<ul>
+<li>引入 Foreign Memory Access API，允许 Java 程序安全高效地访问堆外内存。</li>
+</ul>
+</li>
+<li>Unix 域套接字通道<ul>
+<li>新增对 Unix 域套接字的支持，用于同一主机上的进程间通信。</li>
+</ul>
+</li>
+<li>打包工具 jpackage<ul>
+<li><code>jpackage</code> 工具正式发布，用于将 Java 应用打包为平台特定的安装包（如 Windows 的 exe&#x2F;msi，macOS 的 pkg&#x2F;dmg）。</li>
+</ul>
+</li>
+<li>默认强封装 JDK 内部 API<ul>
+<li>默认对 JDK 内部 API 进行强封装，不再允许通过反射访问内部类（可通过命令行参数放开）。</li>
+</ul>
+</li>
+<li>ZGC 并发线程栈处理<ul>
+<li>ZGC 支持并发线程栈处理，进一步减少 GC 暂停时间。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-17"><a href="#Java-17" class="headerlink" title="Java 17"></a>Java 17</h2><p><strong>Java 17</strong> 发布于 2021 年 9 月 14 日，是继 Java 11 之后的第二个长期支持版本（LTS），也是目前企业应用最广泛的 LTS 版本之一。</p>
+<ul>
+<li>Sealed Classes（密封类，正式版）<ul>
+<li>密封类在经历两次预览后，在 Java 17 中正式成为标准特性。</li>
+</ul>
+</li>
+<li>Switch 模式匹配（预览）<ul>
+<li>扩展 switch 语句和表达式，支持模式匹配：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> String <span class="title function_">formatterPatternSwitch</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">switch</span> (obj) &#123;</span><br><span class="line">        <span class="keyword">case</span> Integer i -&gt; String.format(<span class="string">&quot;int %d&quot;</span>, i);</span><br><span class="line">        <span class="keyword">case</span> Long l    -&gt; String.format(<span class="string">&quot;long %d&quot;</span>, l);</span><br><span class="line">        <span class="keyword">case</span> Double d  -&gt; String.format(<span class="string">&quot;double %f&quot;</span>, d);</span><br><span class="line">        <span class="keyword">case</span> String s  -&gt; String.format(<span class="string">&quot;String %s&quot;</span>, s);</span><br><span class="line">        <span class="keyword">default</span>        -&gt; obj.toString();</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>增强的伪随机数生成器<ul>
+<li>为伪随机数生成器（PRNG）提供新的接口类型和实现，包括可跳转的 PRNG 和可拆分的 PRNG 算法：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">RandomGeneratorFactory&lt;RandomGenerator&gt; factory = RandomGeneratorFactory.of(<span class="string">&quot;L128X256MixRandom&quot;</span>);</span><br><span class="line"><span class="type">RandomGenerator</span> <span class="variable">random</span> <span class="operator">=</span> factory.create();</span><br><span class="line">random.nextInt();</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>新的 macOS 渲染管线<ul>
+<li>使用 Apple Metal API 实现 Java 2D 渲染管线，替代已废弃的 Apple OpenGL API。</li>
+</ul>
+</li>
+<li>macOS&#x2F;AArch64 支持<ul>
+<li>将 JDK 移植到 macOS&#x2F;AArch64 平台（Apple Silicon，M1&#x2F;M2 芯片）。</li>
+</ul>
+</li>
+<li>废弃 Applet API<ul>
+<li>废弃 Applet API，为将来移除做准备。</li>
+</ul>
+</li>
+<li>强封装 JDK 内部 API<ul>
+<li>强封装 JDK 内部 API，除了关键的内部 API（如 <code>sun.misc.Unsafe</code>）外，不再允许通过反射访问。</li>
+</ul>
+</li>
+<li>移除实验性的 AOT 和 JIT 编译器<ul>
+<li>移除了实验性的 Ahead-of-Time (AOT) 和 Just-in-Time (JIT) 编译器。</li>
+</ul>
+</li>
+<li>上下文特定的反序列化过滤器<ul>
+<li>允许应用程序通过 JVM 范围的过滤器工厂配置上下文特定的反序列化过滤器。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-18"><a href="#Java-18" class="headerlink" title="Java 18"></a>Java 18</h2><p><strong>Java 18</strong> 发布于 2022 年 3 月 22 日，是短期支持版本。</p>
+<ul>
+<li>默认 UTF-8 字符集<ul>
+<li>将 UTF-8 设为 Java SE API 的默认字符集，提高跨平台一致性：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Java 18 之前，默认字符集取决于操作系统</span></span><br><span class="line"><span class="comment">// Java 18 之后，默认字符集统一为 UTF-8</span></span><br><span class="line">Charset.defaultCharset();  <span class="comment">// UTF-8</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>简单 Web 服务器<ul>
+<li>提供一个命令行工具，用于启动一个仅提供静态文件的最小化 Web 服务器：<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 启动简单 Web 服务器</span></span><br><span class="line">jwebserver -p 8080 -d /path/to/directory</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Java API 文档中的代码片段<ul>
+<li>在 Java API 文档中引入 <code>@snippet</code> 标签，用于包含示例源代码：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 示例方法</span></span><br><span class="line"><span class="comment"> * &#123;<span class="doctag">@snippet</span> :</span></span><br><span class="line"><span class="comment"> *   int x = 1;   // <span class="doctag">@highlight</span></span></span><br><span class="line"><span class="comment"> *   int y = 2;</span></span><br><span class="line"><span class="comment"> * &#125;</span></span><br><span class="line"><span class="comment"> */</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>使用方法句柄重新实现核心反射<ul>
+<li>在 <code>java.lang.invoke</code> 方法句柄之上重新实现 <code>java.lang.reflect.Method</code>、<code>Constructor</code> 和 <code>Field</code>。</li>
+</ul>
+</li>
+<li>Vector API（三次孵化）<ul>
+<li>Vector API 继续孵化，进行了性能改进。</li>
+</ul>
+</li>
+<li>Foreign Function &amp; Memory API（二次孵化）<ul>
+<li>合并了 Foreign Memory Access API 和 Foreign Linker API，继续孵化。</li>
+</ul>
+</li>
+<li>Switch 模式匹配（二次预览）<ul>
+<li>继续作为预览特性，进行了一些改进。</li>
+</ul>
+</li>
+<li>废弃 Finalization<ul>
+<li>废弃 finalization 机制，为将来移除做准备。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-19"><a href="#Java-19" class="headerlink" title="Java 19"></a>Java 19</h2><p><strong>Java 19</strong> 发布于 2022 年 9 月 20 日，是短期支持版本，引入了多项重要的预览和孵化特性。</p>
+<ul>
+<li>虚拟线程（预览）<ul>
+<li>首次引入虚拟线程作为预览特性，这是 Project Loom 的核心成果：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建虚拟线程</span></span><br><span class="line">Thread.startVirtualThread(() -&gt; &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Hello from virtual thread!&quot;</span>);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 使用虚拟线程执行器</span></span><br><span class="line"><span class="keyword">try</span> (<span class="type">var</span> <span class="variable">executor</span> <span class="operator">=</span> Executors.newVirtualThreadPerTaskExecutor()) &#123;</span><br><span class="line">    executor.submit(() -&gt; System.out.println(<span class="string">&quot;Task 1&quot;</span>));</span><br><span class="line">    executor.submit(() -&gt; System.out.println(<span class="string">&quot;Task 2&quot;</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>结构化并发（孵化）<ul>
+<li>引入结构化并发 API，简化多线程编程：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">try</span> (<span class="type">var</span> <span class="variable">scope</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">StructuredTaskScope</span>.ShutdownOnFailure()) &#123;</span><br><span class="line">    Future&lt;String&gt; user = scope.fork(() -&gt; findUser());</span><br><span class="line">    Future&lt;Integer&gt; order = scope.fork(() -&gt; fetchOrder());</span><br><span class="line">    </span><br><span class="line">    scope.join();           <span class="comment">// 等待所有任务完成</span></span><br><span class="line">    scope.throwIfFailed();  <span class="comment">// 如果有任务失败则抛出异常</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Response</span>(user.resultNow(), order.resultNow());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Record 模式（预览）<ul>
+<li>引入 Record 模式，用于解构 Record 值：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">record</span> <span class="title class_">Point</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Record 模式匹配</span></span><br><span class="line"><span class="keyword">if</span> (obj <span class="keyword">instanceof</span> <span class="title function_">Point</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span>) &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;x = &quot;</span> + x + <span class="string">&quot;, y = &quot;</span> + y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Switch 模式匹配（三次预览）<ul>
+<li>继续作为预览特性，支持 <code>when</code> 子句（守卫模式）：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> String <span class="title function_">test</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">switch</span> (obj) &#123;</span><br><span class="line">        <span class="keyword">case</span> String s <span class="keyword">when</span> s.length() &gt; <span class="number">5</span> -&gt; <span class="string">&quot;long string&quot;</span>;</span><br><span class="line">        <span class="keyword">case</span> String s -&gt; <span class="string">&quot;short string&quot;</span>;</span><br><span class="line">        <span class="keyword">case</span> Integer i -&gt; <span class="string">&quot;integer&quot;</span>;</span><br><span class="line">        <span class="keyword">default</span> -&gt; <span class="string">&quot;unknown&quot;</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Foreign Function &amp; Memory API（预览）<ul>
+<li>从孵化阶段进入预览阶段，允许 Java 程序调用本地代码和访问堆外内存。</li>
+</ul>
+</li>
+<li>Vector API（四次孵化）<ul>
+<li>Vector API 继续孵化，进行了进一步改进。</li>
+</ul>
+</li>
+<li>Linux&#x2F;RISC-V 支持<ul>
+<li>将 JDK 移植到 Linux&#x2F;RISC-V 平台。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-20"><a href="#Java-20" class="headerlink" title="Java 20"></a>Java 20</h2><p><strong>Java 20</strong> 发布于 2023 年 3 月 21 日，是短期支持版本，继续完善多项预览和孵化特性。</p>
+<ul>
+<li>虚拟线程（二次预览）<ul>
+<li>虚拟线程继续作为预览特性，进行了一些小的改进。</li>
+</ul>
+</li>
+<li>结构化并发（二次孵化）<ul>
+<li>结构化并发继续孵化，<code>StructuredTaskScope</code> 进行了更新。</li>
+</ul>
+</li>
+<li>作用域值（孵化）<ul>
+<li>引入作用域值（Scoped Values），作为线程局部变量的替代方案：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> ScopedValue&lt;String&gt; USER = ScopedValue.newInstance();</span><br><span class="line"></span><br><span class="line">ScopedValue.where(USER, <span class="string">&quot;Alice&quot;</span>).run(() -&gt; &#123;</span><br><span class="line">    System.out.println(USER.get());  <span class="comment">// &quot;Alice&quot;</span></span><br><span class="line">    <span class="comment">// 在此作用域内，USER 的值为 &quot;Alice&quot;</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Record 模式（二次预览）<ul>
+<li>Record 模式继续作为预览特性，支持嵌套模式。</li>
+</ul>
+</li>
+<li>Switch 模式匹配（四次预览）<ul>
+<li>继续作为预览特性，进行了一些改进。</li>
+</ul>
+</li>
+<li>Foreign Function &amp; Memory API（二次预览）<ul>
+<li>继续作为预览特性，进行了改进。</li>
+</ul>
+</li>
+<li>Vector API（五次孵化）<ul>
+<li>Vector API 继续孵化。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-21"><a href="#Java-21" class="headerlink" title="Java 21"></a>Java 21</h2><p><strong>Java 21</strong> 发布于 2023 年 9 月 19 日，是继 Java 17 之后的第三个长期支持版本（LTS），带来了多项重要的正式特性。</p>
+<ul>
+<li>虚拟线程（正式版）<ul>
+<li>虚拟线程在经历两次预览后，正式成为标准特性。详见本文开头的虚拟线程介绍。</li>
+</ul>
+</li>
+<li>结构化并发（预览）<ul>
+<li>结构化并发从孵化阶段进入预览阶段。</li>
+</ul>
+</li>
+<li>作用域值（预览）<ul>
+<li>作用域值从孵化阶段进入预览阶段。</li>
+</ul>
+</li>
+<li>Record 模式（正式版）<ul>
+<li>Record 模式正式成为标准特性：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">record</span> <span class="title class_">Point</span><span class="params">(<span class="type">int</span> x, <span class="type">int</span> y)</span> &#123;&#125;</span><br><span class="line"><span class="keyword">record</span> <span class="title class_">Rectangle</span><span class="params">(Point upperLeft, Point lowerRight)</span> &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 嵌套 Record 模式</span></span><br><span class="line"><span class="keyword">if</span> (obj <span class="keyword">instanceof</span> <span class="title function_">Rectangle</span><span class="params">(Point(<span class="keyword">var</span> x1, <span class="keyword">var</span> y1)</span>, Point(<span class="keyword">var</span> x2, <span class="keyword">var</span> y2))) &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Area: &quot;</span> + (x2 - x1) * (y2 - y1));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Switch 模式匹配（正式版）<ul>
+<li>Switch 模式匹配在经历四次预览后，正式成为标准特性：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">static</span> String <span class="title function_">describe</span><span class="params">(Object obj)</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">switch</span> (obj) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="literal">null</span> -&gt; <span class="string">&quot;null&quot;</span>;</span><br><span class="line">        <span class="keyword">case</span> String s <span class="keyword">when</span> s.isEmpty() -&gt; <span class="string">&quot;empty string&quot;</span>;</span><br><span class="line">        <span class="keyword">case</span> String s -&gt; <span class="string">&quot;string: &quot;</span> + s;</span><br><span class="line">        <span class="keyword">case</span> Integer i -&gt; <span class="string">&quot;integer: &quot;</span> + i;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">int</span>[] arr -&gt; <span class="string">&quot;int array of length &quot;</span> + arr.length;</span><br><span class="line">        <span class="keyword">default</span> -&gt; <span class="string">&quot;unknown&quot;</span>;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>序列化集合（Sequenced Collections）<ul>
+<li>引入新的集合接口，表示具有确定遇到顺序的集合：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// SequencedCollection 接口新增方法</span></span><br><span class="line"><span class="comment">// void addFirst(E e), void addLast(E e)</span></span><br><span class="line"><span class="comment">// E getFirst(), E getLast()</span></span><br><span class="line"><span class="comment">// E removeFirst(), E removeLast()</span></span><br><span class="line"><span class="comment">// SequencedCollection&lt;E&gt; reversed()</span></span><br><span class="line"></span><br><span class="line">List&lt;String&gt; list = <span class="keyword">new</span> <span class="title class_">ArrayList</span>&lt;&gt;(List.of(<span class="string">&quot;a&quot;</span>, <span class="string">&quot;b&quot;</span>, <span class="string">&quot;c&quot;</span>));</span><br><span class="line">list.getFirst();  <span class="comment">// &quot;a&quot;</span></span><br><span class="line">list.getLast();   <span class="comment">// &quot;c&quot;</span></span><br><span class="line">list.reversed();  <span class="comment">// [&quot;c&quot;, &quot;b&quot;, &quot;a&quot;]</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>字符串模板（预览）<ul>
+<li>引入字符串模板，支持在字符串中嵌入表达式：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">name</span> <span class="operator">=</span> <span class="string">&quot;World&quot;</span>;</span><br><span class="line"><span class="type">int</span> <span class="variable">year</span> <span class="operator">=</span> <span class="number">2023</span>;</span><br><span class="line"><span class="comment">// 使用 STR 模板处理器</span></span><br><span class="line"><span class="type">String</span> <span class="variable">message</span> <span class="operator">=</span> STR.<span class="string">&quot;Hello, \&#123;name&#125;! Welcome to \&#123;year&#125;.&quot;</span>;</span><br><span class="line"><span class="comment">// 结果: &quot;Hello, World! Welcome to 2023.&quot;</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>未命名模式和变量（预览）<ul>
+<li>引入下划线 <code>_</code> 作为未命名模式和变量：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 未命名变量</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// ...</span></span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception _) &#123;</span><br><span class="line">    <span class="comment">// 不需要使用异常变量</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 未命名模式</span></span><br><span class="line"><span class="keyword">if</span> (obj <span class="keyword">instanceof</span> <span class="title function_">Point</span><span class="params">(<span class="type">int</span> x, _)</span>) &#123;</span><br><span class="line">    <span class="comment">// 只关心 x 坐标</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>未命名类和实例 main 方法（预览）<ul>
+<li>简化 Java 程序的入口点，方便初学者：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 传统写法</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">HelloWorld</span> &#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;Hello, World!&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Java 21 简化写法（预览）</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Hello, World!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>分代式 ZGC<ul>
+<li>ZGC 支持分代收集，提高年轻对象的回收效率，降低内存占用。</li>
+</ul>
+</li>
+<li>Foreign Function &amp; Memory API（三次预览）<ul>
+<li>继续作为预览特性，进行了改进。</li>
+</ul>
+</li>
+<li>Vector API（六次孵化）<ul>
+<li>Vector API 继续孵化。</li>
+</ul>
+</li>
+<li>废弃 Windows 32 位 x86 移植<ul>
+<li>废弃 Windows 32 位 x86 移植，为将来移除做准备。</li>
+</ul>
+</li>
+<li>准备禁止动态加载代理<ul>
+<li>当代理被动态加载到运行中的 JVM 时发出警告，为将来默认禁止做准备。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-22"><a href="#Java-22" class="headerlink" title="Java 22"></a>Java 22</h2><p><strong>Java 22</strong> 发布于 2024 年 3 月 19 日，是短期支持版本。</p>
+<ul>
+<li>未命名变量和模式（正式版）<ul>
+<li>未命名变量和模式正式成为标准特性。</li>
+</ul>
+</li>
+<li>语句前的 super(…)（预览）<ul>
+<li>允许在构造函数中调用 <code>super(...)</code> 之前执行语句：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Sub</span> <span class="keyword">extends</span> <span class="title class_">Super</span> &#123;</span><br><span class="line">    Sub(<span class="type">int</span> x) &#123;</span><br><span class="line">        <span class="comment">// Java 22 之前，这里不能有任何语句</span></span><br><span class="line">        <span class="comment">// Java 22 允许在 super() 之前执行语句</span></span><br><span class="line">        <span class="keyword">if</span> (x &lt; <span class="number">0</span>) <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>();</span><br><span class="line">        <span class="built_in">super</span>(x);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>外部函数和内存 API（正式版）<ul>
+<li>Foreign Function &amp; Memory API 正式成为标准特性，允许 Java 程序调用本地库和管理堆外内存。</li>
+</ul>
+</li>
+<li>未命名类和实例 main 方法（二次预览）<ul>
+<li>继续作为预览特性。</li>
+</ul>
+</li>
+<li>结构化并发（二次预览）<ul>
+<li>继续作为预览特性。</li>
+</ul>
+</li>
+<li>作用域值（二次预览）<ul>
+<li>继续作为预览特性。</li>
+</ul>
+</li>
+<li>流收集器（Stream Gatherers，预览）<ul>
+<li>增强 Stream API，支持自定义中间操作：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用 Gatherers 创建滑动窗口</span></span><br><span class="line">List&lt;List&lt;Integer&gt;&gt; windows = Stream.of(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>)</span><br><span class="line">    .gather(Gatherers.windowSliding(<span class="number">3</span>))</span><br><span class="line">    .toList();</span><br><span class="line"><span class="comment">// [[1, 2, 3], [2, 3, 4], [3, 4, 5]]</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>Class-File API（预览）<ul>
+<li>提供用于解析、生成和转换 Java 类文件的标准 API。</li>
+</ul>
+</li>
+<li>启动多文件源代码程序<ul>
+<li>允许直接运行由多个 Java 源文件组成的程序。</li>
+</ul>
+</li>
+<li>Vector API（七次孵化）<ul>
+<li>Vector API 继续孵化。</li>
+</ul>
+</li>
+<li>区域固定 G1<ul>
+<li>G1 垃圾回收器支持区域固定，减少 JNI 关键区域对 GC 延迟的影响。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-23"><a href="#Java-23" class="headerlink" title="Java 23"></a>Java 23</h2><p><strong>Java 23</strong> 发布于 2024 年 9 月 17 日，是短期支持版本。</p>
+<ul>
+<li>原始类型模式（预览）<ul>
+<li>在 <code>instanceof</code> 和 <code>switch</code> 中支持原始类型模式：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 原始类型模式匹配</span></span><br><span class="line"><span class="keyword">switch</span> (x) &#123;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">int</span> i <span class="keyword">when</span> i &gt; <span class="number">0</span> -&gt; <span class="string">&quot;positive&quot;</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">int</span> i <span class="keyword">when</span> i &lt; <span class="number">0</span> -&gt; <span class="string">&quot;negative&quot;</span>;</span><br><span class="line">    <span class="keyword">case</span> <span class="type">int</span> i -&gt; <span class="string">&quot;zero&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>模块导入声明（预览）<ul>
+<li>允许简洁地导入模块导出的所有包：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">module</span> java.base;  <span class="comment">// 导入 java.base 模块的所有包</span></span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>灵活的构造函数体（二次预览）<ul>
+<li>语句前的 super(…) 继续作为预览特性。</li>
+</ul>
+</li>
+<li>隐式声明的类和实例 main 方法（三次预览）<ul>
+<li>继续作为预览特性，改名为”隐式声明的类”。</li>
+</ul>
+</li>
+<li>结构化并发（三次预览）<ul>
+<li>继续作为预览特性。</li>
+</ul>
+</li>
+<li>作用域值（三次预览）<ul>
+<li>继续作为预览特性。</li>
+</ul>
+</li>
+<li>流收集器（二次预览）<ul>
+<li>继续作为预览特性。</li>
+</ul>
+</li>
+<li>Class-File API（二次预览）<ul>
+<li>继续作为预览特性。</li>
+</ul>
+</li>
+<li>Markdown 文档注释<ul>
+<li>支持在 JavaDoc 注释中使用 Markdown 语法。</li>
+</ul>
+</li>
+<li>Vector API（八次孵化）<ul>
+<li>Vector API 继续孵化。</li>
+</ul>
+</li>
+<li>ZGC 默认使用分代模式<ul>
+<li>ZGC 默认启用分代模式，非分代模式被废弃。</li>
+</ul>
+</li>
+<li>废弃 sun.misc.Unsafe 中的内存访问方法<ul>
+<li>废弃 <code>sun.misc.Unsafe</code> 中的内存访问方法，推荐使用 VarHandle 和 Foreign Function &amp; Memory API。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-24"><a href="#Java-24" class="headerlink" title="Java 24"></a>Java 24</h2><p><strong>Java 24</strong> 发布于 2025 年 3 月 18 日，是短期支持版本。</p>
+<ul>
+<li>流收集器（正式版）<ul>
+<li>Stream Gatherers 正式成为标准特性。</li>
+</ul>
+</li>
+<li>Class-File API（正式版）<ul>
+<li>Class-File API 正式成为标准特性。</li>
+</ul>
+</li>
+<li>原始类型模式（二次预览）<ul>
+<li>继续作为预览特性。</li>
+</ul>
+</li>
+<li>模块导入声明（二次预览）<ul>
+<li>继续作为预览特性。</li>
+</ul>
+</li>
+<li>灵活的构造函数体（三次预览）<ul>
+<li>继续作为预览特性。</li>
+</ul>
+</li>
+<li>简单源文件和实例 main 方法（四次预览）<ul>
+<li>继续作为预览特性，改名为”简单源文件”。</li>
+</ul>
+</li>
+<li>结构化并发（四次预览）<ul>
+<li>继续作为预览特性。</li>
+</ul>
+</li>
+<li>作用域值（四次预览）<ul>
+<li>继续作为预览特性。</li>
+</ul>
+</li>
+<li>量子安全加密<ul>
+<li>引入量子安全的密钥封装机制（ML-KEM），为后量子时代做准备。</li>
+</ul>
+</li>
+<li>密钥派生函数 API（预览）<ul>
+<li>引入用于密钥派生函数（KDF）的 API。</li>
+</ul>
+</li>
+<li>提前类加载和链接<ul>
+<li>改进应用程序启动时间。</li>
+</ul>
+</li>
+<li>紧凑对象头（实验性）<ul>
+<li>减少对象头大小，降低内存占用。</li>
+</ul>
+</li>
+<li>Vector API（九次孵化）<ul>
+<li>Vector API 继续孵化。</li>
+</ul>
+</li>
+<li>永久禁用安全管理器<ul>
+<li>安全管理器被永久禁用，相关 API 被标记为废弃。</li>
+</ul>
+</li>
+<li>移除 Windows 32 位 x86 移植<ul>
+<li>正式移除 Windows 32 位 x86 支持。</li>
+</ul>
+</li>
+<li>同步虚拟线程不再固定<ul>
+<li>虚拟线程在 <code>synchronized</code> 块中阻塞时不再固定到载体线程，这是对虚拟线程的重大改进。</li>
+</ul>
+</li>
+</ul>
+<h2 id="Java-25"><a href="#Java-25" class="headerlink" title="Java 25"></a>Java 25</h2><p><strong>Java 25</strong> 发布于 2025 年 9 月 16 日，是继 Java 21 之后的第四个长期支持版本（LTS）。</p>
+<ul>
+<li>作用域值（正式版）<ul>
+<li>作用域值在经历多次预览后，正式成为标准特性，作为线程局部变量的更安全替代方案：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">final</span> <span class="keyword">static</span> ScopedValue&lt;String&gt; USER = ScopedValue.newInstance();</span><br><span class="line"></span><br><span class="line">ScopedValue.where(USER, <span class="string">&quot;Alice&quot;</span>).run(() -&gt; &#123;</span><br><span class="line">    System.out.println(USER.get());  <span class="comment">// &quot;Alice&quot;</span></span><br><span class="line">    processRequest();  <span class="comment">// 子方法也可以访问 USER</span></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>紧凑源文件与实例主方法（正式版）<ul>
+<li>简化 Java 程序入口点的特性正式发布，方便初学者编写简单程序：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 无需 public class、无需 static、无需 String[] args</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">main</span><span class="params">()</span> &#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;Hello, World!&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li>紧凑对象头（正式版）<ul>
+<li>将对象头从 96-128 位压缩到 64 位，显著减少堆内存占用，提升数据局部性和 GC 效率。</li>
+</ul>
+</li>
+<li>分代 Shenandoah GC<ul>
+<li>Shenandoah 垃圾回收器支持分代收集，提高年轻对象的回收效率。</li>
+</ul>
+</li>
+<li>模式匹配支持基本类型（三次预览）<ul>
+<li>继续作为预览特性，在 <code>instanceof</code> 和 <code>switch</code> 中支持基本类型模式。</li>
+</ul>
+</li>
+<li>结构化并发（五次预览）<ul>
+<li>继续作为预览特性，简化多线程编程。</li>
+</ul>
+</li>
+<li>模块导入声明（预览）<ul>
+<li>继续作为预览特性，允许简洁地导入模块导出的所有包。</li>
+</ul>
+</li>
+<li>灵活的构造函数体（预览）<ul>
+<li>继续作为预览特性，允许在 <code>super()</code> 调用之前执行语句。</li>
+</ul>
+</li>
+<li>Vector API（十次孵化）<ul>
+<li>Vector API 继续孵化，支持 SIMD 操作。</li>
+</ul>
+</li>
+</ul>
+<h1 id="重要特性介绍"><a href="#重要特性介绍" class="headerlink" title="重要特性介绍"></a>重要特性介绍</h1><h2 id="虚拟线程"><a href="#虚拟线程" class="headerlink" title="虚拟线程"></a>虚拟线程</h2><p>Java 虚拟线程最早源自 Project Loom，Oracle 在 2017 年正式提出。JDK19 引入预览功能，最后在 JDK21 正式启用。</p>
+<h3 id="为什么-Java-迟迟没有支持虚拟线程"><a href="#为什么-Java-迟迟没有支持虚拟线程" class="headerlink" title="为什么 Java 迟迟没有支持虚拟线程"></a>为什么 Java 迟迟没有支持虚拟线程</h3><h4 id="历史原因"><a href="#历史原因" class="headerlink" title="历史原因"></a>历史原因</h4><ul>
+<li>Java 一开始的线程模型就是系统线程映射模型：Thread 对应一个原生操作系统线程。</li>
+<li>硬件和 JVM 技术条件有限的情况下，做轻量级线程会让垃圾回收、同步、调度、异常处理等问题复杂化。</li>
+<li>Java 生态太庞大，几乎所有框架、库、监控工具等都建立在现有线程模型之上，属实有点改不动。</li>
+</ul>
+<h4 id="Java-已有线程模型的优缺点"><a href="#Java-已有线程模型的优缺点" class="headerlink" title="Java 已有线程模型的优缺点"></a>Java 已有线程模型的优缺点</h4><p>Java 的线程池设计 ThreadPoolExecutor 非常成熟，能满足绝大多数场景。同时配合 ForkJoinPool 在 CPU 密集任务中表现很好。</p>
+<p>当然它的缺点也是非常明显的：</p>
+<ul>
+<li>线程栈空间固定，默认 1M 左右（可以通过启动参数 -Xss 指定）创建大量线程需要消耗大量的内存。</li>
+<li>上下文切换开销比较高，如果线程数在几千这个数量级的时候，调度成本会比较高。</li>
+</ul>
+<p>当前的互联网环境，我们希望每个 JVM 实例，能承载高并发请求，现在传统的线程模型就会显得过于重。</p>
+<h3 id="Java-虚拟线程池设计"><a href="#Java-虚拟线程池设计" class="headerlink" title="Java 虚拟线程池设计"></a>Java 虚拟线程池设计</h3><p>Java 虚拟线程的设计目标是：用极低的内存开销创建大量线程，且能很好地与现有 Java 生态兼容。</p>
+<p>所以虚拟线程目前是可选项，用户需要在创建线程和线程池的时候，主动选择创建传统线程或者虚拟线程。</p>
+<h4 id="用代码创建一个虚拟线程"><a href="#用代码创建一个虚拟线程" class="headerlink" title="用代码创建一个虚拟线程"></a>用代码创建一个虚拟线程</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">Thread</span> <span class="variable">vt</span> <span class="operator">=</span> Thread.ofVirtual()</span><br><span class="line">                  .name(<span class="string">&quot;my-virtual-thread&quot;</span>, <span class="number">0</span>) <span class="comment">// 可选命名</span></span><br><span class="line">                  .start(() -&gt; &#123;</span><br><span class="line">                      System.out.println(<span class="string">&quot;Hello from virtual thread!&quot;</span>);</span><br><span class="line">                  &#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 或者我们也可以使用 Executors 中的新 API 来创建由虚拟线程组成的线程池</span></span><br><span class="line"><span class="comment">// 这个线程池，每次提交任务，都会创建新的虚拟线程来执行任务</span></span><br><span class="line"><span class="type">ExecutorService</span> <span class="variable">executorService</span> <span class="operator">=</span> Executors.newVirtualThreadPerTaskExecutor();</span><br></pre></td></tr></table></figure>
+
+<h4 id="线程模型"><a href="#线程模型" class="headerlink" title="线程模型"></a>线程模型</h4><p>虚拟线程与平台线程关系（M:N 模型）  </p>
+<ul>
+<li>虚拟线程（Virtual Thread）：用户态，创建&#x2F;销毁极轻量，栈按需增长（初始几 KB），阻塞时可卸载（unmount）释放载体线程。  </li>
+<li>平台线程（Platform&#x2F;Carrier Thread）：映射到操作系统内核线程，由 OS 调度，数量通常≈CPU 核心数，运行虚拟线程的实际承载者。 </li>
+<li>在 Windows 和 Linux 等主流操作系统中，Java 线程采用的是一对一的线程模型，也就是一个平台线程对应一个系统内核线程。 </li>
+<li>调度机制：大量虚拟线程排队；被分配到空闲平台线程上运行；遇到可挂起的阻塞（I&#x2F;O、park、sleep、同步等待）时，栈封装为 continuation，虚拟线程从平台线程上“脱离”，平台线程再去运行其他虚拟线程；不可卸载的阻塞（pinning，例如持有某些监视器执行阻塞本地调用）会占住平台线程。</li>
+</ul>
+<p>核心特性概览  </p>
+<ol>
+<li>M 个虚拟线程  -&gt;  N 个平台线程（通常 N &lt;&lt; M）  </li>
+<li>可挂起阻塞 ≈ 不占用平台线程  </li>
+<li>Pinning 场景需要避免：</li>
+</ol>
+<ul>
+<li>在 synchronized 保护的临界区内执行阻塞 I&#x2F;O &#x2F; sleep &#x2F; park  </li>
+<li>调用不支持虚拟线程卸载的本地&#x2F;阻塞库方法</li>
+</ul>
+<ol start="4">
+<li>目标：以“线程即结构”简化并发，而不是回调&#x2F;显式任务拆分。</li>
+</ol>
+<p>Mermaid 流程图（关系与调度循环示意）  </p>
+<pre class="mermaid">flowchart LR
+   subgraph VT["虚拟线程集合 (M)"]
+      v1(VT1)
+      v2(VT2)
+      v3(...VTn)
+   end
+
+   subgraph SCH[JVM 调度器 / 就绪队列]
+      Q
+   end
+
+   subgraph PT["平台线程池 (N ≈ CPU 核心)"]
+      p1(PT1)
+      p2(PT2)
+      p3(...PTn)
+   end
+
+   subgraph OS[操作系统 / CPU]
+      cpu[(内核线程与 CPU 调度)]
+   end
+
+   v1 --> Q
+   v2 --> Q
+   v3 --> Q
+
+   Q --> p1
+   Q --> p2
+   Q --> p3
+
+   p1 --> cpu
+   p2 --> cpu
+   p3 --> cpu
+
+   %% 运行与阻塞
+   p1 -->|运行中的 VT| run1[执行]
+   run1 -->|"遇到可挂起阻塞 (I/O / park)"| unmount[卸载: 保存 continuation]
+   unmount --> Q
+
+   p2 -->|运行中的 VT| run2[执行]
+   run2 -->|正常完成| done[终止/回收]
+
+   %% Pinning
+   p3 -->|持有监视器 + 阻塞调用| pin[Pinning: 占用平台线程]
+   pin -->|解除阻塞| back[继续执行或结束]
+   back --> Q</pre>
+
+<p>简化调度循环  </p>
+<ol>
+<li>创建虚拟线程 -&gt; 放入就绪队列  </li>
+<li>平台线程拉取 -&gt; 挂载并执行<br>3a) 正常完成 -&gt; 释放<br>3b) 可挂起阻塞 -&gt; 卸载，返回队列等待唤醒<br>3c) Pinning 阻塞 -&gt; 占用平台线程直至恢复（需谨慎避免）</li>
+</ol>
+<p>实践建议  </p>
+<ul>
+<li>优先使用结构化并发（StructuredTaskScope）管理虚拟线程生命周期  </li>
+<li>避免在 synchronized 大块中执行阻塞操作  </li>
+<li>评估第三方库是否存在本地阻塞调用（Netty、JDBC 驱动等）  </li>
+<li>监控 pinning（可用 JFR 事件 VirtualThreadPinned）</li>
+</ul>
+<p>小结：虚拟线程通过“可卸载 + Continuation”使阻塞不再等于占用载体线程，从而以直观的同步代码风格实现大规模并发。  </p>
+<h4 id="线程栈"><a href="#线程栈" class="headerlink" title="线程栈"></a>线程栈</h4><p>Java 虚拟线程的栈空间是动态分配的，初始时只有几 KB 大小，当虚拟线程执行过程中需要更多栈空间时，JVM 会自动扩展栈空间。当虚拟线程执行完成后，JVM 会回收栈空间，从而节省内存资源。</p>
+<h4 id="JDK21-针对阻塞操作的改造"><a href="#JDK21-针对阻塞操作的改造" class="headerlink" title="JDK21 针对阻塞操作的改造"></a>JDK21 针对阻塞操作的改造</h4><p>在 JDK21 之前，我们代码中执行的各种阻塞操作，都是依赖于操作系统的，比如 sleep, wait, park 等等，这些方法都是 native 方法，都依赖于操作系统的本地方法，比如下面的这些 API，全都是 native 方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// java.lang.Thread#sleep(long)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title function_">sleep</span><span class="params">(<span class="type">long</span> millis)</span> <span class="keyword">throws</span> InterruptedException;</span><br><span class="line"></span><br><span class="line"><span class="comment">// java.lang.Object#wait(long)</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title function_">wait</span><span class="params">(<span class="type">long</span> timeoutMillis)</span> <span class="keyword">throws</span> InterruptedException;</span><br><span class="line"></span><br><span class="line"><span class="comment">// JDK.internal.misc.Unsafe#unpark</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title function_">unpark</span><span class="params">(Object thread)</span>;</span><br><span class="line"><span class="comment">// JDK.internal.misc.Unsafe#park</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title function_">park</span><span class="params">(<span class="type">boolean</span> isAbsolute, <span class="type">long</span> time)</span>;</span><br></pre></td></tr></table></figure>
+
+<p>但是当我们切换到虚拟线程以后，这些系统调用显然就不能这么用了，否则会导致任务固定在载体线程上，载体线程不能去处理其他的任务，这就是虚拟线程的 <strong>pinning</strong> 现象。</p>
+<p>所以，为了引入虚拟线程，JDK 需要重新实现所有这些阻塞操作。比如下面是 JDK21 中的 sleep 实现：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">sleep</span><span class="params">(<span class="type">long</span> millis)</span> <span class="keyword">throws</span> InterruptedException &#123;</span><br><span class="line">    <span class="keyword">if</span> (millis &lt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">IllegalArgumentException</span>(<span class="string">&quot;timeout value is negative&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="type">long</span> <span class="variable">nanos</span> <span class="operator">=</span> MILLISECONDS.toNanos(millis);</span><br><span class="line">    <span class="type">ThreadSleepEvent</span> <span class="variable">event</span> <span class="operator">=</span> beforeSleep(nanos);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        <span class="keyword">if</span> (currentThread() <span class="keyword">instanceof</span> VirtualThread vthread) &#123;</span><br><span class="line">            vthread.sleepNanos(nanos);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            sleep0(nanos);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        afterSleep(event);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">native</span> <span class="keyword">void</span> <span class="title function_">sleep0</span><span class="params">(<span class="type">long</span> nanos)</span> <span class="keyword">throws</span> InterruptedException;</span><br></pre></td></tr></table></figure>
+
+<p>对于其他的比如 Unsafe 里面的 park 和 unpark, IO 操作里面的 read, write 等方法，JDK 也都做了重新实现，以适配虚拟线程。</p>
+<p>比如 park 和 unpark 在 JDK21 中 <code>java.lang.VirtualThread</code> 的实现:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">park</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="keyword">assert</span> Thread.currentThread() == <span class="built_in">this</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// complete immediately if parking permit available or interrupted</span></span><br><span class="line">    <span class="keyword">if</span> (getAndSetParkPermit(<span class="literal">false</span>) || interrupted)</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// park the thread</span></span><br><span class="line">    <span class="type">boolean</span> <span class="variable">yielded</span> <span class="operator">=</span> <span class="literal">false</span>;</span><br><span class="line">    setState(PARKING);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        yielded = yieldContinuation();  <span class="comment">// may throw</span></span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        <span class="keyword">assert</span> (Thread.currentThread() == <span class="built_in">this</span>) &amp;&amp; (yielded == (state() == RUNNING));</span><br><span class="line">        <span class="keyword">if</span> (!yielded) &#123;</span><br><span class="line">            <span class="keyword">assert</span> <span class="title function_">state</span><span class="params">()</span> == PARKING;</span><br><span class="line">            setState(RUNNING);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// park on the carrier thread when pinned</span></span><br><span class="line">    <span class="keyword">if</span> (!yielded) &#123;</span><br><span class="line">        parkOnCarrierThread(<span class="literal">false</span>, <span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="meta">@ChangesCurrentThread</span></span><br><span class="line"><span class="keyword">void</span> <span class="title function_">unpark</span><span class="params">()</span> &#123;</span><br><span class="line">    <span class="type">Thread</span> <span class="variable">currentThread</span> <span class="operator">=</span> Thread.currentThread();</span><br><span class="line">    <span class="keyword">if</span> (!getAndSetParkPermit(<span class="literal">true</span>) &amp;&amp; currentThread != <span class="built_in">this</span>) &#123;</span><br><span class="line">        <span class="type">int</span> <span class="variable">s</span> <span class="operator">=</span> state();</span><br><span class="line">        <span class="type">boolean</span> <span class="variable">parked</span> <span class="operator">=</span> (s == PARKED) || (s == TIMED_PARKED);</span><br><span class="line">        <span class="keyword">if</span> (parked &amp;&amp; compareAndSetState(s, UNPARKED)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (currentThread <span class="keyword">instanceof</span> VirtualThread vthread) &#123;</span><br><span class="line">                vthread.switchToCarrierThread();</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    submitRunContinuation();</span><br><span class="line">                &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">                    switchToVirtualThread(vthread);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                submitRunContinuation();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span> ((s == PINNED) || (s == TIMED_PINNED)) &#123;</span><br><span class="line">            <span class="comment">// unpark carrier thread when pinned</span></span><br><span class="line">            <span class="keyword">synchronized</span> (carrierThreadAccessLock()) &#123;</span><br><span class="line">                <span class="type">Thread</span> <span class="variable">carrier</span> <span class="operator">=</span> carrierThread;</span><br><span class="line">                <span class="keyword">if</span> (carrier != <span class="literal">null</span> &amp;&amp; ((s = state()) == PINNED || s == TIMED_PINNED)) &#123;</span><br><span class="line">                    U.unpark(carrier);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="状态转换"><a href="#状态转换" class="headerlink" title="状态转换"></a>状态转换</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment"> * Virtual thread state transitions:</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *      NEW -&gt; STARTED         // Thread.start, schedule to run</span></span><br><span class="line"><span class="comment"> *  STARTED -&gt; TERMINATED      // failed to start</span></span><br><span class="line"><span class="comment"> *  STARTED -&gt; RUNNING         // first run</span></span><br><span class="line"><span class="comment"> *  RUNNING -&gt; TERMINATED      // done</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *  RUNNING -&gt; PARKING         // Thread parking with LockSupport.park</span></span><br><span class="line"><span class="comment"> *  PARKING -&gt; PARKED          // cont.yield successful, parked indefinitely</span></span><br><span class="line"><span class="comment"> *  PARKING -&gt; PINNED          // cont.yield failed, parked indefinitely on carrier</span></span><br><span class="line"><span class="comment"> *   PARKED -&gt; UNPARKED        // unparked, may be scheduled to continue</span></span><br><span class="line"><span class="comment"> *   PINNED -&gt; RUNNING         // unparked, continue execution on same carrier</span></span><br><span class="line"><span class="comment"> * UNPARKED -&gt; RUNNING         // continue execution after park</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *       RUNNING -&gt; TIMED_PARKING   // Thread parking with LockSupport.parkNanos</span></span><br><span class="line"><span class="comment"> * TIMED_PARKING -&gt; TIMED_PARKED    // cont.yield successful, timed-parked</span></span><br><span class="line"><span class="comment"> * TIMED_PARKING -&gt; TIMED_PINNED    // cont.yield failed, timed-parked on carrier</span></span><br><span class="line"><span class="comment"> *  TIMED_PARKED -&gt; UNPARKED        // unparked, may be scheduled to continue</span></span><br><span class="line"><span class="comment"> *  TIMED_PINNED -&gt; RUNNING         // unparked, continue execution on same carrier</span></span><br><span class="line"><span class="comment"> *</span></span><br><span class="line"><span class="comment"> *  RUNNING -&gt; YIELDING        // Thread.yield</span></span><br><span class="line"><span class="comment"> * YIELDING -&gt; YIELDED         // cont.yield successful, may be scheduled to continue</span></span><br><span class="line"><span class="comment"> * YIELDING -&gt; RUNNING         // cont.yield failed</span></span><br><span class="line"><span class="comment"> *  YIELDED -&gt; RUNNING         // continue execution after Thread.yield</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">NEW</span>      <span class="operator">=</span> <span class="number">0</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">STARTED</span>  <span class="operator">=</span> <span class="number">1</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">RUNNING</span>  <span class="operator">=</span> <span class="number">2</span>;     <span class="comment">// runnable-mounted</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// untimed and timed parking</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">PARKING</span>       <span class="operator">=</span> <span class="number">3</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">PARKED</span>        <span class="operator">=</span> <span class="number">4</span>;     <span class="comment">// unmounted</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">PINNED</span>        <span class="operator">=</span> <span class="number">5</span>;     <span class="comment">// mounted</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">TIMED_PARKING</span> <span class="operator">=</span> <span class="number">6</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">TIMED_PARKED</span>  <span class="operator">=</span> <span class="number">7</span>;     <span class="comment">// unmounted</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">TIMED_PINNED</span>  <span class="operator">=</span> <span class="number">8</span>;     <span class="comment">// mounted</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">UNPARKED</span>      <span class="operator">=</span> <span class="number">9</span>;     <span class="comment">// unmounted but runnable</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// Thread.yield</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">YIELDING</span> <span class="operator">=</span> <span class="number">10</span>;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">YIELDED</span>  <span class="operator">=</span> <span class="number">11</span>;         <span class="comment">// unmounted but runnable</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="variable">TERMINATED</span> <span class="operator">=</span> <span class="number">99</span>;  <span class="comment">// final state</span></span><br></pre></td></tr></table></figure>
+
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ul>
+<li><a target="_blank" rel="noopener" href="https://javaguide.cn/java/new-features/java17.html">Java 17 新特性概览(重要)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/javase/21u-relnotes.html">JDK 21 新特性概览</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/java/javase/21/index.html">JDK 21 Documentation</a></li>
+<li><a target="_blank" rel="noopener" href="https://javaguide.cn/java/new-features/java21.html">Java 21 新特性概览(重要)</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.oracle.com/java/technologies/javase/25u-relnotes.html">JDK 25 新特性概览</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.oracle.com/en/java/javase/25/index.html">JDK 25 Documentation</a></li>
+<li><a target="_blank" rel="noopener" href="https://javaguide.cn/java/new-features/java25.html">Java 25 新特性概览</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/jdk/" rel="tag"># jdk</a>
+              <a href="/tags/upgrade/" rel="tag"># upgrade</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2025/01/21/perforce/" rel="prev" title="perforce">
+                  <i class="fa fa-angle-left"></i> perforce
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Apomelo</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

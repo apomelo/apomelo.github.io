@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="简介Jetty 是一个基于 Java 的开源的 Web 服务器和 Servlet 容器，它是由 Eclipse Foundation 托管的一个项目。Jetty 提供了一个灵活、可嵌入的服务器组件，可以用于构建各种类型的 Java Web 应用程序，包括传统的基于 Servlet 的 Web 应用、RESTful 服务、WebSocket 应用等。 Jetty 的特点和优势包括：  轻量级和高性能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="jetty 笔记">
+<meta property="og:url" content="https://apomelo.github.io/posts/2024/03/12/jetty/index.html">
+<meta property="og:site_name" content="Apomelo - 追逐">
+<meta property="og:description" content="简介Jetty 是一个基于 Java 的开源的 Web 服务器和 Servlet 容器，它是由 Eclipse Foundation 托管的一个项目。Jetty 提供了一个灵活、可嵌入的服务器组件，可以用于构建各种类型的 Java Web 应用程序，包括传统的基于 Servlet 的 Web 应用、RESTful 服务、WebSocket 应用等。 Jetty 的特点和优势包括：  轻量级和高性能">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-03-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-03-11T16:00:00.000Z">
+<meta property="article:author" content="Apomelo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="jetty">
+<meta property="article:tag" content="webserver">
+<meta property="article:tag" content="network">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://apomelo.github.io/posts/2024/03/12/jetty/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.github.io/posts/2024/03/12/jetty/","path":"posts/2024/03/12/jetty/","title":"jetty 笔记"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>jetty 笔记 | Apomelo - 追逐</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js" defer></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js" defer></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/5.36.0/lite/builds/browser.umd.js" integrity="sha256-o49zoHLDPBm9WLg6AiliAVi3axCRTqe3ltTxLvhzAVg=" crossorigin="anonymous" defer></script><script src="/js/third-party/search/algolia-search.js" defer></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fab fa-algolia fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#jetty-tomcat-netty-%E5%AF%B9%E6%AF%94"><span class="nav-number">2.</span> <span class="nav-text">jetty, tomcat, netty 对比</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#servlet"><span class="nav-number">3.</span> <span class="nav-text">servlet</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#JSP"><span class="nav-number">4.</span> <span class="nav-text">JSP</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">5.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">83</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.github.io/posts/2024/03/12/jetty/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="jetty 笔记 | Apomelo - 追逐">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          jetty 笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-03-12 00:00:00" itemprop="dateCreated datePublished" datetime="2024-03-12T00:00:00+08:00">2024-03-12</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2024/03/12/jetty/" class="post-meta-item leancloud_visitors" data-flag-title="jetty 笔记" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Jetty 是一个基于 Java 的开源的 Web 服务器和 Servlet 容器，它是由 Eclipse Foundation 托管的一个项目。Jetty 提供了一个灵活、可嵌入的服务器组件，可以用于构建各种类型的 Java Web 应用程序，包括传统的基于 Servlet 的 Web 应用、RESTful 服务、WebSocket 应用等。</p>
+<p>Jetty 的特点和优势包括：</p>
+<ol>
+<li><strong>轻量级和高性能：</strong> Jetty 是一个轻量级的 Web 服务器，具有卓越的性能。它采用异步 I&#x2F;O 和非阻塞的处理模型，能够高效地处理大量的并发请求。</li>
+<li><strong>嵌入式容器：</strong> Jetty 提供了一个嵌入式的容器，可以将 Jetty 嵌入到应用程序中，作为应用程序的一部分运行，而不需要单独部署一个独立的服务器。这使得 Jetty 在开发和测试阶段非常方便，并且能够灵活地与应用程序集成。</li>
+<li><strong>支持标准：</strong> Jetty 是一个符合标准的 Servlet 容器，完全支持 Java EE 规范，包括 Servlet、WebSocket、JSP 等规范。因此，它可以无缝地与其他 Java EE 组件集成，如 JPA、CDI 等。</li>
+<li><strong>灵活的配置和扩展性：</strong> Jetty 提供了丰富的配置选项和可扩展的 API，可以根据需要灵活地配置和定制服务器。它支持多种插件和扩展，可以轻松地扩展功能，满足不同的需求。</li>
+<li><strong>可靠性和稳定性：</strong> Jetty 是一个成熟的开源项目，经过了长期的发展和实践验证，具有较高的可靠性和稳定性。它广泛应用于生产环境中的大型系统和互联网应用，并且得到了很好的支持和社区反馈。</li>
+</ol>
+<p>总的来说，Jetty 是一个功能强大、灵活、性能优异的开源 Web 服务器和 Servlet 容器，适用于构建各种类型的 Java Web 应用程序，是 Java 开发人员的重要选择之一。</p>
+<span id="more"></span>
+
+<h1 id="jetty-tomcat-netty-对比"><a href="#jetty-tomcat-netty-对比" class="headerlink" title="jetty, tomcat, netty 对比"></a>jetty, tomcat, netty 对比</h1><p>Jetty、Tomcat 和 Netty 是 Java 领域中常用的网络框架，它们在设计和应用场景上有一些不同点，下面是它们之间的对比：</p>
+<ol>
+<li><p><strong>应用场景：</strong></p>
+<ul>
+<li>Jetty：Jetty 是一个基于 Servlet 的 Web 服务器和 Servlet 容器，适用于构建传统的 Web 应用程序，如企业应用、网站等。它也可以作为一个嵌入式容器，用于嵌入到应用程序中。</li>
+<li>Tomcat：Tomcat 也是一个基于 Servlet 的 Web 服务器和 Servlet 容器，主要用于部署和运行传统的 Java Web 应用程序。</li>
+<li>Netty：Netty 是一个基于事件驱动、异步、非阻塞的网络通信框架，适用于构建高性能、高并发的网络应用，如服务器、客户端、代理等。它提供了灵活的 API 和高性能的网络组件，支持多种协议，如 TCP、UDP、HTTP、WebSocket 等。</li>
+</ul>
+</li>
+<li><p><strong>性能和并发性：</strong></p>
+<ul>
+<li>Jetty 和 Tomcat：Jetty 和 Tomcat 是基于传统的多线程模型实现的，对于大量并发请求的场景可能存在性能瓶颈。</li>
+<li>Netty：Netty 是基于事件驱动的非阻塞模型实现的，具有卓越的性能和并发能力。它可以轻松地处理大量的并发连接和请求，适用于构建高性能的网络应用。</li>
+</ul>
+</li>
+<li><p><strong>设计模型：</strong></p>
+<ul>
+<li>Jetty 和 Tomcat：Jetty 和 Tomcat 都是基于传统的多线程&#x2F;多进程模型实现的，每个连接对应一个线程或进程，处理请求时会阻塞等待 I&#x2F;O 完成。</li>
+<li>Netty：Netty 是基于事件驱动的、非阻塞的、异步的设计模型实现的，所有的 I&#x2F;O 操作都是非阻塞的，通过事件回调的方式处理请求，不会因为 I&#x2F;O 操作而阻塞线程。</li>
+</ul>
+</li>
+<li><p><strong>灵活性和可扩展性：</strong></p>
+<ul>
+<li>Jetty 和 Tomcat：Jetty 和 Tomcat 提供了一套完整的 Servlet 容器规范，可以方便地部署和运行标准的 Java Web 应用程序。它们可以通过配置文件或代码进行灵活的配置和定制，但对于底层的网络通信和协议处理相对固定。</li>
+<li>Netty：Netty 提供了灵活的 API 和丰富的组件，可以构建各种类型的网络应用。它支持多种协议和编解码器，可以灵活地定制和扩展，满足不同场景下的需求。</li>
+</ul>
+</li>
+<li><p><strong>学习曲线：</strong></p>
+<ul>
+<li>Jetty 和 Tomcat：Jetty 和 Tomcat 都是基于 Servlet 规范的传统 Web 服务器，学习曲线相对较低，适合于传统的 Java Web 开发者。</li>
+<li>Netty：Netty 是一个相对底层的网络通信框架，需要对网络编程有一定的了解和经验，学习曲线相对较高，但提供了更大的灵活性和控制能力。</li>
+</ul>
+</li>
+</ol>
+<p>综上所述，Jetty 和 Tomcat 主要用于传统的 Java Web 应用程序开发和部署，而 Netty 更适用于构建高性能、高并发的网络应用。选择合适的框架取决于具体的应用场景和需求。</p>
+<h1 id="servlet"><a href="#servlet" class="headerlink" title="servlet"></a>servlet</h1><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/21416727">servlet的本质是什么，它是如何工作的？</a></p>
+<h1 id="JSP"><a href="#JSP" class="headerlink" title="JSP"></a>JSP</h1><p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/23984162/answer/689106407">怎样学习JSP？</a></p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://chat.openai.com/">ChatGPT</a></li>
+<li><a target="_blank" rel="noopener" href="https://lxgandlz.cn/50-%E6%B7%B1%E5%85%A5%E6%8B%86%E8%A7%A3Tomcat%20%26%20Jetty/05-%E6%A8%A1%E5%9D%97%E5%9B%9B%20%E5%AE%B9%E5%99%A8%20%283%E8%AE%B2%29/29%E4%B8%A8%E6%AF%94%E8%BE%83%EF%BC%9AJetty%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E5%85%B7%E6%9C%89%E4%B8%8A%E4%B8%8B%E6%96%87%E4%BF%A1%E6%81%AF%E7%9A%84%E8%B4%A3%E4%BB%BB%E9%93%BE%EF%BC%9F.pdf">Jetty如何实现具有上下文信息的责任链</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/jetty/" rel="tag"># jetty</a>
+              <a href="/tags/webserver/" rel="tag"># webserver</a>
+              <a href="/tags/network/" rel="tag"># network</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2024/03/05/docker/" rel="prev" title="docker 介绍">
+                  <i class="fa fa-angle-left"></i> docker 介绍
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2024/03/21/splunk%20%E7%AC%94%E8%AE%B0/" rel="next" title="splunk">
+                  splunk <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Apomelo</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

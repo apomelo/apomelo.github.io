@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="简介">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java-base">
+<meta property="og:url" content="https://apomelo.github.io/posts/2023/11/25/java-base/index.html">
+<meta property="og:site_name" content="Apomelo - 追逐">
+<meta property="og:description" content="简介">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-11-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-11-24T16:00:00.000Z">
+<meta property="article:author" content="Apomelo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="base">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://apomelo.github.io/posts/2023/11/25/java-base/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.github.io/posts/2023/11/25/java-base/","path":"posts/2023/11/25/java-base/","title":"java-base"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>java-base | Apomelo - 追逐</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js" defer></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js" defer></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/5.36.0/lite/builds/browser.umd.js" integrity="sha256-o49zoHLDPBm9WLg6AiliAVi3axCRTqe3ltTxLvhzAVg=" crossorigin="anonymous" defer></script><script src="/js/third-party/search/algolia-search.js" defer></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fab fa-algolia fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Java8-%E4%B8%AD-HashMap-%E7%9A%84-hash-%E5%87%BD%E6%95%B0"><span class="nav-number">1.1.</span> <span class="nav-text">Java8 中 HashMap 的 hash 函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88java8%E4%B8%8D%E9%9C%80%E8%A6%81%E8%B0%83%E7%94%A8hash%E5%87%BD%E6%95%B0%E9%87%8D%E6%96%B0%E8%AE%A1%E7%AE%97%E4%B8%8B%E6%A0%87"><span class="nav-number">1.2.</span> <span class="nav-text">为什么java8不需要调用hash函数重新计算下标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E6%88%91%E4%BB%AC%E9%9C%80%E8%A6%81-hash-%E5%87%BD%E6%95%B0%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF%E7%9B%B4%E6%8E%A5%E7%94%A8-key-%E7%9A%84-hashcode-%E7%9B%B4%E6%8E%A5%E8%AE%A1%E7%AE%97%E4%B8%8B%E6%A0%87"><span class="nav-number">1.3.</span> <span class="nav-text">为什么我们需要_hash()_函数，而不是直接用_key_的_hashcode_直接计算下标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java7-%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8%E5%B9%B6%E5%8F%91%E6%83%85%E5%86%B5%E4%B8%8B%EF%BC%8C%E5%A4%B4%E6%8F%92%E6%B3%95%E4%BC%9A%E5%87%BA%E7%8E%B0%E9%93%BE%E8%A1%A8%E6%88%90%E7%8E%AF%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.4.</span> <span class="nav-text">java7 为什么在并发情况下，头插法会出现链表成环的问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Java7-%E5%8F%8A%E4%B9%8B%E5%89%8D%E4%B8%BA%E4%BB%80%E4%B9%88%E9%87%87%E7%94%A8%E5%A4%B4%E6%8F%92%E6%B3%95"><span class="nav-number">1.5.</span> <span class="nav-text">Java7 及之前为什么采用头插法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A2%E7%84%B6%E5%A4%B4%E6%8F%92%E6%B3%95%E6%9C%89%E9%93%BE%E8%A1%A8%E6%88%90%E7%8E%AF%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E7%9B%B4%E5%88%B0-Java8-%E6%89%8D%E9%87%87%E7%94%A8%E5%B0%BE%E6%8F%92%E6%B3%95%E6%9D%A5%E6%9B%BF%E4%BB%A3%E5%A4%B4%E6%8F%92%E6%B3%95"><span class="nav-number">1.6.</span> <span class="nav-text">既然头插法有链表成环的问题，为什么直到 Java8 才采用尾插法来替代头插法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%97%A2%E7%84%B6-Java8-%E6%B2%A1%E6%9C%89%E9%93%BE%E8%A1%A8%E6%88%90%E7%8E%AF%E7%9A%84%E9%97%AE%E9%A2%98%EF%BC%8C%E9%82%A3%E6%98%AF%E4%B8%8D%E6%98%AF%E8%AF%B4%E6%98%8E%E5%8F%AF%E4%BB%A5%E6%8A%8A-Java8-%E4%B8%AD%E7%9A%84-HashMap-%E7%94%A8%E5%9C%A8%E5%A4%9A%E7%BA%BF%E7%A8%8B%E4%B8%AD"><span class="nav-number">1.7.</span> <span class="nav-text">既然 Java8 没有链表成环的问题，那是不是说明可以把 Java8 中的 HashMap 用在多线程中</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">83</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.github.io/posts/2023/11/25/java-base/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="java-base | Apomelo - 追逐">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          java-base
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2023-11-25 00:00:00" itemprop="dateCreated datePublished" datetime="2023-11-25T00:00:00+08:00">2023-11-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2023/11/25/java-base/" class="post-meta-item leancloud_visitors" data-flag-title="java-base" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><span id="more"></span>
+
+<h2 id="Java8-中-HashMap-的-hash-函数"><a href="#Java8-中-HashMap-的-hash-函数" class="headerlink" title="Java8 中 HashMap 的 hash 函数"></a>Java8 中 HashMap 的 hash 函数</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 计算key.hashCode()，并将hash的高位传播（XOR）到低位。</span></span><br><span class="line"><span class="comment"> * 因为该表使用了2次方屏蔽，所以只在当前屏蔽以上的位数上有变化的哈希值组总是会发生碰撞。</span></span><br><span class="line"><span class="comment"> * (已知的例子包括在小表中持有连续整数的Float键的集合）。)</span></span><br><span class="line"><span class="comment"> *  因此，我们应用一个转换，将高位的影响向下分散。在速度、实用性和位传播的质量之间有一个权衡。</span></span><br><span class="line"><span class="comment"> * 因为许多常见的哈希集已经是合理分布的（所以不受益于传播），而且因为我们使用树来处理大集的碰撞，</span></span><br><span class="line"><span class="comment"> * 我们只是以最便宜的方式XOR一些移位的比特，以减少系统损失，</span></span><br><span class="line"><span class="comment"> * 以及纳入最高比特的影响，否则由于表的界限，永远不会被用于索引计算。</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">final</span> <span class="type">int</span> <span class="title function_">hash</span><span class="params">(Object key)</span> &#123;</span><br><span class="line">    <span class="type">int</span> h;</span><br><span class="line">    <span class="keyword">return</span> (key == <span class="literal">null</span>) ? <span class="number">0</span> : (h = key.hashCode()) ^ (h &gt;&gt;&gt; <span class="number">16</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>至于为什么 java8 进行了扰动次数缩减，推测可能是因为做多了离散分布提升不明显，还是为了效率考虑，进行了缩减。</p>
+<h2 id="为什么java8不需要调用hash函数重新计算下标"><a href="#为什么java8不需要调用hash函数重新计算下标" class="headerlink" title="为什么java8不需要调用hash函数重新计算下标"></a>为什么<em>java8</em>不需要调用<em>hash</em>函数重新计算下标</h2><p>下标计算公式为 _index &#x3D; (n - 1) &amp; hash_；<br>假设扩容前的长度为 16，<em>key</em>的<em>hash 值</em>为 xxxx 1011，则扩容前元素的下标计算过程为：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">index</span>  <span class="operator">=</span>(n - <span class="number">1</span>) &amp; hash;</span><br><span class="line">    = (<span class="number">16</span> - <span class="number">1</span>) &amp; xxxx <span class="number">1011</span></span><br><span class="line">    = <span class="number">15</span>  &amp; xxxx <span class="number">1011</span></span><br><span class="line">    = <span class="number">1111</span> &amp; xxxx <span class="number">1011</span></span><br><span class="line">    = <span class="number">1011</span></span><br><span class="line">    = <span class="number">11</span></span><br></pre></td></tr></table></figure>
+
+<p>因为与(&amp;)计算原理为必须对位的两个值都是 1 才为 1，所以这里实际参与计算的只有 hash 值的低 4 位；<br>由于<em>HashMap</em>的容量位 2 的次方，所以容量-1 可以转化为 N 个相连的数位 1；<br>在发生扩容后，容量增长为原来的两倍 - 32，此时参与重新计算下标的值为（n-1）31，转化为二进制为 1 1111；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">int</span> <span class="variable">index</span>  <span class="operator">=</span>(n - <span class="number">1</span>) &amp; hash;</span><br><span class="line">    = (<span class="number">32</span> - <span class="number">1</span>) &amp; xxxx <span class="number">1011</span></span><br><span class="line">    = <span class="number">31</span>  &amp; xxxx <span class="number">1011</span></span><br><span class="line">    = <span class="number">1</span> <span class="number">1111</span> &amp; xxxx <span class="number">1011</span></span><br></pre></td></tr></table></figure>
+
+<p>当扩容后的最高位，也就是第 5 位对应的 x 值为 0 时，最后的运算结果和原来一样，即此节点在新表中的下标和原来一样，归入不需要迁移的链表中；<br>当第 5 位对应的 x 值为 1 时，最后运算结果的后 4 为和原来一样，只是第五位变成了 1，下标值发生了改变，归入需要迁移的链表中；  </p>
+<p><strong>可以理解为：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">11011</span> = <span class="number">1011</span> + <span class="number">1</span> <span class="number">0000</span> ;</span><br><span class="line">新下标 = 旧下标 + 旧容量;</span><br></pre></td></tr></table></figure>
+
+<p><em><strong>总结</strong>：</em></p>
+<ul>
+<li>当 x&#x3D;0 时（也就是源码中 (e.hash &amp; oldCap) &#x3D;&#x3D; 0）, 此节点在新表中的位置不需要移动。</li>
+<li>当 x&#x3D;1 时（也就是源码中 (e.hash &amp; oldCap) &#x3D;&#x3D; 1）, 此节点在新表中的位置发生了移动，移动的方式为：新下标 &#x3D; 旧下标 + 旧容量。</li>
+</ul>
+<p>现在总算知道为什么需要拆成两个链表了吧。</p>
+<h2 id="为什么我们需要-hash-函数，而不是直接用-key-的-hashcode-直接计算下标"><a href="#为什么我们需要-hash-函数，而不是直接用-key-的-hashcode-直接计算下标" class="headerlink" title="为什么我们需要_hash()_函数，而不是直接用_key_的_hashcode_直接计算下标"></a>为什么我们需要_hash()_函数，而不是直接用_key_的_hashcode_直接计算下标</h2><p><em>举个例子：</em><br>假设现在我们有一个_HashMap_，容量为16，现在我往里面put两个元素A和B；<br>元素A的key记为_keyA_，B为_keyB_；<br>经过计算，_keyA_的_hashcode_为 xxxx 1001,_keyB_的_hashcode_为 xxxx 1001,x有可能为1或0；<br>假设_keyA_和_keyB_的_hashcode_最低位相同，最高位不同；<br>现在我们通过取余计算这两个元素的下标 h &amp; (length-1)；</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">indexA = keyA.hashCode() &amp; (<span class="number">16</span>-<span class="number">1</span>);</span><br><span class="line">   = xxxx <span class="number">1001</span> &amp;  (<span class="number">16</span>-<span class="number">1</span>);</span><br><span class="line">   = xxxx <span class="number">1001</span> &amp;  <span class="number">15</span>;</span><br><span class="line">   = xxxx <span class="number">1001</span> &amp;  <span class="number">1111</span>;</span><br><span class="line">   = <span class="number">1001</span>;</span><br><span class="line">   = <span class="number">9</span>;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">indexB = keyB.hashCode() &amp; (<span class="number">16</span>-<span class="number">1</span>);</span><br><span class="line">   = xxxx <span class="number">1001</span> &amp;  (<span class="number">16</span>-<span class="number">1</span>);</span><br><span class="line">   = xxxx <span class="number">1001</span> &amp;  <span class="number">15</span>;</span><br><span class="line">   = xxxx <span class="number">1001</span> &amp;  <span class="number">1111</span>;</span><br><span class="line">   = <span class="number">1001</span>;</span><br><span class="line">   = <span class="number">9</span>;</span><br></pre></td></tr></table></figure>
+
+<p>通过计算可以发现，当容量为16时，通过对两个最高位不同、最低位相同的_key_求下标时，最后的结果是相等的；假如这样的_key_很多，则可能导致大量元素都被放入同一个桶中，造成hash冲突的可能性非常高。</p>
+<p>为了避免这种情况出现，在进行下标计算前，我们需要通过_hash_函数对_key_的_hashCode_进行扰动运算，让高位也参与运算，使得分布更加散列，最终达到降低哈希冲突的目的。</p>
+<h2 id="java7-为什么在并发情况下，头插法会出现链表成环的问题"><a href="#java7-为什么在并发情况下，头插法会出现链表成环的问题" class="headerlink" title="java7 为什么在并发情况下，头插法会出现链表成环的问题"></a>java7 为什么在并发情况下，头插法会出现链表成环的问题</h2><p>在 Java 7 中，当多个线程同时对 <code>HashMap</code> 进行并发插入操作时，由于头插法可能导致链表成环，这会引发链表遍历的死循环问题。</p>
+<p>在并发情况下，如果多个线程同时对同一个桶位置执行插入操作，按照传统的头插法处理哈希冲突，即新元素插入到链表的头部。但由于线程之间的竞争，可能出现以下情况：</p>
+<ol>
+<li><strong>竞争条件（Race Condition）：</strong> 多个线程同时进行插入操作，各自读取当前桶位置的头节点，并尝试将新节点插入为新的头节点。</li>
+<li><strong>非原子性操作：</strong> 在多线程并发的情况下，链表节点的更新是非原子性的，因此可能出现中间状态。</li>
+<li><strong>链表成环：</strong> 在并发情况下，如果多个线程同时将节点插入链表头部，可能导致多个线程都认为它们是新的头节点，进而使链表产生环形结构。这会导致遍历链表时陷入死循环，因为链表并没有正确终止。</li>
+</ol>
+<p>这个问题在 Java 7 中的 <code>HashMap</code> 实现中比较明显，由于并发导致的链表成环问题，可能导致对 <code>HashMap</code> 的遍历陷入无限循环。Java 8 及以后的版本对 <code>HashMap</code> 进行了改进，使用了更复杂的树结构替代链表，并引入了更多的并发安全机制，从而避免了这个问题。</p>
+<h2 id="Java7-及之前为什么采用头插法"><a href="#Java7-及之前为什么采用头插法" class="headerlink" title="Java7 及之前为什么采用头插法"></a>Java7 及之前为什么采用头插法</h2><blockquote>
+<p>因为 Java7 的作者认为最近插入的元素最大概率下次还会访问到(缓存的时间局部性原则),将最近插入的数据放在头节点可以提高查找的效率，减少查询的次数。</p>
+</blockquote>
+<h2 id="既然头插法有链表成环的问题，为什么直到-Java8-才采用尾插法来替代头插法"><a href="#既然头插法有链表成环的问题，为什么直到-Java8-才采用尾插法来替代头插法" class="headerlink" title="既然头插法有链表成环的问题，为什么直到 Java8 才采用尾插法来替代头插法"></a>既然头插法有链表成环的问题，为什么直到 Java8 才采用尾插法来替代头插法</h2><blockquote>
+<p>只有在并发情况下，头插法才会出现链表成环的问题；多线程情况下，HashMap 本就非线程安全的，所以直到 Java8 才修复这个 bug。</p>
+</blockquote>
+<h2 id="既然-Java8-没有链表成环的问题，那是不是说明可以把-Java8-中的-HashMap-用在多线程中"><a href="#既然-Java8-没有链表成环的问题，那是不是说明可以把-Java8-中的-HashMap-用在多线程中" class="headerlink" title="既然 Java8 没有链表成环的问题，那是不是说明可以把 Java8 中的 HashMap 用在多线程中"></a>既然 Java8 没有链表成环的问题，那是不是说明可以把 Java8 中的 <em>HashMap</em> 用在多线程中</h2><blockquote>
+<p>即使解决了链表成环的问题中，并不代表<em>HashMap</em> 在多线程情况下没有其它并发问题；比如：上秒 put 的值，下秒 get 的时候却不是刚 put 的值；因为操作都没有加锁，不是线程安全的；如果需要保证线程的安全性请使用<em>ConcurrentHashMap</em>。</p>
+</blockquote>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qicha3705/article/details/119549432">HashMap 元素的插入流程以及扩容操作</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/java/" rel="tag"># java</a>
+              <a href="/tags/base/" rel="tag"># base</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2023/08/02/queue-jctools/" rel="prev" title="JCTools - 增强的并发工具">
+                  <i class="fa fa-angle-left"></i> JCTools - 增强的并发工具
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2024/03/05/docker/" rel="next" title="docker 介绍">
+                  docker 介绍 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Apomelo</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>

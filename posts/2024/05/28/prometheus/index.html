@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon.ico">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"apomelo.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"algolia":{"appID":"HQMNR1OKHR","apiKey":"cf13855186697063811959d3e9cf03be","indexName":"apomelo","hits":{"per_page":10}}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="简介Prometheus 是一个开源系统监控和报警工具包，最早由 SoundCloud 开发，现在是 CNCF（Cloud Native Computing Foundation）的一个项目。它的设计目标是可靠性和高效性，特别适用于动态云环境下的系统和服务监控。 核心特性 多维数据模型： Prometheus 使用多维数据模型，通过时间序列来存储数据。每个时间序列由一个度量名称和一组键值对的标签来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="prometheus">
+<meta property="og:url" content="https://apomelo.github.io/posts/2024/05/28/prometheus/index.html">
+<meta property="og:site_name" content="Apomelo - 追逐">
+<meta property="og:description" content="简介Prometheus 是一个开源系统监控和报警工具包，最早由 SoundCloud 开发，现在是 CNCF（Cloud Native Computing Foundation）的一个项目。它的设计目标是可靠性和高效性，特别适用于动态云环境下的系统和服务监控。 核心特性 多维数据模型： Prometheus 使用多维数据模型，通过时间序列来存储数据。每个时间序列由一个度量名称和一组键值对的标签来">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-05-27T16:00:00.000Z">
+<meta property="article:modified_time" content="2024-05-27T16:00:00.000Z">
+<meta property="article:author" content="Apomelo">
+<meta property="article:tag" content="prometheus">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://apomelo.github.io/posts/2024/05/28/prometheus/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://apomelo.github.io/posts/2024/05/28/prometheus/","path":"posts/2024/05/28/prometheus/","title":"prometheus"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>prometheus | Apomelo - 追逐</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2KQDESYMZF"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"G-2KQDESYMZF","only_pageview":false,"measure_protocol_api_secret":null}</script>
+  <script src="/js/third-party/analytics/google-analytics.js" defer></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js" defer></script>
+  <script async src="https://hm.baidu.com/hm.js?6c01cfc90b27c8f2cf8c97e38b2f117c"></script>
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/algoliasearch/5.36.0/lite/builds/browser.umd.js" integrity="sha256-o49zoHLDPBm9WLg6AiliAVi3axCRTqe3ltTxLvhzAVg=" crossorigin="anonymous" defer></script><script src="/js/third-party/search/algolia-search.js" defer></script>
+
+
+  <script class="next-config" data-name="mermaid" type="application/json">{"enable":true,"theme":{"light":"default","dark":"dark"},"js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mermaid/11.10.1/mermaid.min.js","integrity":"sha256-BmQmdWDS8X2OTbrwELWK366LV6escyWhHHe0XCTU/Hk="}}</script>
+  <script src="/js/third-party/tags/mermaid.js" defer></script>
+
+
+
+
+
+  
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+  <script class="next-config" data-name="leancloud_visitors" type="application/json">{"enable":true,"app_id":"N5VN0ybf5xGuqDFhjzC5RlRL-MdYXbMMI","app_key":"ru1RlOeEotFp87wLFIHucgVu","server_url":null,"security":false}</script>
+  <script src="/js/third-party/statistics/lean-analytics.js" defer></script>
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Apomelo - 追逐</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+      <div class="search-header">
+        <span class="search-icon">
+          <i class="fa fa-search"></i>
+        </span>
+        <div class="search-input-container">
+          <input autocomplete="off" autocapitalize="off" maxlength="80"
+                placeholder="搜索..." spellcheck="false"
+                type="search" class="search-input">
+        </div>
+        <span class="popup-btn-close" role="button">
+          <i class="fa fa-times-circle"></i>
+        </span>
+      </div>
+      <div class="search-result-container">
+        <div class="search-result-icon">
+          <i class="fab fa-algolia fa-5x"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%B8%E5%BF%83%E7%89%B9%E6%80%A7"><span class="nav-number">1.1.</span> <span class="nav-text">核心特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">1.2.</span> <span class="nav-text">工作原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E7%BB%84%E4%BB%B6"><span class="nav-number">1.3.</span> <span class="nav-text">基本组件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B8%E5%9E%8B%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-number">1.4.</span> <span class="nav-text">典型使用场景</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E7%AE%80%E4%BB%8B"><span class="nav-number">2.</span> <span class="nav-text">配置简介</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE-global"><span class="nav-number">2.1.</span> <span class="nav-text">全局配置 (global)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%8A%E8%AD%A6%E9%85%8D%E7%BD%AE-alerting"><span class="nav-number">2.2.</span> <span class="nav-text">告警配置 (alerting)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E6%96%87%E4%BB%B6-rule-files"><span class="nav-number">2.3.</span> <span class="nav-text">规则文件 (rule_files)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8A%93%E5%8F%96%E9%85%8D%E7%BD%AE-scrape-configs"><span class="nav-number">2.4.</span> <span class="nav-text">抓取配置 (scrape_configs)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#scrape-configs-%E4%B8%AD%E7%9A%84%E9%85%8D%E7%BD%AE%E9%80%89%E9%A1%B9"><span class="nav-number">2.4.1.</span> <span class="nav-text">scrape_configs 中的配置选项</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">2.5.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E6%96%87%E4%BB%B6"><span class="nav-number">3.</span> <span class="nav-text">规则文件</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%84%E5%88%99%E6%96%87%E4%BB%B6%E7%BB%93%E6%9E%84"><span class="nav-number">3.1.</span> <span class="nav-text">规则文件结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%B0%E5%BD%95%E8%A7%84%E5%88%99%EF%BC%88Recording-Rules%EF%BC%89"><span class="nav-number">3.2.</span> <span class="nav-text">记录规则（Recording Rules）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%91%8A%E8%AD%A6%E8%A7%84%E5%88%99%EF%BC%88Alerting-Rules%EF%BC%89"><span class="nav-number">3.3.</span> <span class="nav-text">告警规则（Alerting Rules）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E7%A4%BA%E4%BE%8B%E8%A7%A3%E6%9E%90"><span class="nav-number">3.4.</span> <span class="nav-text">完整示例解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8-prometheus-yml-%E4%B8%AD%E5%8C%85%E5%90%AB%E8%A7%84%E5%88%99%E6%96%87%E4%BB%B6"><span class="nav-number">3.4.1.</span> <span class="nav-text">在 prometheus.yml 中包含规则文件</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-1"><span class="nav-number">3.5.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-CRD%EF%BC%9F"><span class="nav-number">4.</span> <span class="nav-text">什么是 CRD？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#CRD-%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">4.1.</span> <span class="nav-text">CRD 的基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA-CRD-%E7%9A%84%E6%AD%A5%E9%AA%A4"><span class="nav-number">4.2.</span> <span class="nav-text">创建 CRD 的步骤</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CRD-%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.3.</span> <span class="nav-text">CRD 示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%B9%89-CRD"><span class="nav-number">4.3.1.</span> <span class="nav-text">定义 CRD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E8%B5%84%E6%BA%90"><span class="nav-number">4.3.2.</span> <span class="nav-text">创建自定义资源</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8-CRD-%E5%92%8C%E8%87%AA%E5%AE%9A%E4%B9%89%E8%B5%84%E6%BA%90"><span class="nav-number">4.4.</span> <span class="nav-text">使用 CRD 和自定义资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Prometheus-%E4%B8%AD%E7%9A%84-CRD-%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.5.</span> <span class="nav-text">Prometheus 中的 CRD 示例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#PrometheusRule-CRD-%E7%A4%BA%E4%BE%8B"><span class="nav-number">4.5.1.</span> <span class="nav-text">PrometheusRule CRD 示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-2"><span class="nav-number">4.6.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9C%A8-Kubernetes-%E4%B8%AD%E4%BD%BF%E7%94%A8-CRD-%E7%BB%93%E5%90%88-Prometheus"><span class="nav-number">5.</span> <span class="nav-text">在 Kubernetes 中使用 CRD 结合 Prometheus</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A5%E9%AA%A4%E6%A6%82%E8%A7%88"><span class="nav-number">5.1.</span> <span class="nav-text">步骤概览</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AF%A6%E7%BB%86%E6%AD%A5%E9%AA%A4-%E7%A4%BA%E4%BE%8B"><span class="nav-number">5.2.</span> <span class="nav-text">详细步骤 (示例)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2-Prometheus-Operator"><span class="nav-number">5.2.1.</span> <span class="nav-text">部署 Prometheus Operator</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-Prometheus-CRD"><span class="nav-number">5.2.2.</span> <span class="nav-text">配置 Prometheus CRD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-Alertmanager-CRD"><span class="nav-number">5.2.3.</span> <span class="nav-text">配置 Alertmanager CRD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-PrometheusRule-CRD"><span class="nav-number">5.2.4.</span> <span class="nav-text">配置 PrometheusRule CRD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE-ServiceMonitor-CRD"><span class="nav-number">5.2.5.</span> <span class="nav-text">配置 ServiceMonitor CRD</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%92%8C%E9%85%8D%E7%BD%AE%E8%87%AA%E5%AE%9A%E4%B9%89%E8%B5%84%E6%BA%90"><span class="nav-number">5.2.6.</span> <span class="nav-text">创建和配置自定义资源</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">5.3.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93-3"><span class="nav-number">5.4.</span> <span class="nav-text">小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">6.</span> <span class="nav-text">参考资料</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Apomelo</p>
+  <div class="site-description" itemprop="description">我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。</div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">45</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">20</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">83</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/apomelo" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;apomelo" rel="noopener me" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:apomeloc@gmail.com" title="E-Mail → mailto:apomeloc@gmail.com" rel="noopener me" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://apomelo.github.io/posts/2024/05/28/prometheus/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Apomelo">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Apomelo - 追逐">
+      <meta itemprop="description" content="我有一壶酒，足以慰风尘。<br/>尽倾江海里，赠饮天下人。">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="prometheus | Apomelo - 追逐">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          prometheus
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2024-05-28 00:00:00" itemprop="dateCreated datePublished" datetime="2024-05-28T00:00:00+08:00">2024-05-28</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/prometheus/" itemprop="url" rel="index"><span itemprop="name">prometheus</span></a>
+        </span>
+    </span>
+
+  
+    <span id="/posts/2024/05/28/prometheus/" class="post-meta-item leancloud_visitors" data-flag-title="prometheus" title="阅读次数">
+      <span class="post-meta-item-icon">
+        <i class="far fa-eye"></i>
+      </span>
+      <span class="post-meta-item-text">阅读次数：</span>
+      <span class="leancloud-visitors-count"></span>
+    </span>
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h1><p>Prometheus 是一个开源系统监控和报警工具包，最早由 SoundCloud 开发，现在是 CNCF（Cloud Native Computing Foundation）的一个项目。它的设计目标是可靠性和高效性，特别适用于动态云环境下的系统和服务监控。</p>
+<h2 id="核心特性"><a href="#核心特性" class="headerlink" title="核心特性"></a>核心特性</h2><ol>
+<li><strong>多维数据模型</strong>： Prometheus 使用多维数据模型，通过时间序列来存储数据。每个时间序列由一个度量名称和一组键值对的标签来标识。</li>
+<li><strong>强大的查询语言（PromQL）</strong>： Prometheus 提供了一种灵活而强大的查询语言，PromQL，用于实时查询和分析存储的数据。</li>
+<li><strong>无需依赖分布式存储</strong>： Prometheus 的设计目标是通过单个服务器节点提供可靠的服务，这使其配置和管理更为简单。尽管它可以通过联邦集成多个 Prometheus 服务器，但它本身不依赖于分布式存储系统。</li>
+<li><strong>高效的数据存储</strong>： 数据以时间序列的形式存储，并通过内存和磁盘的组合方式进行高效存储和检索。</li>
+<li><strong>可视化支持</strong>： Prometheus 提供内置的图形和仪表盘功能，同时与 Grafana 等外部可视化工具高度集成。</li>
+<li><strong>灵活的告警管理</strong>： Prometheus 自带 Alertmanager，可以管理告警规则，处理告警并将其路由到不同的通知渠道（如电子邮件、Slack、PagerDuty 等）。</li>
+</ol>
+<h2 id="工作原理"><a href="#工作原理" class="headerlink" title="工作原理"></a>工作原理</h2><p>Prometheus 通过 HTTP 协议定期抓取被监控目标的指标数据。这些目标可以是物理主机、虚拟机、数据库、应用程序等。被监控目标需要暴露一个 <code>/metrics</code> 端点，Prometheus 会通过这个端点获取指标数据。</p>
+<h2 id="基本组件"><a href="#基本组件" class="headerlink" title="基本组件"></a>基本组件</h2><ol>
+<li><strong>Prometheus 服务器</strong>： 负责抓取和存储时间序列数据，处理查询请求。</li>
+<li><strong>Exporters（导出器）</strong>： 用于暴露指标数据的工具。不同类型的系统和应用程序可能需要不同的导出器。例如，Node Exporter 用于暴露 Linux 系统的硬件和操作系统指标。</li>
+<li><strong>Pushgateway</strong>： 用于短期任务的指标推送。通常情况下，Prometheus 是通过 pull 模型抓取数据，但对于某些短期任务，推送模型更为合适。</li>
+<li><strong>Alertmanager</strong>： 处理来自 Prometheus 服务器的告警，支持告警的分组、抑制和路由，并将告警发送到各种通知渠道。</li>
+<li><strong>客户端库</strong>： 提供给应用程序开发者用于在代码中直接暴露自定义指标。Prometheus 提供多种语言的客户端库，包括 Go、Java、Python 等。</li>
+</ol>
+<h2 id="典型使用场景"><a href="#典型使用场景" class="headerlink" title="典型使用场景"></a>典型使用场景</h2><ol>
+<li><strong>系统监控</strong>： 监控主机和容器的性能指标，如 CPU 使用率、内存使用率、磁盘 I&#x2F;O 等。</li>
+<li><strong>应用程序监控</strong>： 监控应用程序的性能和健康状况，例如 HTTP 请求的响应时间、错误率、数据库查询时间等。</li>
+<li><strong>业务指标监控</strong>： 监控业务相关的指标，例如网站的活跃用户数、订单处理量、支付成功率等。</li>
+</ol>
+<span id="more"></span>
+
+<h1 id="配置简介"><a href="#配置简介" class="headerlink" title="配置简介"></a>配置简介</h1><p>Prometheus 配置文件（通常为 <code>prometheus.yml</code>）定义了如何配置 Prometheus 服务器，包括抓取（scrape）配置、告警规则（alerting rules）、全局设置和存储配置等。下面是一个典型的 <code>prometheus.yml</code> 配置文件示例，以及对每个部分的详细解析：</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">global:</span></span><br><span class="line">  <span class="attr">scrape_interval:</span> <span class="string">15s</span></span><br><span class="line">  <span class="attr">evaluation_interval:</span> <span class="string">15s</span></span><br><span class="line">  <span class="attr">scrape_timeout:</span> <span class="string">10s</span></span><br><span class="line"></span><br><span class="line"><span class="attr">alerting:</span></span><br><span class="line">  <span class="attr">alertmanagers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">static_configs:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">targets:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">&quot;localhost:9093&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">rule_files:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;rules/alerting_rules.yml&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;rules/recording_rules.yml&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&quot;prometheus&quot;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&quot;localhost:9090&quot;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&quot;node&quot;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&quot;localhost:9100&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<h2 id="全局配置-global"><a href="#全局配置-global" class="headerlink" title="全局配置 (global)"></a>全局配置 (<code>global</code>)</h2><p><code>global</code> 部分包含 Prometheus 的全局设置，适用于所有的 scrape 和告警配置。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">global:</span></span><br><span class="line">  <span class="attr">scrape_interval:</span> <span class="string">15s</span> <span class="comment"># 默认抓取间隔时间</span></span><br><span class="line">  <span class="attr">evaluation_interval:</span> <span class="string">15s</span> <span class="comment"># 默认规则评估间隔时间</span></span><br><span class="line">  <span class="attr">scrape_timeout:</span> <span class="string">10s</span> <span class="comment"># 默认抓取超时时间</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>scrape_interval</code>: 定义了 Prometheus 默认的抓取目标的时间间隔（默认每 15 秒）。</li>
+<li><code>evaluation_interval</code>: 定义了 Prometheus 评估规则（包括告警规则和记录规则）的时间间隔（默认每 15 秒）。</li>
+<li><code>scrape_timeout</code>: 定义了抓取的超时时间，如果一个抓取任务超过这个时间，将被终止（默认 10 秒）。</li>
+</ul>
+<h2 id="告警配置-alerting"><a href="#告警配置-alerting" class="headerlink" title="告警配置 (alerting)"></a>告警配置 (<code>alerting</code>)</h2><p><code>alerting</code> 部分定义了告警管理器（Alertmanager）的配置，Prometheus 将触发的告警发送给 Alertmanager。</p>
+<figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">alerting:</span></span><br><span class="line">  <span class="attr">alertmanagers:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">static_configs:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">targets:</span></span><br><span class="line">            <span class="bullet">-</span> <span class="string">&quot;localhost:9093&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>alertmanagers</code>: 指定了 Alertmanager 的地址，Prometheus 会将触发的告警发送到这些 Alertmanager 实例。</li>
+</ul>
+<h2 id="规则文件-rule-files"><a href="#规则文件-rule-files" class="headerlink" title="规则文件 (rule_files)"></a>规则文件 (<code>rule_files</code>)</h2><p><code>rule_files</code> 部分指定了 Prometheus 使用的规则文件，包括告警规则和记录规则。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">rule_files:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;rules/alerting_rules.yml&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;rules/recording_rules.yml&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>rule_files</code>: 列出了包含告警规则和记录规则的文件。Prometheus 会加载并评估这些文件中的规则。</li>
+</ul>
+<h2 id="抓取配置-scrape-configs"><a href="#抓取配置-scrape-configs" class="headerlink" title="抓取配置 (scrape_configs)"></a>抓取配置 (<code>scrape_configs</code>)</h2><p><code>scrape_configs</code> 部分定义了 Prometheus 如何抓取监控目标（targets）。每个抓取配置定义了一个 job。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&quot;prometheus&quot;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&quot;localhost:9090&quot;</span>]</span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&quot;node&quot;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&quot;localhost:9100&quot;</span>]</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>job_name</code>: 定义了抓取任务的名称，用于标识和分类不同的抓取任务。</li>
+<li><code>static_configs</code>: 指定了静态配置的抓取目标列表。</li>
+</ul>
+<h3 id="scrape-configs-中的配置选项"><a href="#scrape-configs-中的配置选项" class="headerlink" title="scrape_configs 中的配置选项"></a><code>scrape_configs</code> 中的配置选项</h3><ul>
+<li><code>job_name</code>: 每个抓取任务的唯一名称。</li>
+<li><code>static_configs</code>: 静态配置，用于定义一组固定的抓取目标。<ul>
+<li><code>targets</code>: 定义了抓取目标的地址列表。</li>
+</ul>
+</li>
+<li><code>relabel_configs</code>: 重新标签配置，用于修改抓取的目标标签。</li>
+</ul>
+<p>示例：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">scrape_configs:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">job_name:</span> <span class="string">&quot;example&quot;</span></span><br><span class="line">    <span class="attr">static_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">targets:</span> [<span class="string">&quot;example.com:8080&quot;</span>]</span><br><span class="line">    <span class="attr">relabel_configs:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">source_labels:</span> [<span class="string">__address__</span>]</span><br><span class="line">        <span class="attr">regex:</span> <span class="string">(.*)</span></span><br><span class="line">        <span class="attr">target_label:</span> <span class="string">instance</span></span><br><span class="line">        <span class="attr">replacement:</span> <span class="string">$1</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>relabel_configs</code>: 用于在抓取之前或之后修改标签。可以通过正则表达式匹配和替换标签。</li>
+</ul>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>Prometheus 配置文件主要包括以下几个部分：</p>
+<ul>
+<li><strong>全局配置</strong>：定义默认的抓取和评估间隔时间。</li>
+<li><strong>告警配置</strong>：指定 Alertmanager 的地址。</li>
+<li><strong>规则文件</strong>：列出包含告警规则和记录规则的文件。</li>
+<li><strong>抓取配置</strong>：定义抓取任务，包括抓取目标和标签重写规则。</li>
+</ul>
+<p>这些配置可以帮助 Prometheus 正确地抓取监控目标、评估规则并处理告警。</p>
+<h1 id="规则文件"><a href="#规则文件" class="headerlink" title="规则文件"></a>规则文件</h1><p>在 Prometheus 中，规则文件用于定义记录规则（Recording Rules）和告警规则（Alerting Rules）。规则文件通常使用 YAML 格式进行编写，并在 <code>prometheus.yml</code> 配置文件中通过 <code>rule_files</code> 指令包含进来。下面是一个典型的规则文件示例，以及对其各部分的详细解析：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">groups:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">example_rules</span></span><br><span class="line">    <span class="attr">rules:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">record:</span> <span class="string">job:http_inprogress_requests:sum</span></span><br><span class="line">        <span class="attr">expr:</span> <span class="string">sum</span> <span class="string">by</span> <span class="string">(job)</span> <span class="string">(http_inprogress_requests)</span></span><br><span class="line">        <span class="attr">labels:</span></span><br><span class="line">          <span class="attr">environment:</span> <span class="string">&quot;production&quot;</span></span><br><span class="line">        <span class="attr">annotations:</span></span><br><span class="line">          <span class="attr">description:</span> <span class="string">&quot;The sum of in-progress HTTP requests for each job.&quot;</span></span><br><span class="line"></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">alert:</span> <span class="string">HighRequestLatency</span></span><br><span class="line">        <span class="attr">expr:</span> <span class="string">job:request_latency_seconds:mean5m&#123;job=&quot;myservice&quot;&#125;</span> <span class="string">&gt;</span> <span class="number">0.5</span></span><br><span class="line">        <span class="attr">for:</span> <span class="string">10m</span></span><br><span class="line">        <span class="attr">labels:</span></span><br><span class="line">          <span class="attr">severity:</span> <span class="string">&quot;critical&quot;</span></span><br><span class="line">        <span class="attr">annotations:</span></span><br><span class="line">          <span class="attr">summary:</span> <span class="string">&quot;High request latency&quot;</span></span><br><span class="line">          <span class="attr">description:</span> <span class="string">&quot;The request latency is above 0.5 seconds for more than 10 minutes.&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="规则文件结构"><a href="#规则文件结构" class="headerlink" title="规则文件结构"></a>规则文件结构</h2><p>规则文件的基本结构包括一个或多个 <code>groups</code>，每个组包含一组规则（规则可以是记录规则或告警规则）。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">groups:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">example_rules</span></span><br><span class="line">    <span class="attr">rules:</span> <span class="string">...</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>groups</code>: 包含一个或多个组，每个组有一个名称和一组规则。<ul>
+<li><code>name</code>: 组的名称，用于标识和分类规则。</li>
+<li><code>rules</code>: 组中的规则列表。</li>
+</ul>
+</li>
+</ul>
+<h2 id="记录规则（Recording-Rules）"><a href="#记录规则（Recording-Rules）" class="headerlink" title="记录规则（Recording Rules）"></a>记录规则（Recording Rules）</h2><p>记录规则用于预计算复杂的查询表达式，并将其结果存储为新的时间序列，以便在后续查询中使用。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">record:</span> <span class="string">job:http_inprogress_requests:sum</span></span><br><span class="line">  <span class="attr">expr:</span> <span class="string">sum</span> <span class="string">by</span> <span class="string">(job)</span> <span class="string">(http_inprogress_requests)</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">environment:</span> <span class="string">&quot;production&quot;</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">description:</span> <span class="string">&quot;The sum of in-progress HTTP requests for each job.&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>record</code>: 定义新的时间序列的名称。</li>
+<li><code>expr</code>: PromQL 表达式，用于计算新的时间序列值。</li>
+<li><code>labels</code>: 为新的时间序列添加标签（可选）。</li>
+<li><code>annotations</code>: 为新的时间序列添加注释（可选）。</li>
+</ul>
+<p>在这个示例中，记录规则计算每个 <code>job</code> 的 <code>http_inprogress_requests</code> 的总和，并将结果存储为 <code>job:http_inprogress_requests:sum</code>。</p>
+<h2 id="告警规则（Alerting-Rules）"><a href="#告警规则（Alerting-Rules）" class="headerlink" title="告警规则（Alerting Rules）"></a>告警规则（Alerting Rules）</h2><p>告警规则用于定义在特定条件下触发的告警，并发送给告警管理系统（如 Alertmanager）。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="bullet">-</span> <span class="attr">alert:</span> <span class="string">HighRequestLatency</span></span><br><span class="line">  <span class="attr">expr:</span> <span class="string">job:request_latency_seconds:mean5m&#123;job=&quot;myservice&quot;&#125;</span> <span class="string">&gt;</span> <span class="number">0.5</span></span><br><span class="line">  <span class="attr">for:</span> <span class="string">10m</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">severity:</span> <span class="string">&quot;critical&quot;</span></span><br><span class="line">  <span class="attr">annotations:</span></span><br><span class="line">    <span class="attr">summary:</span> <span class="string">&quot;High request latency&quot;</span></span><br><span class="line">    <span class="attr">description:</span> <span class="string">&quot;The request latency is above 0.5 seconds for more than 10 minutes.&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>alert</code>: 告警名称。</li>
+<li><code>expr</code>: PromQL 表达式，当该表达式为真时触发告警。</li>
+<li><code>for</code>: 持续时间，如果表达式在此时间内持续为真，则触发告警（可选）。</li>
+<li><code>labels</code>: 为告警添加标签，用于分类和筛选告警（可选）。</li>
+<li><code>annotations</code>: 为告警添加注释，通常用于提供告警的详细信息和上下文（可选）。</li>
+</ul>
+<p>在这个示例中，当 <code>job=&quot;myservice&quot;</code> 的 <code>request_latency_seconds:mean5m</code> 超过 0.5 且持续时间超过 10 分钟时，触发 <code>HighRequestLatency</code> 告警。</p>
+<h2 id="完整示例解析"><a href="#完整示例解析" class="headerlink" title="完整示例解析"></a>完整示例解析</h2><p>以下是一个完整的规则文件示例，包含两个组，每个组包含一组记录规则和告警规则：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">groups:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">recording_rules</span></span><br><span class="line">    <span class="attr">rules:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">record:</span> <span class="string">job:http_inprogress_requests:sum</span></span><br><span class="line">        <span class="attr">expr:</span> <span class="string">sum</span> <span class="string">by</span> <span class="string">(job)</span> <span class="string">(http_inprogress_requests)</span></span><br><span class="line">        <span class="attr">labels:</span></span><br><span class="line">          <span class="attr">environment:</span> <span class="string">&quot;production&quot;</span></span><br><span class="line">        <span class="attr">annotations:</span></span><br><span class="line">          <span class="attr">description:</span> <span class="string">&quot;The sum of in-progress HTTP requests for each job.&quot;</span></span><br><span class="line"></span><br><span class="line">  <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">alerting_rules</span></span><br><span class="line">    <span class="attr">rules:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="attr">alert:</span> <span class="string">HighRequestLatency</span></span><br><span class="line">        <span class="attr">expr:</span> <span class="string">job:request_latency_seconds:mean5m&#123;job=&quot;myservice&quot;&#125;</span> <span class="string">&gt;</span> <span class="number">0.5</span></span><br><span class="line">        <span class="attr">for:</span> <span class="string">10m</span></span><br><span class="line">        <span class="attr">labels:</span></span><br><span class="line">          <span class="attr">severity:</span> <span class="string">&quot;critical&quot;</span></span><br><span class="line">        <span class="attr">annotations:</span></span><br><span class="line">          <span class="attr">summary:</span> <span class="string">&quot;High request latency&quot;</span></span><br><span class="line">          <span class="attr">description:</span> <span class="string">&quot;The request latency is above 0.5 seconds for more than 10 minutes.&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>recording_rules</code>: 组包含记录规则，定义新的时间序列。</li>
+<li><code>alerting_rules</code>: 组包含告警规则，定义触发告警的条件。</li>
+</ul>
+<h3 id="在-prometheus-yml-中包含规则文件"><a href="#在-prometheus-yml-中包含规则文件" class="headerlink" title="在 prometheus.yml 中包含规则文件"></a>在 <code>prometheus.yml</code> 中包含规则文件</h3><p>要在 Prometheus 中使用这些规则文件，需要在 <code>prometheus.yml</code> 配置文件中包含它们：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">rule_files:</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;rules/recording_rules.yml&quot;</span></span><br><span class="line">  <span class="bullet">-</span> <span class="string">&quot;rules/alerting_rules.yml&quot;</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="小结-1"><a href="#小结-1" class="headerlink" title="小结"></a>小结</h2><p>Prometheus 规则文件用于定义记录规则和告警规则，通过这些规则，可以预计算复杂的查询表达式，并在特定条件下触发告警。规则文件的基本结构包括一个或多个组，每个组包含一组规则。通过在 <code>prometheus.yml</code> 配置文件中包含这些规则文件，可以使 Prometheus 加载并评估这些规则。</p>
+<h1 id="什么是-CRD？"><a href="#什么是-CRD？" class="headerlink" title="什么是 CRD？"></a>什么是 CRD？</h1><p>CRD，全称 Custom Resource Definition（自定义资源定义），是 Kubernetes 提供的一种机制，用于扩展 Kubernetes API。通过 CRD，用户可以创建自己的资源类型，类似于 Kubernetes 原生资源（如 Pods、Services 等），从而增强 Kubernetes 的功能和灵活性。</p>
+<h2 id="CRD-的基本概念"><a href="#CRD-的基本概念" class="headerlink" title="CRD 的基本概念"></a>CRD 的基本概念</h2><ol>
+<li><strong>Custom Resource（CR）</strong>： 自定义资源，是根据 CRD 定义的一种具体资源实例。CR 就像 Pods 和 Services 一样，通过 Kubernetes API 进行创建和管理。</li>
+<li><strong>Custom Resource Definition（CRD）</strong>： 自定义资源定义，是用于定义新的自定义资源类型的 YAML 文件。CRD 描述了自定义资源的名称、属性和行为。</li>
+</ol>
+<h2 id="创建-CRD-的步骤"><a href="#创建-CRD-的步骤" class="headerlink" title="创建 CRD 的步骤"></a>创建 CRD 的步骤</h2><ol>
+<li><strong>定义 CRD</strong>： 编写 CRD 的 YAML 文件，描述自定义资源的 API 版本、属性和验证规则。</li>
+<li><strong>应用 CRD</strong>： 使用 <code>kubectl apply</code> 命令将 CRD 应用到 Kubernetes 集群。</li>
+<li><strong>创建自定义资源</strong>： 一旦 CRD 创建成功，就可以根据 CRD 创建自定义资源实例。</li>
+</ol>
+<h2 id="CRD-示例"><a href="#CRD-示例" class="headerlink" title="CRD 示例"></a>CRD 示例</h2><p>以下是一个 CRD 和自定义资源的示例，假设我们要创建一个名为 <code>MySQLDatabase</code> 的自定义资源，用于管理 MySQL 数据库实例。</p>
+<h3 id="定义-CRD"><a href="#定义-CRD" class="headerlink" title="定义 CRD"></a>定义 CRD</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">apiextensions.k8s.io/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">CustomResourceDefinition</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">mysqldatabases.example.com</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">group:</span> <span class="string">example.com</span></span><br><span class="line">  <span class="attr">versions:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">v1</span></span><br><span class="line">      <span class="attr">served:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">storage:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">schema:</span></span><br><span class="line">        <span class="attr">openAPIV3Schema:</span></span><br><span class="line">          <span class="attr">type:</span> <span class="string">object</span></span><br><span class="line">          <span class="attr">properties:</span></span><br><span class="line">            <span class="attr">spec:</span></span><br><span class="line">              <span class="attr">type:</span> <span class="string">object</span></span><br><span class="line">              <span class="attr">properties:</span></span><br><span class="line">                <span class="attr">databaseName:</span></span><br><span class="line">                  <span class="attr">type:</span> <span class="string">string</span></span><br><span class="line">                <span class="attr">user:</span></span><br><span class="line">                  <span class="attr">type:</span> <span class="string">string</span></span><br><span class="line">                <span class="attr">password:</span></span><br><span class="line">                  <span class="attr">type:</span> <span class="string">string</span></span><br><span class="line">  <span class="attr">scope:</span> <span class="string">Namespaced</span></span><br><span class="line">  <span class="attr">names:</span></span><br><span class="line">    <span class="attr">plural:</span> <span class="string">mysqldatabases</span></span><br><span class="line">    <span class="attr">singular:</span> <span class="string">mysqldatabase</span></span><br><span class="line">    <span class="attr">kind:</span> <span class="string">MySQLDatabase</span></span><br><span class="line">    <span class="attr">shortNames:</span></span><br><span class="line">      <span class="bullet">-</span> <span class="string">mdb</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>apiVersion</code>: CRD 的 API 版本。</li>
+<li><code>kind</code>: 表示资源类型为 <code>CustomResourceDefinition</code>。</li>
+<li><code>metadata</code>: 元数据，包含 CRD 的名称。</li>
+<li><code>spec</code>: 定义 CRD 的详细规格。<ul>
+<li><code>group</code>: 自定义资源所属的 API 组。</li>
+<li><code>versions</code>: 定义自定义资源的多个版本。<ul>
+<li><code>name</code>: 版本名称。</li>
+<li><code>served</code>: 是否提供该版本的服务。</li>
+<li><code>storage</code>: 是否将该版本作为存储版本。</li>
+<li><code>schema</code>: 自定义资源的 OpenAPI v3 模式，定义属性和类型。</li>
+</ul>
+</li>
+<li><code>scope</code>: 定义自定义资源的作用域（<code>Namespaced</code> 或 <code>Cluster</code>）。</li>
+<li><code>names</code>: 定义自定义资源的名称，包括复数名、单数名、资源种类和简写。</li>
+</ul>
+</li>
+</ul>
+<h3 id="创建自定义资源"><a href="#创建自定义资源" class="headerlink" title="创建自定义资源"></a>创建自定义资源</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">example.com/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">MySQLDatabase</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">my-database</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">databaseName:</span> <span class="string">mydb</span></span><br><span class="line">  <span class="attr">user:</span> <span class="string">admin</span></span><br><span class="line">  <span class="attr">password:</span> <span class="string">secret</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>apiVersion</code>: 使用自定义资源的 API 版本。</li>
+<li><code>kind</code>: 使用自定义资源的类型 <code>MySQLDatabase</code>。</li>
+<li><code>metadata</code>: 元数据，包含自定义资源实例的名称。</li>
+<li><code>spec</code>: 自定义资源的具体规格，包括数据库名称、用户和密码等属性。</li>
+</ul>
+<h2 id="使用-CRD-和自定义资源"><a href="#使用-CRD-和自定义资源" class="headerlink" title="使用 CRD 和自定义资源"></a>使用 CRD 和自定义资源</h2><ol>
+<li><p><strong>创建 CRD</strong>： 将 CRD 定义文件保存为 <code>crd.yaml</code>，然后运行以下命令创建 CRD：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f crd.yaml</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>创建自定义资源实例</strong>： 将自定义资源定义文件保存为 <code>mysql-database.yaml</code>，然后运行以下命令创建自定义资源实例：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f mysql-database.yaml</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>查看自定义资源</strong>： 使用 <code>kubectl get</code> 命令查看自定义资源：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl get mysqldatabases</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="Prometheus-中的-CRD-示例"><a href="#Prometheus-中的-CRD-示例" class="headerlink" title="Prometheus 中的 CRD 示例"></a>Prometheus 中的 CRD 示例</h2><p>在 Prometheus Operator 中，CRD 被用来定义 Prometheus 资源、Alertmanager 资源和 PrometheusRule 资源。以下是一个 PrometheusRule CRD 的示例：</p>
+<h3 id="PrometheusRule-CRD-示例"><a href="#PrometheusRule-CRD-示例" class="headerlink" title="PrometheusRule CRD 示例"></a>PrometheusRule CRD 示例</h3><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">monitoring.coreos.com/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">PrometheusRule</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">example-prometheus-rule</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">prometheus:</span> <span class="string">example</span></span><br><span class="line">    <span class="attr">role:</span> <span class="string">alert-rules</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">groups:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">example.rules</span></span><br><span class="line">      <span class="attr">rules:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">alert:</span> <span class="string">HighRequestLatency</span></span><br><span class="line">          <span class="attr">expr:</span> <span class="string">job:request_latency_seconds:mean5m&#123;job=&quot;myservice&quot;&#125;</span> <span class="string">&gt;</span> <span class="number">0.5</span></span><br><span class="line">          <span class="attr">for:</span> <span class="string">10m</span></span><br><span class="line">          <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">severity:</span> <span class="string">&quot;critical&quot;</span></span><br><span class="line">          <span class="attr">annotations:</span></span><br><span class="line">            <span class="attr">summary:</span> <span class="string">&quot;High request latency&quot;</span></span><br><span class="line">            <span class="attr">description:</span> <span class="string">&quot;The request latency is above 0.5 seconds for more than 10 minutes.&quot;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">record:</span> <span class="string">job:http_inprogress_requests:sum</span></span><br><span class="line">          <span class="attr">expr:</span> <span class="string">sum</span> <span class="string">by</span> <span class="string">(job)</span> <span class="string">(http_inprogress_requests)</span></span><br><span class="line">          <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">environment:</span> <span class="string">&quot;production&quot;</span></span><br><span class="line">          <span class="attr">annotations:</span></span><br><span class="line">            <span class="attr">description:</span> <span class="string">&quot;The sum of in-progress HTTP requests for each job.&quot;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><code>apiVersion</code>: 使用 Prometheus Operator 提供的 API 版本 <code>monitoring.coreos.com/v1</code>。</li>
+<li><code>kind</code>: 自定义资源的类型 <code>PrometheusRule</code>。</li>
+<li><code>metadata</code>: 元数据，包含资源名称和标签。</li>
+<li><code>spec</code>: 自定义资源的具体规格，定义了告警规则和记录规则。</li>
+</ul>
+<h2 id="小结-2"><a href="#小结-2" class="headerlink" title="小结"></a>小结</h2><p>CRD 是 Kubernetes 提供的一种机制，用于扩展其 API 以支持自定义资源。通过定义 CRD，可以创建和管理自定义资源，从而增强 Kubernetes 的功能和灵活性。在 Prometheus Operator 等工具中，CRD 被广泛用于定义和管理监控规则、告警配置等资源，使得监控系统更加高效和可管理。</p>
+<h1 id="在-Kubernetes-中使用-CRD-结合-Prometheus"><a href="#在-Kubernetes-中使用-CRD-结合-Prometheus" class="headerlink" title="在 Kubernetes 中使用 CRD 结合 Prometheus"></a>在 Kubernetes 中使用 CRD 结合 Prometheus</h1><p>将 Prometheus 与 Kubernetes 结合使用，并利用 CRD （Custom Resource Definition, 自定义资源） 进行配置，主要通过 Prometheus Operator 来实现。Prometheus Operator 简化了在 Kubernetes 集群中部署和管理 Prometheus 的过程。下面详细介绍如何实现这一过程，包括必要的配置和注意事项。</p>
+<h2 id="步骤概览"><a href="#步骤概览" class="headerlink" title="步骤概览"></a>步骤概览</h2><ol>
+<li><strong>部署 Prometheus Operator</strong></li>
+<li><strong>配置 Prometheus CRD</strong></li>
+<li><strong>配置 Alertmanager CRD</strong></li>
+<li><strong>配置 PrometheusRule CRD</strong></li>
+<li><strong>配置 ServiceMonitor CRD</strong></li>
+<li><strong>创建和配置自定义资源</strong></li>
+</ol>
+<h2 id="详细步骤-示例"><a href="#详细步骤-示例" class="headerlink" title="详细步骤 (示例)"></a>详细步骤 (示例)</h2><h3 id="部署-Prometheus-Operator"><a href="#部署-Prometheus-Operator" class="headerlink" title="部署 Prometheus Operator"></a>部署 Prometheus Operator</h3><p>首先，需要部署 Prometheus Operator，它将管理 Prometheus 实例及其相关资源。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl create -f https://raw.githubusercontent.com/prometheus-operator/prometheus-operator/master/bundle.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置-Prometheus-CRD"><a href="#配置-Prometheus-CRD" class="headerlink" title="配置 Prometheus CRD"></a>配置 Prometheus CRD</h3><p>创建一个 Prometheus CRD 来定义 Prometheus 实例。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">monitoring.coreos.com/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Prometheus</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">example-prometheus</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">prometheus:</span> <span class="string">example</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">2</span></span><br><span class="line">  <span class="attr">serviceAccountName:</span> <span class="string">prometheus</span></span><br><span class="line">  <span class="attr">serviceMonitorSelector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">team:</span> <span class="string">frontend</span></span><br><span class="line">  <span class="attr">resources:</span></span><br><span class="line">    <span class="attr">requests:</span></span><br><span class="line">      <span class="attr">memory:</span> <span class="string">400Mi</span></span><br></pre></td></tr></table></figure>
+
+<p>将该配置保存为 <code>prometheus.yaml</code>，并应用到 Kubernetes 集群中：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f prometheus.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置-Alertmanager-CRD"><a href="#配置-Alertmanager-CRD" class="headerlink" title="配置 Alertmanager CRD"></a>配置 Alertmanager CRD</h3><p>创建一个 Alertmanager CRD 来定义 Alertmanager 实例。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">monitoring.coreos.com/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Alertmanager</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">example-alertmanager</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">alertmanager:</span> <span class="string">example</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">replicas:</span> <span class="number">2</span></span><br></pre></td></tr></table></figure>
+
+<p>将该配置保存为 <code>alertmanager.yaml</code>，并应用到 Kubernetes 集群中：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f alertmanager.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置-PrometheusRule-CRD"><a href="#配置-PrometheusRule-CRD" class="headerlink" title="配置 PrometheusRule CRD"></a>配置 PrometheusRule CRD</h3><p>创建一个 PrometheusRule CRD 来定义告警规则和记录规则。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">monitoring.coreos.com/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">PrometheusRule</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">example-prometheus-rule</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">prometheus:</span> <span class="string">example</span></span><br><span class="line">    <span class="attr">role:</span> <span class="string">alert-rules</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">groups:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">example.rules</span></span><br><span class="line">      <span class="attr">rules:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">alert:</span> <span class="string">HighRequestLatency</span></span><br><span class="line">          <span class="attr">expr:</span> <span class="string">job:request_latency_seconds:mean5m&#123;job=&quot;myservice&quot;&#125;</span> <span class="string">&gt;</span> <span class="number">0.5</span></span><br><span class="line">          <span class="attr">for:</span> <span class="string">10m</span></span><br><span class="line">          <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">severity:</span> <span class="string">&quot;critical&quot;</span></span><br><span class="line">          <span class="attr">annotations:</span></span><br><span class="line">            <span class="attr">summary:</span> <span class="string">&quot;High request latency&quot;</span></span><br><span class="line">            <span class="attr">description:</span> <span class="string">&quot;The request latency is above 0.5 seconds for more than 10 minutes.&quot;</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">record:</span> <span class="string">job:http_inprogress_requests:sum</span></span><br><span class="line">          <span class="attr">expr:</span> <span class="string">sum</span> <span class="string">by</span> <span class="string">(job)</span> <span class="string">(http_inprogress_requests)</span></span><br><span class="line">          <span class="attr">labels:</span></span><br><span class="line">            <span class="attr">environment:</span> <span class="string">&quot;production&quot;</span></span><br><span class="line">          <span class="attr">annotations:</span></span><br><span class="line">            <span class="attr">description:</span> <span class="string">&quot;The sum of in-progress HTTP requests for each job.&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>将该配置保存为 <code>prometheusrule.yaml</code>，并应用到 Kubernetes 集群中：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f prometheusrule.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置-ServiceMonitor-CRD"><a href="#配置-ServiceMonitor-CRD" class="headerlink" title="配置 ServiceMonitor CRD"></a>配置 ServiceMonitor CRD</h3><p>创建一个 ServiceMonitor CRD 来定义要监控的服务。ServiceMonitor 是 Prometheus Operator 提供的一种资源，用于指定 Prometheus 应该如何抓取 Kubernetes 服务的指标。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">monitoring.coreos.com/v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">ServiceMonitor</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">example-service-monitor</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">team:</span> <span class="string">frontend</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">matchLabels:</span></span><br><span class="line">      <span class="attr">app:</span> <span class="string">my-app</span></span><br><span class="line">  <span class="attr">endpoints:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">port:</span> <span class="string">web</span></span><br><span class="line">      <span class="attr">interval:</span> <span class="string">30s</span></span><br></pre></td></tr></table></figure>
+
+<p>将该配置保存为 <code>servicemonitor.yaml</code>，并应用到 Kubernetes 集群中：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f servicemonitor.yaml</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建和配置自定义资源"><a href="#创建和配置自定义资源" class="headerlink" title="创建和配置自定义资源"></a>创建和配置自定义资源</h3><p>在完成上述步骤后，你已经创建了 Prometheus 实例、Alertmanager 实例、告警规则和 ServiceMonitor。接下来，可以创建自定义资源来暴露应用程序的指标。</p>
+<p>首先，为应用程序创建一个 Service，并确保其带有匹配 ServiceMonitor 的标签。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">apiVersion:</span> <span class="string">v1</span></span><br><span class="line"><span class="attr">kind:</span> <span class="string">Service</span></span><br><span class="line"><span class="attr">metadata:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">my-app</span></span><br><span class="line">  <span class="attr">labels:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">my-app</span></span><br><span class="line"><span class="attr">spec:</span></span><br><span class="line">  <span class="attr">ports:</span></span><br><span class="line">    <span class="bullet">-</span> <span class="attr">name:</span> <span class="string">web</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">8080</span></span><br><span class="line">      <span class="attr">targetPort:</span> <span class="number">8080</span></span><br><span class="line">  <span class="attr">selector:</span></span><br><span class="line">    <span class="attr">app:</span> <span class="string">my-app</span></span><br></pre></td></tr></table></figure>
+
+<p>将该配置保存为 <code>service.yaml</code>，并应用到 Kubernetes 集群中：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f service.yaml</span><br></pre></td></tr></table></figure>
+
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ol>
+<li><strong>权限管理</strong>： 确保 Prometheus 和 Alertmanager 有适当的权限访问所需的资源。通常，通过设置适当的 <code>serviceAccount</code> 并将其绑定到 <code>ClusterRole</code> 和 <code>ClusterRoleBinding</code>。</li>
+<li><strong>标签匹配</strong>： ServiceMonitor 的 <code>selector</code> 标签应与要监控的服务的标签匹配，以确保 Prometheus 能够正确地抓取指标。</li>
+<li><strong>资源限制</strong>： 为 Prometheus 和 Alertmanager 设置合理的资源请求和限制，以确保它们在集群中稳定运行。</li>
+<li><strong>数据持久化</strong>： 配置持久化存储卷（PVC）来存储 Prometheus 的时间序列数据，防止数据丢失。</li>
+<li><strong>高可用性</strong>： 配置 Prometheus 和 Alertmanager 的副本数量（<code>replicas</code>）以实现高可用性。</li>
+<li><strong>网络策略</strong>： 考虑使用网络策略（NetworkPolicy）来限制 Prometheus 和其他组件之间的流量，以增强安全性。</li>
+</ol>
+<h2 id="小结-3"><a href="#小结-3" class="headerlink" title="小结"></a>小结</h2><p>通过使用 Prometheus Operator 和 CRD，可以轻松地在 Kubernetes 集群中部署和管理 Prometheus、Alertmanager 以及相关的监控规则。关键在于正确配置 CRD，并确保 Prometheus 和其他组件能够相互通信并访问所需的资源。这样，便能实现强大的监控和告警功能，确保系统的稳定性和性能。</p>
+<h1 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h1><ol>
+<li><a target="_blank" rel="noopener" href="https://chatgpt.com/">ChatGPT</a></li>
+<li><a target="_blank" rel="noopener" href="https://prometheus.io/docs/introduction/overview/">Docs Prometheus</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/prometheus-operator/prometheus-operator">Git prometheus-operator</a></li>
+<li><a target="_blank" rel="noopener" href="https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/">Kubernetes 官方 CRD 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://prometheus-operator.dev/docs/prologue/introduction/">Docs prometheus-operator</a></li>
+<li><a target="_blank" rel="noopener" href="https://prometheus-operator.dev/docs/operator/api/#prometheusrule">PrometheusRule CRD</a></li>
+<li><a target="_blank" rel="noopener" href="https://prometheus-operator.dev/docs/operator/api/#servicemonitor">ServiceMonitor CRD</a></li>
+<li><a target="_blank" rel="noopener" href="https://prometheus-operator.dev/docs/operator/api/#alertmanager">Alertmanager CRD</a></li>
+</ol>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/prometheus/" rel="tag"># prometheus</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/posts/2024/04/08/vba/" rel="prev" title="VBA(Visual Basic for Applications) 笔记">
+                  <i class="fa fa-angle-left"></i> VBA(Visual Basic for Applications) 笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/posts/2024/06/04/opentelemetry/" rel="next" title="opentelemetry">
+                  opentelemetry <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">Apomelo</span>
+  </div>
+<div class="busuanzi-count">
+    <span class="post-meta-item" id="busuanzi_container_site_uv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
