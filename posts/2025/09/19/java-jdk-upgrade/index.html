@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
@@ -361,13 +361,13 @@
 </tbody></table>
 <span id="more"></span>
 
-<h1 id="Java-8-Java-25-特性升级"><a href="#Java-8-Java-25-特性升级" class="headerlink" title="Java 8 -&gt; Java 25 特性升级"></a>Java 8 -&gt; Java 25 特性升级</h1><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="LTS-版本路线图"><a href="#LTS-版本路线图" class="headerlink" title="LTS 版本路线图"></a>LTS 版本路线图</h3><pre class="mermaid">timeline
+<h1 id="Java-8-Java-25-特性升级"><a href="#Java-8-Java-25-特性升级" class="headerlink" title="Java 8 -&gt; Java 25 特性升级"></a>Java 8 -&gt; Java 25 特性升级</h1><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><h3 id="LTS-版本路线图"><a href="#LTS-版本路线图" class="headerlink" title="LTS 版本路线图"></a>LTS 版本路线图</h3><pre><code class="highlight mermaid">timeline
     title Java LTS 版本演进
     2014-03 : Java 8 (LTS) : Lambda、Stream API
     2018-09 : Java 11 (LTS) : HTTP Client、ZGC
     2021-09 : Java 17 (LTS) : 密封类、模式匹配预览
     2023-09 : Java 21 (LTS) : 虚拟线程、Record模式
-    2025-09 : Java 25 (LTS) : 作用域值、紧凑对象头</pre>
+    2025-09 : Java 25 (LTS) : 作用域值、紧凑对象头</code></pre>
 
 <h3 id="核心特性演进表"><a href="#核心特性演进表" class="headerlink" title="核心特性演进表"></a>核心特性演进表</h3><table>
 <thead>
@@ -859,9 +859,9 @@
 <li>文本块（二次预览）<ul>
 <li>文本块继续作为预览特性，新增了两个转义序列：<ul>
 <li><code>\</code> 行尾：取消换行</li>
-<li><code>\s</code>：显式空格<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    这是一行很长的文本，\</span></span><br><span class="line"><span class="string">    但实际上不会换行&quot;&quot;&quot;</span>;</span><br></pre></td></tr></table></figure></li>
+<li><code>\s</code>：显式空格</li>
 </ul>
-</li>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">String</span> <span class="variable">text</span> <span class="operator">=</span> <span class="string">&quot;&quot;&quot;</span></span><br><span class="line"><span class="string">    这是一行很长的文本，\</span></span><br><span class="line"><span class="string">    但实际上不会换行&quot;&quot;&quot;</span>;</span><br></pre></td></tr></table></figure></li>
 </ul>
 </li>
 <li>NullPointerException 改进<ul>
@@ -1404,18 +1404,18 @@
 <li>目标：以“线程即结构”简化并发，而不是回调&#x2F;显式任务拆分。</li>
 </ol>
 <p>Mermaid 流程图（关系与调度循环示意）  </p>
-<pre class="mermaid">flowchart LR
-   subgraph VT["虚拟线程集合 (M)"]
+<pre><code class="highlight mermaid">flowchart LR
+   subgraph VT[&quot;虚拟线程集合 (M)&quot;]
       v1(VT1)
       v2(VT2)
       v3(...VTn)
    end
 
    subgraph SCH[JVM 调度器 / 就绪队列]
-      Q
+      Q&#123;&#123;就绪队列&#125;&#125;
    end
 
-   subgraph PT["平台线程池 (N ≈ CPU 核心)"]
+   subgraph PT[&quot;平台线程池 (N ≈ CPU 核心)&quot;]
       p1(PT1)
       p2(PT2)
       p3(...PTn)
@@ -1425,30 +1425,30 @@
       cpu[(内核线程与 CPU 调度)]
    end
 
-   v1 --> Q
-   v2 --> Q
-   v3 --> Q
+   v1 --&gt; Q
+   v2 --&gt; Q
+   v3 --&gt; Q
 
-   Q --> p1
-   Q --> p2
-   Q --> p3
+   Q --&gt; p1
+   Q --&gt; p2
+   Q --&gt; p3
 
-   p1 --> cpu
-   p2 --> cpu
-   p3 --> cpu
+   p1 --&gt; cpu
+   p2 --&gt; cpu
+   p3 --&gt; cpu
 
    %% 运行与阻塞
-   p1 -->|运行中的 VT| run1[执行]
-   run1 -->|"遇到可挂起阻塞 (I/O / park)"| unmount[卸载: 保存 continuation]
-   unmount --> Q
+   p1 --&gt;|运行中的 VT| run1[执行]
+   run1 --&gt;|&quot;遇到可挂起阻塞 (I/O / park)&quot;| unmount[卸载: 保存 continuation]
+   unmount --&gt; Q
 
-   p2 -->|运行中的 VT| run2[执行]
-   run2 -->|正常完成| done[终止/回收]
+   p2 --&gt;|运行中的 VT| run2[执行]
+   run2 --&gt;|正常完成| done[终止/回收]
 
    %% Pinning
-   p3 -->|持有监视器 + 阻塞调用| pin[Pinning: 占用平台线程]
-   pin -->|解除阻塞| back[继续执行或结束]
-   back --> Q</pre>
+   p3 --&gt;|持有监视器 + 阻塞调用| pin[Pinning: 占用平台线程]
+   pin --&gt;|解除阻塞| back[继续执行或结束]
+   back --&gt; Q</code></pre>
 
 <p>简化调度循环  </p>
 <ol>

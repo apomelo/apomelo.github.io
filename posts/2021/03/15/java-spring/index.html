@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
@@ -310,19 +310,19 @@
 </ol>
 <h3 id="单例bean"><a href="#单例bean" class="headerlink" title="单例bean"></a>单例bean</h3><p>spring中的单例bean，不等同于java中的单例模式。</p>
 <p>spring单例bean，允许同一个类有多个名称不相同的实例。</p>
-<h4 id="单例bean查找过程"><a href="#单例bean查找过程" class="headerlink" title="单例bean查找过程"></a>单例bean查找过程</h4><pre class="mermaid">graph TB
-    A((开始查找)) --> B("byType,根据type从spring容器里找到多个bean") 
-    B -- 通过一系列筛选 --> C(是不是isAutowireCandidate)
-    C -- true --> D(是不是符合Qualifier)
-    C -- false --> A1([忽略掉false的bean])
-    D -- 符合 --> AA((找到bean))
-    D -- 不符合 --> E(是否有Primary标注的bean)
-    E -- 有 --> AA
-    E -- 没有 --> F("查找优先级,Priority值大的优先级高")
-    F -- 找到优先级高的 --> AA
-    F -- 多个优先级相同 --> G("byName,根据属性名字选出一个")
-    G -- "找到对应名字(名字完全相同)" --> AA
-    G -- 没有找到 --> A2([报错])</pre>
+<h4 id="单例bean查找过程"><a href="#单例bean查找过程" class="headerlink" title="单例bean查找过程"></a>单例bean查找过程</h4><pre><code class="highlight mermaid">graph TB
+    A((开始查找)) --&gt; B(&quot;byType,根据type从spring容器里找到多个bean&quot;) 
+    B -- 通过一系列筛选 --&gt; C(是不是isAutowireCandidate)
+    C -- true --&gt; D(是不是符合Qualifier)
+    C -- false --&gt; A1([忽略掉false的bean])
+    D -- 符合 --&gt; AA((找到bean))
+    D -- 不符合 --&gt; E(是否有Primary标注的bean)
+    E -- 有 --&gt; AA
+    E -- 没有 --&gt; F(&quot;查找优先级,Priority值大的优先级高&quot;)
+    F -- 找到优先级高的 --&gt; AA
+    F -- 多个优先级相同 --&gt; G(&quot;byName,根据属性名字选出一个&quot;)
+    G -- &quot;找到对应名字(名字完全相同)&quot; --&gt; AA
+    G -- 没有找到 --&gt; A2([报错])</code></pre>
 
 <h3 id="属性填充"><a href="#属性填充" class="headerlink" title="属性填充"></a>属性填充</h3><h4 id="Autowired-注解"><a href="#Autowired-注解" class="headerlink" title="Autowired 注解"></a>Autowired 注解</h4><ol>
 <li>进入 AutowiredAnnotationBeanPostProcessor</li>

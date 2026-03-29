@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 8.1.1">
 
   <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon.ico">
@@ -29,10 +29,10 @@
 <meta property="article:published_time" content="2018-11-25T16:00:00.000Z">
 <meta property="article:modified_time" content="2019-02-12T16:00:00.000Z">
 <meta property="article:author" content="Apomelo">
-<meta property="article:tag" content="java">
-<meta property="article:tag" content="vue">
 <meta property="article:tag" content="html">
+<meta property="article:tag" content="java">
 <meta property="article:tag" content="js">
+<meta property="article:tag" content="vue">
 <meta name="twitter:card" content="summary">
 
 
@@ -303,12 +303,14 @@
 <p>会忽略小数点之后的内容。<br>原因：url中含有小数点，浏览器会认为是访问的文件<br>解决办法：</p>
 <ol>
 <li>访问API时，url的末尾加  &#x2F;， 如：<a target="_blank" rel="noopener" href="https://localhost:3000/download/voice.wav/">https://localhost:3000/download/voice.wav/</a></li>
-<li>把带小数点的路径前移， 如：<a target="_blank" rel="noopener" href="https://localhost:3000/voice.wav/download">https://localhost:3000/voice.wav/download</a><br>在后端中，如果需要接收voice.wav这个参数，Spring可以用：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(/&#123;fileName&#125;/download)</span></span><br><span class="line"><span class="keyword">public</span> ResponseEntity&lt;<span class="type">byte</span>[]&gt; download(<span class="meta">@RathVariable(&quot;fileName&quot;)</span> String fileName) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li>把带小数点的路径前移， 如：<a target="_blank" rel="noopener" href="https://localhost:3000/voice.wav/download">https://localhost:3000/voice.wav/download</a><br>在后端中，如果需要接收voice.wav这个参数，Spring可以用：</li>
 </ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(/&#123;fileName&#125;/download)</span></span><br><span class="line"><span class="keyword">public</span> ResponseEntity&lt;<span class="type">byte</span>[]&gt; download(<span class="meta">@RathVariable(&quot;fileName&quot;)</span> String fileName) &#123;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h2 id="JS"><a href="#JS" class="headerlink" title="JS"></a>JS</h2><h3 id="1-函数"><a href="#1-函数" class="headerlink" title="1.函数"></a>1.函数</h3><p>js中有三种：函数声明、函数表达式、匿名函数</p>
-<p><strong>函数声明</strong>： <code>function fnName() &#123;...&#125;</code> ；<br>使用 function 关键字声明一个函数，再执行一个函数名，叫函数声明。</p>
-<p><strong>函数表达式</strong>： <code>var fnName = function() &#123; ... &#125;</code> ；<br>使用 function 关键字声明一个函数，但未给函数命名，最后将匿名函数赋予一个变量，叫函数表达式，这是最常见的函数表达式语法形式。</p>
-<p><strong>匿名函数</strong>： <code>function() &#123; ... &#125;</code> ；<br>使用 function 关键字声明一个函数，但未给函数命名，所以叫匿名函数，匿名函数属于函数表达式，匿名函数有很多作用，赋予一个变量则创建函数，赋予一个事件则成为事件处理程序或创建闭包等等。</p>
+<p><strong>函数声明</strong>： <code>function fnName() {...}</code> ；<br>使用 function 关键字声明一个函数，再执行一个函数名，叫函数声明。</p>
+<p><strong>函数表达式</strong>： <code>var fnName = function() { ... }</code> ；<br>使用 function 关键字声明一个函数，但未给函数命名，最后将匿名函数赋予一个变量，叫函数表达式，这是最常见的函数表达式语法形式。</p>
+<p><strong>匿名函数</strong>： <code>function() { ... }</code> ；<br>使用 function 关键字声明一个函数，但未给函数命名，所以叫匿名函数，匿名函数属于函数表达式，匿名函数有很多作用，赋予一个变量则创建函数，赋予一个事件则成为事件处理程序或创建闭包等等。</p>
 <p><strong>函数声明和函数表达式不同之处在于</strong><br/><br>1、JavaScript 引擎在解析 JavaScript 代码时会“函数声明提升”当前执行环境(作用域)上的函数声明，而函数表达式必须等到 JavaScript 引擎执行到它所在行时，才会从上而下一行一行地解析函数表达式。</p>
 <p>2、函数表达式后面可以加括号立即调用该函数，函数声明不可以，只能以 fnName() 形式调用。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">(function(a) &#123;</span><br><span class="line">  console.log(a);  //使用()运算符，打印出123</span><br><span class="line">&#125;)(123);</span><br><span class="line"></span><br><span class="line">(function(a) &#123;</span><br><span class="line">  console.log(a);  //使用()运算符，打印出1234</span><br><span class="line">&#125;(1234));</span><br><span class="line"></span><br><span class="line">!function(a) &#123;</span><br><span class="line">  console.log(a);  //使用!运算符，打印出12345</span><br><span class="line">&#125;(12345);</span><br><span class="line"></span><br><span class="line">+function(a) &#123;</span><br><span class="line">  console.log(a);  //使用+运算符，打印出123456</span><br><span class="line">&#125;(123456);</span><br><span class="line"></span><br><span class="line">-function(a) &#123;</span><br><span class="line">  console.log(a);  //使用-运算符，打印出1234567</span><br><span class="line">&#125;(1234567);</span><br><span class="line"></span><br><span class="line">var fn = function(a) &#123;</span><br><span class="line">  console.log(a);  //使用=运算符，打印出12345678</span><br><span class="line">&#125;(12345678);</span><br></pre></td></tr></table></figure>
